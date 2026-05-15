@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Ummah Tech Fest Ghana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#353534",
+            "error": "#ffb4ab",
+            "surface-container-lowest": "#0e0e0e",
+            "surface-container-highest": "#353534",
+            "tertiary-fixed": "#e2e2e2",
+            "surface-dim": "#131313",
+            "on-surface": "#e5e2e1",
+            "on-surface-variant": "#c0caad",
+            "primary-fixed": "#a3fa01",
+            "surface": "#131313",
+            "surface-container-high": "#2a2a2a",
+            "on-error": "#690005",
+            "on-tertiary": "#2f3131",
+            "secondary": "#e9c349",
+            "outline": "#8b947a",
+            "on-secondary": "#3c2f00",
+            "primary": "#ffffff",
+            "on-primary": "#203600",
+            "surface-container": "#201f1f",
+            "surface-bright": "#3a3939",
+            "inverse-on-surface": "#313030",
+            "on-primary-fixed": "#112000",
+            "on-secondary-fixed-variant": "#574500",
+            "on-secondary-fixed": "#241a00",
+            "on-primary-fixed-variant": "#314f00",
+            "on-tertiary-fixed-variant": "#454747",
+            "secondary-fixed": "#ffe088",
+            "secondary-container": "#af8d11",
+            "on-background": "#e5e2e1",
+            "outline-variant": "#414a34",
+            "on-tertiary-container": "#636465",
+            "inverse-primary": "#426900",
+            "background": "#131313",
+            "on-primary-container": "#466f00",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "secondary-fixed-dim": "#e9c349",
+            "error-container": "#93000a",
+            "surface-tint": "#8fdb00",
+            "on-secondary-container": "#342800",
+            "primary-fixed-dim": "#8fdb00",
+            "on-error-container": "#ffdad6",
+            "surface-container-low": "#1c1b1b",
+            "tertiary-container": "#e2e2e2",
+            "tertiary": "#ffffff",
+            "on-tertiary-fixed": "#1a1c1c",
+            "primary-container": "#a3fa00",
+            "inverse-surface": "#e5e2e1"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "base": "8px",
+            "margin-mobile": "16px",
+            "margin-desktop": "48px",
+            "gutter": "24px",
+            "container-max": "1280px"
+          },
+          "fontFamily": {
+            "headline-xl": ["Sora"],
+            "headline-lg-mobile": ["Sora"],
+            "body-md": ["Inter"],
+            "headline-md": ["Sora"],
+            "body-lg": ["Inter"],
+            "headline-sm": ["Sora"],
+            "headline-lg": ["Sora"],
+            "label-md": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+            "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(163, 250, 1, 0.15);
+    }
+    .kente-pattern {
+      background-image: 
+        linear-gradient(45deg, rgba(163, 250, 1, 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(163, 250, 1, 0.05) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(163, 250, 1, 0.05) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(163, 250, 1, 0.05) 75%);
+      background-size: 40px 40px;
+    }
+    .glow-bg {
+      background: radial-gradient(circle at center, rgba(163, 250, 1, 0.08) 0%, transparent 70%);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute inset-0 kente-pattern opacity-30"></div>
+<div class="absolute inset-0 glow-bg"></div>
+<!-- Decorative Islamic Geometry Elements -->
+<div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full border border-primary-fixed/10 opacity-20 rotate-45"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full border border-secondary/10 opacity-10"></div>
+</div>
+<!-- Header Placeholder (Hidden as per Login suppression rules, but maintaining brand presence) -->
+<header class="relative z-10 w-full py-8 px-margin-mobile md:px-margin-desktop flex justify-center">
+<h1 class="font-headline-sm text-headline-sm text-primary-fixed font-bold tracking-tight uppercase">
+      Ummah Tech Fest
+    </h1>
+</header>
+<!-- Login Main Content -->
+<main class="relative z-10 flex-grow flex items-center justify-center px-margin-mobile py-12">
+<div class="w-full max-w-md glass-card rounded-xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+<!-- Top Decorative Accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed via-secondary to-primary-fixed"></div>
+<!-- Header Section -->
+<div class="text-center mb-10">
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Welcome Back</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Access the gateway to excellence</p>
+</div>
+<!-- Login Form -->
+<form class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block font-label-md text-label-md text-secondary" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
+              mail
+            </span>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed transition-all font-body-md" id="email" placeholder="you@example.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="block font-label-md text-label-md text-secondary" for="password">Password</label>
+<a class="font-label-md text-label-md text-primary-fixed hover:underline transition-all" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
+              lock
+            </span>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed transition-all font-body-md" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center">
+<input class="w-4 h-4 rounded border-outline-variant bg-surface-container-low text-primary-fixed focus:ring-primary-fixed" id="remember" type="checkbox"/>
+<label class="ml-3 font-label-md text-label-md text-on-surface-variant" for="remember">Remember me for 30 days</label>
+</div>
+<!-- Login CTA -->
+<button class="w-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md font-bold py-4 rounded-lg hover:shadow-[0_0_20px_rgba(163,250,1,0.3)] transition-all transform active:scale-95" type="submit">
+          Login to Account
+        </button>
+</form>
+<!-- Divider -->
+<div class="relative my-10 text-center">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/30"></div>
+</div>
+<span class="relative bg-background px-4 font-label-md text-label-md text-on-surface-variant">Or continue with</span>
+</div>
+<!-- Social Login -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 bg-surface-container border border-outline-variant/30 rounded-lg py-3 hover:bg-surface-container-high transition-all group">
+<img alt="Google" class="w-5 h-5" data-alt="The official Google multicolored G logo rendered with high resolution and crisp edges. It is centered against a clean, minimalist background, representing a professional and secure authentication method for a modern technology platform. The lighting is neutral and even, emphasizing the flat, digital aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFMGAYqE5rCj3TETJ5ztRdS2ayLCZyHocCgz9DH_QOwVXhH1US7wo2DHeEqgxqUvq_lI6bzmSEY-4dYFLO8zIojyncBWZqZ_KVlADjD1zTV3AFkRFsyTTq45aHUNEmhMU25SPDT8XNabZ9yKldK4FWQlXo7dZXtrcEdMn5gj9yYiZtmZRbJEXKtord3TZx0vmIfmv9bbuXLSP9LpCMySZZswgLgkGGut4W4wGxjv2stx3xIj4wUFWyG6E5JPmGa79RWKe9BDxezWU"/>
+<span class="font-label-md text-label-md text-on-surface">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 bg-surface-container border border-outline-variant/30 rounded-lg py-3 hover:bg-surface-container-high transition-all group">
+<img alt="LinkedIn" class="w-5 h-5" data-alt="The LinkedIn square blue logo icon with white 'in' text, displayed in a clear and professional format. The graphic is sharp and symbolizes professional networking and corporate identity. It sits within a modern UI context, suggesting a secure login integration for a tech-focused professional community." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUTfxghxawkoTqm8krFA4A7eioN9ZpUBZpBybyTGgojUFFBqvpjkQ5gDhq9EQ4z1aJF91bLgN0WQfPIuv2M1M_wSU9rHq6CUnZ4J-DAirQvidVLRN0PysLxiSoo-b7kvmLiHRVI9oyEfDq-IoKUUU6UD7ARoUYrrRgRrrMz829T095xy20kYKX49B1ej2MFRf97eGo72hs3QHLv2bx5knWbGXEMLx13tla3288bET5U3rDESBo5Vb00opzyL1fcXE7HjuiEjbHb3g"/>
+<span class="font-label-md text-label-md text-on-surface">LinkedIn</span>
+</button>
+</div>
+<!-- Register Link -->
+<div class="mt-10 text-center">
+<p class="font-label-md text-label-md text-on-surface-variant">
+          New to the fest? 
+          <a class="text-primary-fixed font-bold hover:underline ml-1 transition-all" href="#">Apply for Access</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Footer (Suppressed navigation, but keeping technical credit) -->
+<footer class="relative z-10 w-full py-8 px-margin-mobile md:px-margin-desktop text-center">
+<p class="font-label-md text-label-md text-on-surface-variant/60">
+      © 2026 Ummah Tech Fest Ghana. Cultivating Excellence through Tech-Islamic Fusion.
+    </p>
+</footer>
+</body></html>

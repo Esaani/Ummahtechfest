@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Accommodation | TECH-ISLAMIC FEST</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#636465",
+                        "surface-container": "#201f1f",
+                        "primary-fixed": "#a3fa01",
+                        "surface-variant": "#353534",
+                        "tertiary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#8fdb00",
+                        "tertiary-container": "#e2e2e2",
+                        "inverse-primary": "#426900",
+                        "on-tertiary": "#2f3131",
+                        "on-primary-container": "#466f00",
+                        "outline": "#8b947a",
+                        "secondary-fixed-dim": "#e9c349",
+                        "primary-container": "#a3fa00",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#342800",
+                        "secondary-fixed": "#ffe088",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-container-highest": "#353534",
+                        "surface-container-high": "#2a2a2a",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131313",
+                        "on-primary": "#203600",
+                        "error-container": "#93000a",
+                        "surface-bright": "#3a3939",
+                        "on-secondary-fixed-variant": "#574500",
+                        "secondary": "#e9c349",
+                        "outline-variant": "#414a34",
+                        "on-surface": "#e5e2e1",
+                        "on-secondary": "#3c2f00",
+                        "on-primary-fixed": "#112000",
+                        "on-background": "#e5e2e1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface": "#131313",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "primary-fixed-dim": "#8fdb00",
+                        "on-surface-variant": "#c0caad",
+                        "inverse-on-surface": "#313030",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-dim": "#131313",
+                        "on-primary-fixed-variant": "#314f00",
+                        "inverse-surface": "#e5e2e1",
+                        "primary": "#ffffff",
+                        "secondary-container": "#af8d11"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Space Grotesk"],
+                        "headline-sm": ["Sora"],
+                        "headline-md": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Sora"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(32, 31, 31, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(163, 250, 1, 0.1);
+        }
+        .kente-border {
+            position: relative;
+        }
+        .kente-border::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-image: repeating-linear-gradient(45deg, #a3fa01 0, #a3fa01 10px, #e9c349 10px, #e9c349 20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-xl dark:bg-surface/40 border-b border-outline-variant/30">
+<div class="flex justify-between items-center w-full px-margin-desktop h-20 max-w-container-max mx-auto">
+<div class="text-headline-sm font-headline-sm font-black text-primary-fixed tracking-tighter uppercase">
+                TECH-ISLAMIC FEST
+            </div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Agenda</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Speakers</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Exhibition</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Workshops</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:block text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary-fixed transition-colors">Login</button>
+<button class="bg-primary-fixed text-on-primary-fixed px-6 py-2 rounded-lg font-bold font-label-md text-label-md active:scale-95 transition-transform">Register Now</button>
+</div>
+</div>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[614px] flex items-center overflow-hidden px-margin-desktop py-20 max-w-container-max mx-auto">
+<div class="absolute inset-0 z-0 opacity-20">
+<div class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent z-10"></div>
+<img class="w-full h-full object-cover" data-alt="A panoramic evening shot of the Accra skyline with glowing city lights reflecting off the Gulf of Guinea. The atmosphere is vibrant and futuristic, with modern architectural silhouettes standing against a deep twilight sky. The lighting is dominated by tech-inspired neon greens and warm gold highlights, echoing the festival's digital and cultural fusion aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBmknB7y5SmjgpwUiRSq4MOLxM0i4_zwBqJHwBUzrGyvHzykjoCzm1ZZB9O-lDfQOw8XrtkDZb-rErdoo9q3h7DIjgI2HAslfnS0T4tuQhVVGcPcwm4x3dYI28y6xXfmDjhh-DZSADScc9RHl13uF95_ljZg_XB6cBUz3uhDEih3nfgKLtWd43rg2B4jYRNB4Hxdh66773VGn51CpOZBb7SEoeoUk8cy5VVEueMCAFEROVDJMQ6yRhupLe15wAM82VHJm6VRQURlI"/>
+</div>
+<div class="relative z-10 max-w-2xl">
+<span class="font-label-md text-label-md text-primary-fixed uppercase tracking-widest mb-4 block">Official Partner Stays</span>
+<h1 class="font-headline-xl text-headline-xl mb-6 leading-none">Curated Stays in <span class="text-secondary">Accra</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                    Experience Ghanaian hospitality at its finest. We've partnered with luxury and boutique hotels near the venue to offer exclusive delegate rates and faith-friendly amenities.
+                </p>
+</div>
+</section>
+<!-- Search & Filters -->
+<section class="px-margin-desktop mb-16 max-w-container-max mx-auto">
+<div class="glass-card p-6 rounded-2xl flex flex-wrap gap-4 items-end border border-outline-variant/20 shadow-2xl">
+<div class="flex-1 min-w-[200px]">
+<label class="block font-label-md text-label-md text-primary-fixed mb-2 uppercase">Filter by Amenities</label>
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/40 hover:bg-primary-fixed/10 transition-colors text-on-surface">
+<span class="material-symbols-outlined text-sm">restaurant</span>
+<span class="text-label-md font-label-md">Halal-friendly</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/40 hover:bg-primary-fixed/10 transition-colors text-on-surface">
+<span class="material-symbols-outlined text-sm">prayer_times</span>
+<span class="text-label-md font-label-md">Prayer room</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/40 hover:bg-primary-fixed/10 transition-colors text-on-surface">
+<span class="material-symbols-outlined text-sm">airport_shuttle</span>
+<span class="text-label-md font-label-md">Shuttle Service</span>
+</button>
+</div>
+</div>
+<div class="w-full md:w-auto">
+<button class="w-full md:w-auto bg-surface-container-high border border-primary-fixed text-primary-fixed px-8 py-3 rounded-lg font-bold font-label-md text-label-md hover:bg-primary-fixed hover:text-black transition-all">
+                        Apply Filters
+                    </button>
+</div>
+</div>
+</section>
+<!-- Accommodations Grid -->
+<section class="px-margin-desktop pb-32 max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Hotel Card 1 -->
+<div class="group glass-card rounded-2xl overflow-hidden flex flex-col border border-outline-variant/10 hover:border-primary-fixed/40 transition-all duration-500 hover:-translate-y-2">
+<div class="h-64 relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A luxurious high-end hotel suite in Accra featuring minimalist wooden decor and large floor-to-ceiling windows overlooking a lush tropical garden. The interior design blends modern tech-minimalism with traditional Ghanaian artistic touches. The soft morning light illuminates a spacious layout, creating an atmosphere of calm and professional excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAK12hTu4BMJLaFCvgkBDVB43xHLTrJzjd55WViWX6FIa934m9Wdemcl3uf9IxHaY1AFCyfrOSgi7sVFQgwPw8uzvYTgBtqOy-fBAAQB3Hsub_c-IFx2KkNw8e4ylRbcFOmhLBU0pSNo9zcFRjv4M37JAzWDEnNrKBUV7mHBwGFj3B2n6Q0a6OxME8TRZMtiEMZCu_a-_1jm40KlX6EkaO-DWVdpiwF2nwp27LyZQZerVK8-UBbApFrV7aHZ1fp4Xbba6xA_DT4nY4"/>
+<div class="absolute top-4 left-4 bg-primary-fixed text-black px-3 py-1 rounded-md font-label-md text-label-md font-bold">
+                            Elite Partner
+                        </div>
+</div>
+<div class="p-6 flex-1 flex flex-col kente-border">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Kempinski Gold Coast</h3>
+<div class="flex items-center text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1 font-label-md text-label-md">5.0</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed">location_on</span>
+                            0.5km from Venue (Walking Distance)
+                        </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Halal Menu</span>
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Prayer Room</span>
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Tech Hub</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="block text-on-surface-variant text-xs uppercase font-bold tracking-tighter">Delegate Rate</span>
+<span class="text-headline-sm font-headline-sm text-primary-fixed">$240<span class="text-sm font-normal text-on-surface-variant">/night</span></span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-5 py-3 rounded-lg font-bold font-label-md text-label-md active:scale-95 transition-transform">Book with Discount</button>
+</div>
+</div>
+</div>
+<!-- Hotel Card 2 -->
+<div class="group glass-card rounded-2xl overflow-hidden flex flex-col border border-outline-variant/10 hover:border-primary-fixed/40 transition-all duration-500 hover:-translate-y-2">
+<div class="h-64 relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A modern boutique hotel lobby in Accra, featuring sleek geometric patterns on the walls and warm gold accent lighting. The space is filled with ergonomic furniture and dedicated co-working areas for tech professionals. The lighting is soft and moody, emphasizing a luxurious glassmorphism aesthetic with a palette of deep charcoals and neon lime highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsyAQtSzM5K4SqBEmnDJ3rWduXnQg_18VhEdiPss_x6_ekDFBHCrnrKHyMyu8gcu6mwL3Eya5iJURJ9fjelVkAsfYd3POQGWzNL9NF8V-Xz5D039C7M8hvIxETGigU61ZnUQikJbnUnMtNYck1cXJCxOyGPSSdlhSg_Kq2o5Vzt78Hn5lqQTVurcVBVxsYRe3SIic2JRkOgGTqzNAjCXwkt_qKkOYoVOEMeNY0yMrpoG5ZabTfxODVtLBcl9y1ocq5KlPJObYfz0U"/>
+</div>
+<div class="p-6 flex-1 flex flex-col kente-border">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">The Alisa Hotel</h3>
+<div class="flex items-center text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1 font-label-md text-label-md">4.8</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed">airport_shuttle</span>
+                            2.1km from Venue (Complimentary Shuttle)
+                        </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Shuttle Service</span>
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Poolside Lounge</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="block text-on-surface-variant text-xs uppercase font-bold tracking-tighter">Delegate Rate</span>
+<span class="text-headline-sm font-headline-sm text-primary-fixed">$185<span class="text-sm font-normal text-on-surface-variant">/night</span></span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-5 py-3 rounded-lg font-bold font-label-md text-label-md active:scale-95 transition-transform">Book with Discount</button>
+</div>
+</div>
+</div>
+<!-- Hotel Card 3 -->
+<div class="group glass-card rounded-2xl overflow-hidden flex flex-col border border-outline-variant/10 hover:border-primary-fixed/40 transition-all duration-500 hover:-translate-y-2">
+<div class="h-64 relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="An upscale residential-style boutique hotel exterior in the heart of Accra, captured at night with elegant outdoor uplighting. The building features large windows and a minimalist facade accented by warm gold lattice structures. The surrounding foliage is lush and tropical, providing a serene oasis contrast to the digital high-energy theme of the festival." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdz8uXPe3WlcG67YGcVkRmEfDGukgVskzmwxbeRsBe7obwkCor0rtWPkH_e8Qu3RKxnFRSI-OrMHDTyqdUikdi1VLou8D-X34P8SgpGiDLo60qHJjSNzHnBPEYR2DmS6luJxe8wHB7NLHX0ShGPR4jH2E919qy4ELx698jlX9B4nVNiKYb6VU0DfcMtZgaZ5hDLPJz2HEuWOf2iZ6UlCxNKt5Sjx96_94-4w4hs-cR7QkD8b-uytpcU7VaRVhMKRElw1xWcQfrWuU"/>
+</div>
+<div class="p-6 flex-1 flex flex-col kente-border">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Mövenpick Accra</h3>
+<div class="flex items-center text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="ml-1 font-label-md text-label-md">4.9</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed">location_on</span>
+                            1.2km from Venue (Quick Commute)
+                        </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Halal Certified</span>
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] uppercase font-bold text-on-surface-variant border border-outline-variant/20">Executive Lounge</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="block text-on-surface-variant text-xs uppercase font-bold tracking-tighter">Delegate Rate</span>
+<span class="text-headline-sm font-headline-sm text-primary-fixed">$215<span class="text-sm font-normal text-on-surface-variant">/night</span></span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-5 py-3 rounded-lg font-bold font-label-md text-label-md active:scale-95 transition-transform">Book with Discount</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="px-margin-desktop pb-32 max-w-container-max mx-auto text-center">
+<div class="glass-card py-20 px-8 rounded-[40px] border border-primary-fixed/20 relative overflow-hidden">
+<div class="absolute inset-0 bg-primary-fixed/5 pointer-events-none"></div>
+<h2 class="font-headline-lg text-headline-lg mb-6 max-w-3xl mx-auto">Still Haven't Registered for the <span class="text-primary-fixed">Fest</span>?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto">
+                    Join 5,000+ tech visionaries and cultural leaders. Register today to unlock exclusive accommodation discounts and full access to all tracks.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+<button class="bg-primary-fixed text-on-primary-fixed px-10 py-4 rounded-xl font-bold font-label-md text-label-md active:scale-95 transition-transform">GET YOUR PASS</button>
+<button class="border-2 border-secondary text-secondary px-10 py-4 rounded-xl font-bold font-label-md text-label-md hover:bg-secondary/10 active:scale-95 transition-transform">VIEW AGENDA</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="text-headline-md font-headline-md text-primary-fixed mb-6 uppercase tracking-tighter font-black">TECH-ISLAMIC</div>
+<p class="text-on-surface-variant text-body-md font-body-md mb-8">
+                    Bridging heritage and innovation through high-energy tech experiences and spiritual rootedness.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-headline-sm text-headline-sm text-secondary-fixed mb-2">Platform</h4>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Schedule</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Workshops</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Exhibition</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Hackathon</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-headline-sm text-headline-sm text-secondary-fixed mb-2">Support</h4>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Contact Support</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Press Kit</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Community Guidelines</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-headline-sm text-headline-sm text-secondary-fixed mb-2">Legal</h4>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-label-md text-label-md" href="#">Privacy Policy</a>
+</div>
+</div>
+<div class="px-margin-desktop max-w-container-max mx-auto mt-20 pt-10 border-t border-outline-variant/10 text-center">
+<p class="text-on-surface-variant font-label-md text-label-md">© 2026 Tech-Islamic Fusion Festival. Bridging Heritage and Innovation.</p>
+</div>
+</footer>
+</body></html>

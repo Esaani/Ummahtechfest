@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ghana 2026 - UMMAH TECH FEST GHANA 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <div id="app">
+        <!-- TopNavBar -->
+        <header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/30 h-20">
+            <nav class="flex justify-between items-center w-full px-margin-desktop h-full max-w-container-max mx-auto">
+                <div class="headline-sm font-black tracking-tighter text-primary-fixed">
+                    <a href="/">UMMAH TECH FEST</a>
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link nav-link-active" href="/ghana-2026.html">Ghana 2026</a>
+                    <a class="nav-link" href="/schedule.html">Schedule</a>
+                    <a class="nav-link" href="/#tickets">Tickets</a>
+                    <a class="nav-link" href="/#sponsor">Sponsor</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="hidden md:block bg-primary-fixed text-on-primary-fixed px-6 py-2 rounded-full label-md font-bold active:scale-95 transition-transform duration-150 neon-glow">
+                        Register
+                    </button>
+                    <button id="mobile-menu-btn" class="md:hidden text-primary-fixed">
+                        <span class="material-symbols-outlined text-3xl">menu</span>
+                    </button>
+                </div>
+            </nav>
+            <!-- Mobile Menu Overlay -->
+            <div id="mobile-menu" class="fixed inset-0 bg-background/98 backdrop-blur-2xl z-[60] flex flex-col items-center justify-center gap-8 transition-all duration-500 opacity-0 pointer-events-none translate-y-10">
+                <button id="close-menu-btn" class="absolute top-6 right-8 text-primary-fixed">
+                    <span class="material-symbols-outlined text-4xl">close</span>
+                </button>
+                <a class="text-3xl font-headline text-on-surface-variant" href="/">Home</a>
+                <a class="text-3xl font-headline text-primary-fixed" href="/ghana-2026.html">Ghana 2026</a>
+                <a class="text-3xl font-headline text-on-surface-variant" href="/schedule.html">Schedule</a>
+                <a class="text-3xl font-headline text-on-surface-variant" href="/#tickets">Tickets</a>
+                <a class="text-3xl font-headline text-on-surface-variant" href="/#sponsor">Sponsor</a>
+                <button class="mt-8 btn-primary">Register Now</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Hero Section -->
+            <section class="relative min-h-[80vh] flex items-center overflow-hidden pt-20">
+                <div class="absolute inset-0 z-0">
+                    <img alt="Accra Skyline" class="w-full h-full object-cover opacity-40 grayscale" src="https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?q=80&w=2069&auto=format&fit=crop"/>
+                    <div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+                </div>
+                <div class="relative z-10 px-margin-desktop max-w-container-max mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6" data-aos="fade-right">
+                        <span class="inline-block px-4 py-1 rounded-full border border-primary-fixed text-primary-fixed label-md uppercase tracking-widest">Digital Gateway</span>
+                        <h1 class="headline-xl text-primary leading-none">ACCRA<br/><span class="text-secondary">2026</span></h1>
+                        <p class="body-lg text-on-surface-variant max-w-lg">
+                            Step into the heart of West Africa's technological revolution. Ummah Tech Fest lands in Ghana, bridging global innovation with rich heritage.
+                        </p>
+                        <div class="flex gap-4">
+                            <button class="btn-primary">Explore Venue</button>
+                            <button class="btn-secondary">Travel Guide</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Venue Section -->
+            <section class="py-32 px-margin-desktop max-w-container-max mx-auto">
+                <div class="mb-16" data-aos="fade-up">
+                    <h2 class="headline-lg text-primary mb-4">The Venue</h2>
+                    <div class="w-24 h-1 bg-primary-fixed"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+                    <div class="md:col-span-8 group relative overflow-hidden rounded-xl kente-border min-h-[400px]" data-aos="fade-right">
+                        <img alt="AICC" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src="https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?q=80&w=2070&auto=format&fit=crop"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-90"></div>
+                        <div class="absolute bottom-0 left-0 p-8">
+                            <h3 class="headline-md text-primary mb-2">Accra International Conference Centre</h3>
+                            <p class="body-md text-on-surface-variant max-w-md">Ghana's premier hub for diplomacy and global exchange, transformed into a state-of-the-art tech arena.</p>
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 glass-panel p-8 rounded-xl flex flex-col justify-between border-l-4 border-l-primary-fixed" data-aos="fade-left">
+                        <div class="space-y-6">
+                            <span class="material-symbols-outlined text-primary-fixed text-5xl">location_on</span>
+                            <h4 class="headline-sm text-secondary">Prime Location</h4>
+                            <p class="body-md text-on-surface-variant">Located in the heart of the capital, surrounded by the city's finest business hotels and digital hubs.</p>
+                        </div>
+                        <div class="pt-8 border-t border-outline-variant/30 mt-8 space-y-4">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary-fixed">wifi</span>
+                                <span class="label-md text-primary uppercase">Ultra-Fast Fiber Connectivity</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary-fixed">groups</span>
+                                <span class="label-md text-primary uppercase">5,000+ Attendee Capacity</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Connectivity & Heritage -->
+            <section class="py-32 bg-surface-container-lowest overflow-hidden">
+                <div class="px-margin-desktop max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+                    <div class="space-y-8" data-aos="fade-right">
+                        <h2 class="headline-lg text-primary">Heritage Meets Digital Future</h2>
+                        <p class="body-lg text-on-surface-variant">Experience the "Year of Return" legacy through a lens of digital sovereignty. Ghana isn't just a destination; it's a partner in the global Ummah's technological advancement.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="glass-panel p-6 rounded-lg border-l-2 border-l-secondary">
+                                <h5 class="label-md text-secondary mb-2 uppercase">Tech Ecosystem</h5>
+                                <p class="body-md text-on-surface-variant">Home to global AI Research labs and rising pan-African tech unicorns.</p>
+                            </div>
+                            <div class="glass-panel p-6 rounded-lg border-l-2 border-l-secondary">
+                                <h5 class="label-md text-secondary mb-2 uppercase">Islamic Legacy</h5>
+                                <p class="body-md text-on-surface-variant">Vibrant Muslim communities and historic architecture across the nation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative" data-aos="fade-left">
+                        <div class="aspect-square rounded-full border-[12px] border-primary-fixed/5 absolute -inset-8 animate-pulse"></div>
+                        <img alt="Heritage Tech" class="relative rounded-2xl w-full h-[500px] object-cover kente-border" src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=1972&auto=format&fit=crop"/>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Travel Logistics -->
+            <section class="py-32 px-margin-desktop max-w-container-max mx-auto">
+                <div class="text-center mb-20" data-aos="fade-up">
+                    <h2 class="headline-lg text-primary mb-4">Plan Your Journey</h2>
+                    <p class="body-lg text-on-surface-variant max-w-2xl mx-auto">Seamless logistics for our international delegates. From visa support to luxury accommodation.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                    <!-- Arrival -->
+                    <div class="glass-panel p-10 rounded-xl hover:border-primary-fixed transition-all group" data-aos="fade-up">
+                        <div class="bg-primary-fixed/10 w-16 h-16 rounded-full flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary-fixed text-4xl">flight_land</span>
+                        </div>
+                        <h3 class="headline-sm text-primary mb-4">Arrival</h3>
+                        <p class="body-md text-on-surface-variant mb-6">Fly into Kotoka International Airport (ACC), West Africa's best-rated airport. Only 15 minutes from the venue.</p>
+                        <ul class="space-y-3 label-md text-primary/80 uppercase">
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> 24/7 Shuttle Service</li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Welcome Desk at ACC</li>
+                        </ul>
+                    </div>
+                    <!-- Accommodation -->
+                    <div class="glass-panel p-10 rounded-xl hover:border-primary-fixed transition-all group relative overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                        <div class="absolute top-0 right-0 bg-secondary text-on-secondary px-4 py-1 label-md uppercase text-[10px] font-bold">Partner Rates</div>
+                        <div class="bg-primary-fixed/10 w-16 h-16 rounded-full flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary-fixed text-4xl">hotel</span>
+                        </div>
+                        <h3 class="headline-sm text-primary mb-4">Accommodation</h3>
+                        <p class="body-md text-on-surface-variant mb-6">We've partnered with luxury hotels in the city for exclusive delegate rates and prayer facilities.</p>
+                        <button class="text-primary-fixed label-md uppercase font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                            View Hotels <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
+                    <!-- Visa -->
+                    <div class="glass-panel p-10 rounded-xl hover:border-primary-fixed transition-all group" data-aos="fade-up" data-aos-delay="200">
+                        <div class="bg-primary-fixed/10 w-16 h-16 rounded-full flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary-fixed text-4xl">description</span>
+                        </div>
+                        <h3 class="headline-sm text-primary mb-4">Visa Support</h3>
+                        <p class="body-md text-on-surface-variant mb-6">Simplified visa-on-arrival for many nationalities. We provide official invitation letters for all delegates.</p>
+                        <a class="text-secondary label-md uppercase font-bold underline decoration-secondary/30 hover:decoration-secondary transition-all" href="#">Requirements</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Guide CTA -->
+            <section class="py-32 px-margin-desktop">
+                <div class="max-w-container-max mx-auto kente-border p-12 md:p-20 bg-surface-container relative overflow-hidden rounded-2xl flex flex-col md:flex-row items-center gap-12 group" data-aos="zoom-in">
+                    <div class="relative z-10 flex-1">
+                        <h2 class="headline-lg text-primary mb-6">Ready to Experience Ghana?</h2>
+                        <p class="body-lg text-on-surface-variant mb-8 max-w-xl">Download our comprehensive travel guide covering Halal food spots, prayer times, cultural etiquette, and tech networking zones.</p>
+                        <button class="btn-primary flex items-center gap-3">
+                            <span class="material-symbols-outlined">download</span>
+                            Download Guide (PDF)
+                        </button>
+                    </div>
+                    <div class="flex-1 relative">
+                        <div class="absolute -inset-10 bg-primary-fixed/20 blur-3xl rounded-full opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                        <img alt="Guide Preview" class="rounded-xl shadow-2xl transform rotate-3 relative z-10 hover:rotate-0 transition-transform duration-700" src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=2070&auto=format&fit=crop"/>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-surface-container-lowest border-t border-outline-variant/20">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter py-20 px-margin-desktop max-w-container-max mx-auto">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="headline-sm font-bold text-primary-fixed mb-6 uppercase tracking-tighter">UMMAH TECH FEST GHANA</div>
+                    <p class="body-md text-on-surface-variant max-w-md mb-8">
+                        Empowering the Next Generation of Muslim Tech Talent. Join us in Accra for an unforgettable experience of growth and innovation.
+                    </p>
+                    <div class="flex gap-4">
+                        <a class="w-10 h-10 flex items-center justify-center bg-surface-container rounded-full text-secondary hover:bg-primary-fixed hover:text-on-primary-fixed transition-all" href="#">
+                            <span class="material-symbols-outlined text-sm">share</span>
+                        </a>
+                        <a class="w-10 h-10 flex items-center justify-center bg-surface-container rounded-full text-secondary hover:bg-primary-fixed hover:text-on-primary-fixed transition-all" href="#">
+                            <span class="material-symbols-outlined text-sm">alternate_email</span>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="label-md text-primary uppercase mb-6">Conference</h5>
+                    <ul class="space-y-4">
+                        <li><a class="nav-link label-md nav-link-active" href="/ghana-2026.html">Ghana 2026</a></li>
+                        <li><a class="nav-link label-md" href="/schedule.html">Schedule</a></li>
+                        <li><a class="nav-link label-md" href="#">Speakers</a></li>
+                        <li><a class="nav-link label-md" href="/#tickets">Tickets</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="label-md text-primary uppercase mb-6">Information</h5>
+                    <ul class="space-y-4">
+                        <li><a class="nav-link label-md" href="#">Privacy Policy</a></li>
+                        <li><a class="nav-link label-md" href="#">Code of Conduct</a></li>
+                        <li><a class="nav-link label-md" href="#">Contact Us</a></li>
+                        <li><a class="nav-link label-md" href="#">Press Kit</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="label-md text-on-surface-variant opacity-60">© 2026 Ummah Tech Fest Ghana. Empowering the Next Generation of Muslim Tech Talent.</p>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

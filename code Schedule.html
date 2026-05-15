@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(32, 31, 31, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(163, 250, 1, 0.1);
+        }
+        .kente-border {
+            border-image: repeating-linear-gradient(45deg, #a3fa01, #a3fa01 10px, #e9c349 10px, #e9c349 20px) 1;
+        }
+        .text-glow-lime {
+            text-shadow: 0 0 10px rgba(163, 250, 1, 0.4);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#e2e2e2",
+                      "on-tertiary": "#2f3131",
+                      "on-primary-fixed-variant": "#314f00",
+                      "on-background": "#e5e2e1",
+                      "tertiary-fixed-dim": "#c6c6c7",
+                      "primary": "#ffffff",
+                      "surface-bright": "#3a3939",
+                      "on-error": "#690005",
+                      "on-surface-variant": "#c0caad",
+                      "inverse-primary": "#426900",
+                      "surface-container": "#201f1f",
+                      "background": "#131313",
+                      "surface-dim": "#131313",
+                      "on-secondary": "#3c2f00",
+                      "primary-container": "#a3fa00",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#8fdb00",
+                      "on-secondary-fixed-variant": "#574500",
+                      "secondary-fixed": "#ffe088",
+                      "outline-variant": "#414a34",
+                      "on-primary": "#203600",
+                      "on-surface": "#e5e2e1",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-container-highest": "#353534",
+                      "surface-container-low": "#1c1b1b",
+                      "tertiary": "#ffffff",
+                      "inverse-on-surface": "#313030",
+                      "outline": "#8b947a",
+                      "on-secondary-container": "#342800",
+                      "surface-container-high": "#2a2a2a",
+                      "on-primary-fixed": "#112000",
+                      "error": "#ffb4ab",
+                      "secondary": "#e9c349",
+                      "surface-variant": "#353534",
+                      "primary-fixed": "#a3fa01",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "tertiary-fixed": "#e2e2e2",
+                      "secondary-fixed-dim": "#e9c349",
+                      "surface": "#131313",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-tertiary-container": "#636465",
+                      "surface-tint": "#8fdb00",
+                      "error-container": "#93000a",
+                      "secondary-container": "#af8d11",
+                      "on-secondary-fixed": "#241a00",
+                      "on-primary-container": "#466f00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "margin-desktop": "48px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-lg-mobile": ["Sora"],
+                      "headline-md": ["Sora"],
+                      "label-md": ["Space Grotesk"],
+                      "headline-sm": ["Sora"],
+                      "headline-lg": ["Sora"],
+                      "headline-xl": ["Sora"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/30 h-20">
+<div class="flex justify-between items-center w-full px-margin-desktop h-full max-w-container-max mx-auto">
+<div class="font-headline-sm text-headline-sm font-black tracking-tighter text-primary-fixed">UMMAH TECH FEST</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Home</a>
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Ghana 2026</a>
+<a class="text-primary-fixed border-b-2 border-primary-fixed pb-1 font-label-md" href="#">Schedule</a>
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Tickets</a>
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Sponsor</a>
+</nav>
+<button class="bg-primary-fixed text-on-primary-fixed font-label-md px-6 py-2 rounded-full hover:scale-105 transition-transform">Register</button>
+</div>
+</header>
+<main class="pt-32 pb-20">
+<!-- Hero & Track Filters -->
+<section class="px-margin-desktop max-w-container-max mx-auto mb-16">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl">
+<span class="font-label-md text-secondary tracking-widest uppercase mb-4 block">Event Timeline</span>
+<h1 class="font-headline-xl text-headline-xl text-primary mb-6">Summit <span class="text-primary-fixed">Agenda</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Three days of deep dives into the future of ethical technology, Ghanaian innovation, and the global Muslim tech ecosystem.</p>
+</div>
+<div class="flex flex-wrap gap-3">
+<button class="px-5 py-2 rounded-lg bg-primary-fixed text-on-primary-fixed font-label-md text-label-md">All Tracks</button>
+<button class="px-5 py-2 rounded-lg glass-panel text-on-surface font-label-md text-label-md hover:border-primary-fixed transition-colors">AI &amp; Ethics</button>
+<button class="px-5 py-2 rounded-lg glass-panel text-on-surface font-label-md text-label-md hover:border-primary-fixed transition-colors">Fintech</button>
+<button class="px-5 py-2 rounded-lg glass-panel text-on-surface font-label-md text-label-md hover:border-primary-fixed transition-colors">Workshops</button>
+</div>
+</div>
+<!-- Day Selector -->
+<div class="mt-12 flex border-b border-outline-variant/30">
+<button class="px-8 py-4 font-headline-sm text-headline-sm text-primary-fixed border-b-4 border-primary-fixed">Day 01 <span class="block text-label-md font-label-md text-on-surface-variant">May 12, 2026</span></button>
+<button class="px-8 py-4 font-headline-sm text-headline-sm text-on-surface-variant hover:text-primary transition-colors">Day 02 <span class="block text-label-md font-label-md text-on-surface-variant">May 13, 2026</span></button>
+<button class="px-8 py-4 font-headline-sm text-headline-sm text-on-surface-variant hover:text-primary transition-colors">Day 03 <span class="block text-label-md font-label-md text-on-surface-variant">May 14, 2026</span></button>
+</div>
+</section>
+<!-- Timeline Grid -->
+<section class="px-margin-desktop max-w-container-max mx-auto space-y-12">
+<!-- Morning Session -->
+<div class="grid grid-cols-[120px_1fr] gap-12 group">
+<div class="pt-2">
+<span class="font-headline-sm text-headline-sm text-primary">09:00</span>
+<span class="block font-label-md text-label-md text-on-surface-variant uppercase">GMT</span>
+</div>
+<div class="relative glass-panel p-8 rounded-xl border-l-4 border-l-primary-fixed flex flex-col md:flex-row gap-8 items-start">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary-fixed/20 text-primary-fixed px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Main Stage</span>
+<span class="flex items-center gap-1 text-secondary text-[10px] font-bold uppercase">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">sensors</span> Live Now
+                            </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-3">Opening Keynote: The Digital Ummah in 2026</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mb-6">A visionary session exploring how ethical tech frameworks from West Africa are influencing global standards in AI governance and financial inclusion.</p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="Speaker" class="w-full h-full object-cover" data-alt="Close up portrait of a confident West African female tech leader wearing a modern headscarf and professional attire, soft studio lighting with a subtle lime glow in the background, sharp focus, professional corporate photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqwGBeo4F13NnYDqlVRHzGK0Uth-yGov7GN3jWpc-j07IO_KajF1O862zVUDNRi-JIMkQQSQ60d-nOSPyNkCNs9NZsIBbPQcB5sAEHnE2JPAKbO3CiP73WZzoYnjiKi7OUJiUPN_5_jxsv4QSmQHW3bDqRVLEEGkxw6UqY2iV2LxqB4IuSTbVzMiYz7_T5eNjODMM9C1NXAYN3z8PdlKu3Z9cgsgGVzuUzGHFtA-OHNIM43rgKYfWiwP8__oTrU-YsZB7LwtoItSM"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Dr. Amina Mensah</p>
+<p class="text-[12px] text-on-surface-variant">Chief Ethics Officer, TechGhana</p>
+</div>
+</div>
+</div>
+<div class="hidden md:block w-48 h-48 rounded-lg overflow-hidden shrink-0 grayscale hover:grayscale-0 transition-all duration-500">
+<img alt="Session Preview" class="w-full h-full object-cover" data-alt="A wide shot of a futuristic conference hall in Accra, Ghana, filled with a diverse audience of young tech professionals. The stage features vibrant neon lime lighting and geometric Islamic patterns projected onto a large screen. High energy, cinematic atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClC0CXCfXBaviNCtvB-THFGu9AQfMKxldX_SwizWqGXSY5iPN_CdV8-VaIHpJ56eltYI8Eb74zruiVRboKRRakGJCrBZIQ_fOpxA3DczZgTX5oShJb4aDDWR7uP6_xEmGYkzUH4iOaqnowpGYwBE53RsGKXhGaPQY-C7MaALGOufE3XFmrlFAA3n2ZJCfdBRLsT1JzrlV_JkDCxPIuuSyYL7vKeEV4n_dHUfCNnJTRabJIBYaOUZeNQYwMe6uyyfYIcqDjSA0noX4"/>
+</div>
+</div>
+</div>
+<!-- AI Track -->
+<div class="grid grid-cols-[120px_1fr] gap-12 group">
+<div class="pt-2">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">10:30</span>
+<span class="block font-label-md text-label-md text-on-surface-variant uppercase">GMT</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Session Card -->
+<div class="glass-panel p-8 rounded-xl border-l-2 border-l-secondary/40 hover:border-l-secondary transition-all">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-secondary/20 text-secondary px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider">AI &amp; Ethics</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-2">Algorithmic Adab: Ethics by Design</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">How to embed Islamic ethical principles (Adab) into machine learning training sets to prevent bias.</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-base">location_on</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Hall A (Level 2)</span>
+</div>
+</div>
+<!-- Session Card -->
+<div class="glass-panel p-8 rounded-xl border-l-2 border-l-primary-fixed/40 hover:border-l-primary-fixed transition-all">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary-fixed/20 text-primary-fixed px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Fintech</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-2">Decentralized Zakat Systems</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Building transparent, blockchain-based platforms for social impact and wealth redistribution in Africa.</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-base">location_on</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Innovation Hub</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Break -->
+<div class="grid grid-cols-[120px_1fr] gap-12 group">
+<div class="pt-2">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">12:00</span>
+</div>
+<div class="flex items-center gap-6 py-4 border-y border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary">restaurant</span>
+<span class="font-label-md text-label-md text-secondary uppercase tracking-[0.2em]">Lunch &amp; Networking Break — Jollof &amp; Tech Lounge</span>
+</div>
+</div>
+<!-- Workshop Track -->
+<div class="grid grid-cols-[120px_1fr] gap-12 group">
+<div class="pt-2">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">13:30</span>
+<span class="block font-label-md text-label-md text-on-surface-variant uppercase">GMT</span>
+</div>
+<div class="glass-panel p-10 rounded-xl kente-border border-[2px] bg-surface-container-low overflow-hidden relative">
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary-fixed text-on-primary-fixed px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Hands-on Workshop</span>
+</div>
+<div class="flex flex-col lg:flex-row gap-12 items-center">
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Building Shariah-Compliant Micro-dApps</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">A technical walkthrough for developers looking to build on the Ummah Protocol. Bring your laptops and IDEs ready for a live coding session.</p>
+<div class="grid grid-cols-2 gap-8">
+<div>
+<p class="text-label-md font-label-md text-secondary mb-1">Prerequisites</p>
+<p class="text-body-md text-on-surface">Basic Solidity &amp; React</p>
+</div>
+<div>
+<p class="text-label-md font-label-md text-secondary mb-1">Duration</p>
+<p class="text-body-md text-on-surface">150 Minutes</p>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/3 aspect-video glass-panel rounded-lg flex items-center justify-center border-dashed border-2 border-outline">
+<div class="text-center">
+<span class="material-symbols-outlined text-4xl text-primary-fixed mb-2">code</span>
+<p class="font-label-md text-on-surface">Live Coding Terminal</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Background pattern overlay -->
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(#a3fa01 1px, transparent 1px); background-size: 20px 20px;"></div>
+</div>
+</div>
+<!-- Evening Panel -->
+<div class="grid grid-cols-[120px_1fr] gap-12 group">
+<div class="pt-2">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">16:00</span>
+<span class="block font-label-md text-label-md text-on-surface-variant uppercase">GMT</span>
+</div>
+<div class="glass-panel p-8 rounded-xl flex items-center justify-between hover:bg-surface-container-high transition-all">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="text-secondary font-label-md text-[10px] uppercase font-bold tracking-widest">Panel Discussion</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Venture Capital in the Global South</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Connecting Accra, Dubai, and Silicon Valley ecosystems.</p>
+</div>
+<button class="flex items-center gap-2 text-primary-fixed hover:translate-x-2 transition-transform">
+<span class="font-label-md text-label-md">Details</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter py-20 px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-2">
+<div class="font-headline-sm text-headline-sm font-bold text-primary-fixed mb-6 uppercase">Ummah Tech Fest Ghana</div>
+<p class="text-on-surface-variant font-body-md max-w-sm mb-8">© 2026 Ummah Tech Fest Ghana. Empowering the Next Generation of Muslim Tech Talent.</p>
+<div class="flex gap-4">
+<div class="w-10 h-10 glass-panel rounded-full flex items-center justify-center hover:bg-primary-fixed hover:text-on-primary-fixed transition-all cursor-pointer">
+<span class="material-symbols-outlined text-xl">share</span>
+</div>
+<div class="w-10 h-10 glass-panel rounded-full flex items-center justify-center hover:bg-primary-fixed hover:text-on-primary-fixed transition-all cursor-pointer">
+<span class="material-symbols-outlined text-xl">alternate_email</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary mb-6 uppercase tracking-wider">Conference</h4>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Ghana 2026</a></li>
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Schedule</a></li>
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Speakers</a></li>
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Tickets</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary mb-6 uppercase tracking-wider">Information</h4>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Code of Conduct</a></li>
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Contact Us</a></li>
+<li><a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-colors" href="#">Press Kit</a></li>
+</ul>
+</div>
+</div>
+</footer>
+</body></html>

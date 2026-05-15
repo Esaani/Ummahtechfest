@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;family=Space+Grotesk:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#636465",
+                        "surface-container": "#201f1f",
+                        "primary-fixed": "#a3fa01",
+                        "surface-variant": "#353534",
+                        "tertiary": "#ffffff",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#8fdb00",
+                        "tertiary-container": "#e2e2e2",
+                        "inverse-primary": "#426900",
+                        "on-tertiary": "#2f3131",
+                        "on-primary-container": "#466f00",
+                        "outline": "#8b947a",
+                        "secondary-fixed-dim": "#e9c349",
+                        "primary-container": "#a3fa00",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#342800",
+                        "secondary-fixed": "#ffe088",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-container-highest": "#353534",
+                        "surface-container-high": "#2a2a2a",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131313",
+                        "on-primary": "#203600",
+                        "error-container": "#93000a",
+                        "surface-bright": "#3a3939",
+                        "on-secondary-fixed-variant": "#574500",
+                        "secondary": "#e9c349",
+                        "outline-variant": "#414a34",
+                        "on-surface": "#e5e2e1",
+                        "on-secondary": "#3c2f00",
+                        "on-primary-fixed": "#112000",
+                        "on-background": "#e5e2e1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface": "#131313",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "primary-fixed-dim": "#8fdb00",
+                        "on-surface-variant": "#c0caad",
+                        "inverse-on-surface": "#313030",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-dim": "#131313",
+                        "on-primary-fixed-variant": "#314f00",
+                        "inverse-surface": "#e5e2e1",
+                        "primary": "#ffffff",
+                        "secondary-container": "#af8d11"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Space Grotesk"],
+                        "headline-sm": ["Sora"],
+                        "headline-md": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Sora"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(32, 31, 31, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(163, 250, 1, 0.1);
+        }
+        .kente-border {
+            border-image: repeating-linear-gradient(45deg, #a3fa01, #a3fa01 10px, #e9c349 10px, #e9c349 20px) 2;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar Navigation -->
+<header class="fixed top-0 w-full bg-surface/60 backdrop-blur-xl dark:bg-surface/40 border-b border-outline-variant/30 z-50 h-20">
+<div class="flex justify-between items-center w-full px-margin-desktop h-full max-w-container-max mx-auto">
+<div class="text-headline-sm font-headline-sm font-black text-primary-fixed tracking-tighter uppercase">TECH-ISLAMIC FEST</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300" href="#">Agenda</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300" href="#">Speakers</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300" href="#">Exhibition</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300" href="#">Workshops</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:block text-on-surface hover:text-secondary-fixed transition-colors font-label-md text-label-md">Login</button>
+<button class="bg-primary-fixed text-on-primary-fixed px-6 py-2 rounded-full font-label-md text-label-md hover:scale-105 transition-transform active:scale-95">Register Now</button>
+</div>
+</div>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[614px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-30" data-alt="A wide cinematic shot of Accra, Ghana at twilight with modern architectural structures and a glowing horizon. The scene is infused with neon lime and gold light accents, reflecting a high-tech, futuristic aesthetic. Soft atmospheric haze and digital geometric patterns are overlaid, creating a visionary and professional atmosphere consistent with the Tech-Islamic Fusion theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV-ALWhv966B7--LURqhIw8uICAjZ8yN6Yt5KIo_6eob38jWFuPnegdr2oKsrYUgTmlFlSI9vaLsNusY9X4ta9XFm0yC3JuvCLJghlNIbJJ6j4ZrRwT4-RAaMCFqHdGon2UOL5fd9jlKTqoBGLL_YnNVHoR9QViddWDmcnxf2zWs0NaZx-bDnICkSR1dPyJFjAFxXtLSMBQIu4761zoGy6S3M_kph00vmjMGXZQiJ_dM61yl8K-LYMFesNMnuKC5mgKWWXUlL3-zE"/>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+</div>
+<div class="relative z-10 px-margin-desktop max-w-container-max mx-auto w-full py-20">
+<div class="max-w-2xl">
+<span class="font-label-md text-label-md text-secondary-fixed uppercase tracking-widest mb-4 block">Travel Information</span>
+<h1 class="font-headline-xl text-headline-xl text-primary-fixed mb-6">International Delegate Visa Support</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">Bridging the distance between heritage and innovation. We've streamlined the Ghana E-Visa process to ensure a seamless journey to Tech-Islamic Fest 2026.</p>
+</div>
+</div>
+</section>
+<!-- E-Visa Step-by-Step Guide -->
+<section class="py-20 px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row gap-gutter items-start">
+<div class="md:w-1/3 sticky top-32">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Ghana's E-Visa Process</h2>
+<p class="text-on-surface-variant">Follow this four-step digital application guide for international delegates traveling to Accra.</p>
+<div class="mt-8 p-6 glass-card border-l-4 border-l-primary-fixed rounded-lg">
+<span class="material-symbols-outlined text-primary-fixed text-4xl mb-2">info</span>
+<p class="text-label-md font-label-md text-on-surface">Processing time is usually 3-5 business days. We recommend applying at least 3 weeks before departure.</p>
+</div>
+</div>
+<div class="md:w-2/3 space-y-8">
+<!-- Step 1 -->
+<div class="glass-card p-8 rounded-xl relative group hover:border-primary-fixed transition-all">
+<div class="absolute -left-4 top-8 w-8 h-8 bg-primary-fixed text-on-primary-fixed rounded-full flex items-center justify-center font-bold">1</div>
+<h3 class="font-headline-sm text-headline-sm text-secondary-fixed mb-2">Digital Portal Entry</h3>
+<p class="text-on-surface-variant mb-4">Access the official Ghana Immigration Service portal and create a secure account using your email address and travel passport details.</p>
+<a class="inline-flex items-center text-primary-fixed font-label-md text-label-md group-hover:underline" href="#">
+                            Visit Official Portal <span class="material-symbols-outlined ml-2">open_in_new</span>
+</a>
+</div>
+<!-- Step 2 -->
+<div class="glass-card p-8 rounded-xl relative group">
+<div class="absolute -left-4 top-8 w-8 h-8 bg-primary-fixed text-on-primary-fixed rounded-full flex items-center justify-center font-bold">2</div>
+<h3 class="font-headline-sm text-headline-sm text-secondary-fixed mb-2">Form Submission</h3>
+<p class="text-on-surface-variant">Complete the online application form. Ensure your name matches your passport exactly. Select 'Conference' or 'Business' as the visit type.</p>
+</div>
+<!-- Step 3 -->
+<div class="glass-card p-8 rounded-xl relative group">
+<div class="absolute -left-4 top-8 w-8 h-8 bg-primary-fixed text-on-primary-fixed rounded-full flex items-center justify-center font-bold">3</div>
+<h3 class="font-headline-sm text-headline-sm text-secondary-fixed mb-2">Digital Payment</h3>
+<p class="text-on-surface-variant">Process the non-refundable visa application fee through the secure payment gateway. All major international credit cards and mobile wallets are accepted.</p>
+</div>
+<!-- Step 4 -->
+<div class="glass-card p-8 rounded-xl relative group border-2 border-primary-fixed/20 shadow-[0_0_30px_rgba(163,250,1,0.05)]">
+<div class="absolute -left-4 top-8 w-8 h-8 bg-primary-fixed text-on-primary-fixed rounded-full flex items-center justify-center font-bold">4</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-fixed mb-2">Approval Notification</h3>
+<p class="text-on-surface-variant">Once approved, you will receive a digital E-Visa certificate. Download and print this document to present upon arrival at Kotoka International Airport.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Required Documents Bento Grid -->
+<section class="py-20 bg-surface-container-low">
+<div class="px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-md text-headline-md text-on-surface">Required Documentation</h2>
+<p class="text-on-surface-variant max-w-xl mx-auto mt-4">Please prepare digital copies of these essential documents before starting your application.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="md:col-span-2 glass-card p-8 rounded-2xl kente-border">
+<span class="material-symbols-outlined text-primary-fixed text-5xl mb-6">Password</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">Valid Passport</h4>
+<p class="text-on-surface-variant">Passport must be valid for at least six months from the date of arrival in Ghana with at least two blank pages.</p>
+</div>
+<div class="glass-card p-8 rounded-2xl">
+<span class="material-symbols-outlined text-secondary-fixed text-4xl mb-6">vaccines</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">Health Docs</h4>
+<p class="text-on-surface-variant text-sm">Valid Yellow Fever Vaccination Certificate is mandatory for all travelers.</p>
+</div>
+<div class="glass-card p-8 rounded-2xl">
+<span class="material-symbols-outlined text-secondary-fixed text-4xl mb-6">photo_camera</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">Photo</h4>
+<p class="text-on-surface-variant text-sm">Recent color passport-size photo with a white background taken within 6 months.</p>
+</div>
+<div class="glass-card p-8 rounded-2xl md:col-span-2">
+<span class="material-symbols-outlined text-primary-fixed text-4xl mb-6">description</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">Invitation Letter</h4>
+<p class="text-on-surface-variant">A formal letter from the Tech-Islamic Fusion Festival organizing committee confirming your registration and participation.</p>
+</div>
+<div class="glass-card p-8 rounded-2xl md:col-span-2">
+<span class="material-symbols-outlined text-primary-fixed text-4xl mb-6">flight_land</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">Travel Itinerary</h4>
+<p class="text-on-surface-variant">Copy of your round-trip flight booking and confirmed hotel reservation for the duration of the event.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Request Invitation Letter Form -->
+<section class="py-20 px-margin-desktop max-w-container-max mx-auto">
+<div class="glass-card p-1 md:p-12 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
+<div class="md:w-1/2 p-8 md:p-0">
+<h2 class="font-headline-md text-headline-md text-primary-fixed mb-6">Request Official Invitation Letter</h2>
+<p class="text-on-surface-variant mb-8">Only registered attendees are eligible for visa support letters. Once submitted, our team will verify your registration and email the signed PDF within 48 hours.</p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+<span class="text-on-surface">Verified Delegate Status</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+<span class="text-on-surface">Ministry Certified Logo</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+<span class="text-on-surface">Valid for all Ghanaian Consulates</span>
+</li>
+</ul>
+</div>
+<div class="md:w-1/2 bg-surface-container-high/50 p-8 rounded-2xl">
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-secondary-fixed block">Full Name (as in Passport)</label>
+<input class="w-full bg-surface-container border-outline-variant focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed rounded-lg text-on-surface py-3 px-4 transition-all" placeholder="Enter full name" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-secondary-fixed block">Registration ID</label>
+<input class="w-full bg-surface-container border-outline-variant focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed rounded-lg text-on-surface py-3 px-4 transition-all" placeholder="TIF-2026-XXXX" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-secondary-fixed block">Passport Number</label>
+<input class="w-full bg-surface-container border-outline-variant focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed rounded-lg text-on-surface py-3 px-4 transition-all" placeholder="Enter passport number" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-secondary-fixed block">Email Address</label>
+<input class="w-full bg-surface-container border-outline-variant focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed rounded-lg text-on-surface py-3 px-4 transition-all" placeholder="delegate@domain.com" type="email"/>
+</div>
+<button class="w-full bg-primary-fixed text-on-primary-fixed py-4 rounded-xl font-headline-sm text-headline-sm hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-fixed/20" type="submit">
+                            Generate Invitation Letter
+                        </button>
+<p class="text-center text-xs text-on-surface-variant">By submitting, you authorize the organizing committee to use your data for visa processing support only.</p>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-20 bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col gap-6">
+<div class="text-headline-md font-headline-md text-primary-fixed">TECH-ISLAMIC FUSION</div>
+<p class="text-on-surface-variant font-body-md text-body-md">Celebrating 2026. Bridging Heritage and Innovation for a digital future.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h5 class="text-secondary-fixed font-headline-sm text-headline-sm">Navigation</h5>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Agenda</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Speakers</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Exhibition</a>
+</div>
+<div class="flex flex-col gap-4">
+<h5 class="text-secondary-fixed font-headline-sm text-headline-sm">Support</h5>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Contact Support</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Press Kit</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Community Guidelines</a>
+</div>
+<div class="flex flex-col gap-4">
+<h5 class="text-secondary-fixed font-headline-sm text-headline-sm">Legal</h5>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
+<p class="text-on-surface-variant text-sm mt-4">© 2026 Tech-Islamic Fusion Festival. Bridging Heritage and Innovation.</p>
+</div>
+</div>
+</footer>
+</body></html>

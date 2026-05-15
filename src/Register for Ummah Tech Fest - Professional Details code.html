@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffffff",
+                        "primary-fixed-dim": "#8fdb00",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "primary-fixed": "#a3fa01",
+                        "tertiary-fixed": "#e2e2e2",
+                        "surface-container-low": "#1c1b1b",
+                        "secondary-container": "#af8d11",
+                        "secondary": "#e9c349",
+                        "outline": "#8b947a",
+                        "inverse-on-surface": "#313030",
+                        "surface-dim": "#131313",
+                        "on-primary-container": "#466f00",
+                        "outline-variant": "#414a34",
+                        "on-secondary-fixed-variant": "#574500",
+                        "surface": "#131313",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#314f00",
+                        "primary-container": "#a3fa00",
+                        "surface-container-highest": "#353534",
+                        "on-primary-fixed": "#112000",
+                        "background": "#131313",
+                        "on-error": "#690005",
+                        "surface-tint": "#8fdb00",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#e2e2e2",
+                        "tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-secondary": "#3c2f00",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-primary": "#203600",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "surface-container": "#201f1f",
+                        "on-background": "#e5e2e1",
+                        "error-container": "#93000a",
+                        "on-surface": "#e5e2e1",
+                        "secondary-fixed": "#ffe088",
+                        "surface-bright": "#3a3939",
+                        "on-tertiary": "#2f3131",
+                        "on-secondary-fixed": "#241a00",
+                        "on-surface-variant": "#c0caad",
+                        "on-tertiary-container": "#636465",
+                        "surface-variant": "#353534",
+                        "surface-container-lowest": "#0e0e0e",
+                        "inverse-surface": "#e5e2e1",
+                        "inverse-primary": "#426900",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-container": "#342800"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-md": ["Space Grotesk"],
+                        "headline-lg": ["Sora"],
+                        "headline-xl": ["Sora"],
+                        "headline-md": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Sora"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(28, 27, 27, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(163, 250, 1, 0.1);
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 15px rgba(163, 250, 1, 0.4);
+        }
+        .kente-border {
+            border: 2px solid transparent;
+            background: linear-gradient(#1c1b1b, #1c1b1b) padding-box,
+                        repeating-linear-gradient(45deg, #a3fa01 0, #a3fa01 10px, #e9c349 10px, #e9c349 20px) border-box;
+        }
+        body {
+            background-color: #0F0F0F;
+            background-image: radial-gradient(circle at 2px 2px, rgba(163, 250, 1, 0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/40 backdrop-blur-xl border-b border-white/10 shadow-2xl">
+<div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
+<div class="font-headline-sm text-headline-sm font-bold text-primary-fixed tracking-tighter">Ummah Tech Fest</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant hover:text-primary-fixed-dim transition-colors" href="#">Home</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant hover:text-primary-fixed-dim transition-colors" href="#">Ghana 2026</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant hover:text-primary-fixed-dim transition-colors" href="#">Schedule</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant hover:text-primary-fixed-dim transition-colors" href="#">Tickets</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant hover:text-primary-fixed-dim transition-colors" href="#">Sponsor</a>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label-md text-label-md uppercase tracking-wider active:scale-95 transition-transform font-bold neon-glow">Register Now</button>
+</div>
+<button class="md:hidden text-primary-fixed">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<div class="flex max-w-container-max mx-auto pt-24 min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col p-6 gap-4 h-screen w-80 sticky top-24 bg-surface-container-low/60 backdrop-blur-md border-r border-outline-variant/30">
+<div class="mb-8">
+<div class="font-headline-md text-headline-md text-primary-fixed">Registration</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Ghana 2026 Edition</div>
+</div>
+<nav class="space-y-2">
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/20 rounded-lg transition-all duration-200 cursor-default">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+<span class="font-body-md text-body-md">Pass Selection</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-body-md text-body-md">Basic Info</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/20 rounded-lg transition-all duration-200 cursor-default opacity-50">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-body-md text-body-md">Verification</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/20 rounded-lg transition-all duration-200 cursor-default opacity-50">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Payment</span>
+</div>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant/30">
+<button class="w-full text-left font-body-md text-body-md text-secondary hover:text-primary-fixed transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">help</span>
+                    Need Help?
+                </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 px-margin-mobile md:px-margin-desktop py-12">
+<!-- Progress Header -->
+<header class="mb-12">
+<div class="flex items-center gap-4 mb-2">
+<span class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded text-label-md font-bold">STEP 02</span>
+<h1 class="font-headline-lg text-headline-lg text-primary">Professional Details</h1>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Help us tailor your experience. Your professional information helps us connect you with the right mentors and networking opportunities.</p>
+</header>
+<!-- Registration Form -->
+<section class="glass-card p-8 rounded-xl kente-border">
+<form class="space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Current Role -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-secondary uppercase tracking-wider">Current Role</label>
+<select class="bg-surface-container-highest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md text-body-md focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed outline-none transition-all">
+<option value="">Select your role</option>
+<option value="developer">Software Developer</option>
+<option value="founder">Startup Founder</option>
+<option value="designer">UI/UX Designer</option>
+<option value="student">Student / Researcher</option>
+<option value="investor">Investor</option>
+<option value="other">Other Professional</option>
+</select>
+</div>
+<!-- Years of Experience -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-secondary uppercase tracking-wider">Years of Experience</label>
+<input class="bg-surface-container-highest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md text-body-md focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed outline-none transition-all" placeholder="e.g. 5" type="number"/>
+</div>
+<!-- Company Name -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-secondary uppercase tracking-wider">Company / Organization Name</label>
+<input class="bg-surface-container-highest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md text-body-md focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed outline-none transition-all" placeholder="Where do you work or study?" type="text"/>
+</div>
+<!-- Motivation -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-secondary uppercase tracking-wider">Why are you attending Ummah Tech Fest?</label>
+<textarea class="bg-surface-container-highest border border-outline-variant text-on-surface rounded-lg p-3 font-body-md text-body-md focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed outline-none transition-all" placeholder="Briefly describe your goals for the event..." rows="4"></textarea>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-outline-variant/30">
+<a class="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+                            Back to Personal Info
+                        </a>
+<button class="w-full md:w-auto bg-primary-fixed text-on-primary-fixed px-12 py-4 rounded-lg font-headline-sm text-headline-sm font-bold neon-glow active:scale-95 transition-transform" type="submit">
+                            Proceed to Review
+                        </button>
+</div>
+</form>
+</section>
+</main>
+<!-- Sidebar Summary -->
+<aside class="hidden xl:block w-96 p-6 space-y-6">
+<div class="glass-card p-6 rounded-xl border-l-4 border-l-primary-fixed">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-4">Registration Summary</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-md text-label-md text-primary-fixed uppercase">Selected Pass</p>
+<p class="font-headline-sm text-headline-sm">Delegate Pass</p>
+</div>
+<span class="material-symbols-outlined text-secondary">confirmation_number</span>
+</div>
+<div class="space-y-2 pt-4 border-t border-outline-variant/30">
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Base Fare</span>
+<span>GHS 450.00</span>
+</div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+<span>Processing Fees</span>
+<span>GHS 25.00</span>
+</div>
+<div class="flex justify-between font-headline-sm text-headline-sm text-primary-fixed pt-2 border-t border-outline-variant/30">
+<span>Total Due</span>
+<span>GHS 475.00</span>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<div class="p-4 bg-surface-bright/20 rounded-lg border border-outline-variant/50">
+<p class="font-label-md text-label-md text-secondary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">verified</span>
+                            Ghana 2026 Edition
+                        </p>
+<p class="font-body-md text-body-md mt-2 text-on-surface-variant italic">Access to all keynotes, technical workshops, and the networking gala.</p>
+</div>
+</div>
+</div>
+<div class="relative rounded-xl overflow-hidden h-48">
+<img class="w-full h-full object-cover opacity-60" data-alt="A cinematic, high-contrast photograph of young African tech professionals collaborating in a futuristic glass-walled office in Accra. The scene is illuminated by moody neon lime and gold accent lighting that reflects off digital screens and glass surfaces. The atmosphere is visionary and professional, capturing a moment of intense innovation and cultural pride in a modern dark-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl_THNXBXBe_EZfkWdnz66cXBg9CmKrn2RS0mEAKsv9sacwhOdEa31I6EY_K-K1H9MVJKIryqe1Kq9v2UXolnhI2tKLyxfoLc7lYOWUePPjPvLsCltbX-IgN-I6jetjWnmSrz-X9Ymjpm3sH0jWWeAvXp9W9XAISUztRoHOFB3TD4-YXzniKOq9n9OSbLJ7PBKpwrfBgM2Mb3zWccS2cZlanTkIt2Lwd0gIj3AJ9-i7iH24Qe0hQxK84SKTL3TlVxOAGtnA8xFKNk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent flex items-end p-4">
+<p class="font-label-md text-label-md text-primary-fixed-dim">Innovating the Digital Ummah</p>
+</div>
+</div>
+</aside>
+</div>
+<!-- Footer -->
+<footer class="w-full py-20 bg-surface-container-lowest border-t border-outline-variant/20 mt-20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-gutter max-w-container-max mx-auto">
+<div class="space-y-4">
+<div class="font-headline-md text-headline-md text-primary-fixed">Ummah Tech</div>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">Empowering the next generation of Muslim tech leaders through community, innovation, and faith.</p>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-6">Explore</h4>
+<ul class="space-y-3 font-body-md text-body-md text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Mission</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Ghana 2026</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Schedule</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-6">Support</h4>
+<ul class="space-y-3 font-body-md text-body-md text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary uppercase tracking-widest mb-6">Stay Connected</h4>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center hover:bg-primary-fixed hover:text-on-primary-fixed transition-all">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center hover:bg-primary-fixed hover:text-on-primary-fixed transition-all">
+<span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter mt-16 pt-8 border-t border-outline-variant/10 text-center font-body-md text-body-md text-on-surface-variant opacity-60">
+            © 2026 Ummah Tech Fest Ghana. Empowering the Digital Ummah.
+        </div>
+</footer>
+</body></html>

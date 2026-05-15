@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Session Details | TECH-ISLAMIC FEST</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#131313",
+                    "secondary-container": "#af8d11",
+                    "inverse-on-surface": "#313030",
+                    "tertiary-fixed": "#e2e2e2",
+                    "surface-container": "#201f1f",
+                    "on-primary-container": "#466f00",
+                    "surface-container-low": "#1c1b1b",
+                    "inverse-surface": "#e5e2e1",
+                    "on-primary-fixed-variant": "#314f00",
+                    "on-secondary-fixed-variant": "#574500",
+                    "background": "#131313",
+                    "surface-tint": "#8fdb00",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "primary": "#ffffff",
+                    "on-primary": "#203600",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary-fixed": "#112000",
+                    "surface-container-high": "#2a2a2a",
+                    "primary-container": "#a3fa00",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "on-surface": "#e5e2e1",
+                    "tertiary-container": "#e2e2e2",
+                    "secondary": "#e9c349",
+                    "on-tertiary-container": "#636465",
+                    "on-surface-variant": "#c0caad",
+                    "on-error": "#690005",
+                    "surface": "#131313",
+                    "inverse-primary": "#426900",
+                    "error-container": "#93000a",
+                    "on-tertiary": "#2f3131",
+                    "surface-bright": "#3a3939",
+                    "secondary-fixed-dim": "#e9c349",
+                    "on-secondary": "#3c2f00",
+                    "surface-variant": "#353534",
+                    "surface-container-highest": "#353534",
+                    "tertiary": "#ffffff",
+                    "primary-fixed": "#a3fa01",
+                    "on-error-container": "#ffdad6",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed-dim": "#c6c6c7",
+                    "primary-fixed-dim": "#8fdb00",
+                    "outline-variant": "#414a34",
+                    "on-secondary-container": "#342800",
+                    "outline": "#8b947a",
+                    "on-background": "#e5e2e1",
+                    "secondary-fixed": "#ffe088",
+                    "on-secondary-fixed": "#241a00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Sora"],
+                    "label-md": ["Space Grotesk"],
+                    "headline-sm": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-md": ["Sora"]
+            },
+            "fontSize": {
+                    "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(19, 19, 19, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(163, 250, 1, 0.15);
+        }
+        .kente-border {
+            border: 2px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(45deg, #a3fa01, #e9c349, #a3fa01);
+        }
+        .geometric-bg {
+            background-image: radial-gradient(circle at 2px 2px, rgba(163, 250, 1, 0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md geometric-bg overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface/60 backdrop-blur-xl dark:bg-surface/40 border-b border-outline-variant/30 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop h-20 max-w-container-max mx-auto">
+<div class="text-headline-sm font-headline-sm font-black text-primary-fixed tracking-tighter uppercase">TECH-ISLAMIC FEST</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-primary-fixed font-bold border-b-2 border-primary-fixed pb-1 font-label-md text-label-md" href="#">Agenda</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Speakers</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Exhibition</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md" href="#">Workshops</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant font-medium hover:text-primary-fixed transition-colors duration-300 font-label-md text-label-md">Login</button>
+<button class="bg-primary-fixed text-on-primary px-6 py-2 rounded-lg font-bold active:scale-95 transition-transform">Register Now</button>
+</div>
+</div>
+</header>
+<!-- Main Content Background (Simulating Agenda) -->
+<main class="pt-32 pb-20 px-margin-desktop max-w-container-max mx-auto opacity-30 grayscale pointer-events-none">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<div class="md:col-span-12">
+<h1 class="font-headline-xl text-headline-xl mb-12">Festival Agenda</h1>
+<div class="space-y-6">
+<div class="glass-panel p-8 rounded-xl flex justify-between items-center">
+<div class="flex items-center gap-10">
+<span class="text-headline-sm font-headline-sm text-primary-fixed">09:30 AM</span>
+<div>
+<p class="text-secondary font-label-md text-label-md uppercase tracking-widest">Main Stage</p>
+<h3 class="text-headline-md font-headline-md">Ethics in AI: A Maqasid approach</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary-fixed">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal Overlay Backdrop -->
+<div class="fixed inset-0 bg-surface-container-lowest/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+<!-- Modal Container -->
+<section class="glass-panel w-full max-w-5xl max-h-[921px] overflow-y-auto rounded-xl relative shadow-2xl kente-border">
+<!-- Close Button -->
+<button class="absolute top-6 right-6 text-on-surface-variant hover:text-primary-fixed transition-colors p-2 z-[70]">
+<span class="material-symbols-outlined text-3xl">close</span>
+</button>
+<div class="p-8 md:p-12">
+<!-- Modal Header -->
+<header class="mb-10">
+<div class="flex flex-wrap items-center gap-4 mb-4">
+<span class="px-4 py-1 bg-primary-fixed/20 text-primary-fixed rounded-full font-label-md text-label-md border border-primary-fixed/30">Track: Ethics in AI</span>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">schedule</span>
+                            09:30 AM — 10:45 AM
+                        </div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                            Main Stage (Auditorium A)
+                        </div>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary leading-tight max-w-3xl">Ethics in AI: A Maqasid approach to Generative Models</h2>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Left: Description & Outcomes -->
+<div class="lg:col-span-2 space-y-10">
+<section>
+<h3 class="font-headline-sm text-headline-sm text-secondary mb-4">Session Description</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                This session explores the profound intersections between Islamic legal theory—specifically the <em>Maqasid al-Shari’ah</em> (Objectives of Law)—and the contemporary challenges of AI alignment. As generative models become ubiquitous, we investigate how traditional frameworks of preserving life, intellect, and wealth can provide a robust ethical foundation for modern AI safety protocols and algorithmic accountability.
+                            </p>
+</section>
+<section class="bg-surface-container-low p-8 rounded-xl border-l-4 border-primary-fixed">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-6">What to expect</h3>
+<ul class="space-y-4">
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-primary-fixed shrink-0">check_circle</span>
+<p class="font-body-md text-body-md text-on-surface">Mapping the 5 pillars of Maqasid to current AI safety research frameworks.</p>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-primary-fixed shrink-0">check_circle</span>
+<p class="font-body-md text-body-md text-on-surface">Case studies on biased datasets through the lens of communal justice (Adl).</p>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-primary-fixed shrink-0">check_circle</span>
+<p class="font-body-md text-body-md text-on-surface">Practical guidelines for developers building ethically-grounded Large Language Models.</p>
+</li>
+</ul>
+</section>
+<!-- Actions -->
+<div class="flex flex-wrap gap-4 pt-6">
+<button class="bg-primary-fixed text-on-primary font-bold px-8 py-4 rounded-lg flex items-center gap-3 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_add_on</span>
+                                Add to Calendar
+                            </button>
+<button class="border-2 border-secondary text-secondary font-bold px-8 py-4 rounded-lg flex items-center gap-3 hover:bg-secondary/10 transition-colors active:scale-95">
+<span class="material-symbols-outlined">share</span>
+                                Share Session
+                            </button>
+</div>
+</div>
+<!-- Right: Speaker Profile -->
+<aside class="space-y-6">
+<div class="glass-panel p-6 rounded-xl border border-outline-variant/30 overflow-hidden relative">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">school</span>
+</div>
+<img alt="Dr. Omar Al-Faruqi" class="w-full aspect-square object-cover rounded-lg mb-6 grayscale hover:grayscale-0 transition-all duration-500 border-2 border-primary-fixed/20" data-alt="A professional portrait of Dr. Omar Al-Faruqi, a distinguished scholar in his late 40s with a neatly trimmed beard, wearing a modern charcoal suit. The background is a blurred office with shelves of ancient leather-bound books and modern computer monitors. High-contrast studio lighting highlights his features, reflecting a mix of academic depth and technological visionary. The overall aesthetic is clean, professional, and sophisticated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHhMc2GzRwKyU2xrU_UmJVkFOovmbA1Uq7Sl-3yjQqpnA8HF9krUv3iZXc09er_SkKa4KGvOTG9P9YvFxeiIyzbLcWcBdmy1JySNnPFu_oo2fSYQwCqW2Z_CN5DW_tUl2biiBZrGZpFp49qMgr1lgpzrbzE0ogb0NigyuNb1rakvEFrIfbZ8eofENfV3Rlbv5GgKuFciTOPuzKOoFY7Ja4GIpvshN6AZHXVGyKR1_BBzsGvB5qk8OzFbksZ5OEKgzdKmu1s2hV9v8"/>
+<h4 class="font-headline-sm text-headline-sm text-primary-fixed mb-1">Dr. Omar Al-Faruqi</h4>
+<p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-4">Lead AI Ethicist, Global Tech Council</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 italic">
+                                "Bridging the gap between the revelation and the algorithm to ensure a human-centric digital future."
+                            </p>
+<div class="flex gap-4">
+<a class="p-2 bg-surface-container-high rounded-full text-primary-fixed hover:bg-primary-fixed hover:text-on-primary transition-all" href="#">
+<span class="material-symbols-outlined text-lg">public</span>
+</a>
+<a class="p-2 bg-surface-container-high rounded-full text-primary-fixed hover:bg-primary-fixed hover:text-on-primary transition-all" href="#">
+<span class="material-symbols-outlined text-lg">description</span>
+</a>
+<a class="p-2 bg-surface-container-high rounded-full text-primary-fixed hover:bg-primary-fixed hover:text-on-primary transition-all" href="#">
+<span class="material-symbols-outlined text-lg">link</span>
+</a>
+</div>
+</div>
+<div class="p-6 border border-outline-variant/20 rounded-xl bg-surface-container-lowest/50">
+<p class="text-label-md font-label-md text-on-surface-variant mb-2">Recommended Pre-reading</p>
+<a class="text-primary-fixed font-bold flex items-center gap-2 hover:underline" href="#">
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+                                Maqasid Principles in Tech
+                            </a>
+</div>
+</aside>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="w-full py-20 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="text-headline-md font-headline-md text-primary-fixed mb-4">TECH-ISLAMIC FEST</div>
+<p class="text-on-surface-variant font-body-md text-body-md">© 2026 Tech-Islamic Fusion Festival. Bridging Heritage and Innovation.</p>
+</div>
+<div class="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div class="space-y-4">
+<h5 class="text-secondary-fixed font-label-md text-label-md uppercase tracking-widest">Resources</h5>
+<ul class="space-y-2">
+<li><a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Press Kit</a></li>
+<li><a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Community Guidelines</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h5 class="text-secondary-fixed font-label-md text-label-md uppercase tracking-widest">Support</h5>
+<ul class="space-y-2">
+<li><a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Contact Support</a></li>
+<li><a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h5 class="text-secondary-fixed font-label-md text-label-md uppercase tracking-widest">Legal</h5>
+<ul class="space-y-2">
+<li><a class="text-on-surface-variant hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">Terms of Service</a></li>
+</ul>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

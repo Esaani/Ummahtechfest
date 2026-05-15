@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ghana 2026 | Ummah Tech Fest</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;family=Space+Grotesk:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(32, 31, 31, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 148, 122, 0.2);
+        }
+        .kente-border {
+            border-image: linear-gradient(45deg, #a3fa01 25%, #e9c349 25%, #e9c349 50%, #a3fa01 50%, #a3fa01 75%, #e9c349 75%, #e9c349 100%) 2;
+            border-width: 2px;
+            border-style: solid;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#e2e2e2",
+                    "on-tertiary": "#2f3131",
+                    "on-primary-fixed-variant": "#314f00",
+                    "on-background": "#e5e2e1",
+                    "tertiary-fixed-dim": "#c6c6c7",
+                    "primary": "#ffffff",
+                    "surface-bright": "#3a3939",
+                    "on-error": "#690005",
+                    "on-surface-variant": "#c0caad",
+                    "inverse-primary": "#426900",
+                    "surface-container": "#201f1f",
+                    "background": "#131313",
+                    "surface-dim": "#131313",
+                    "on-secondary": "#3c2f00",
+                    "primary-container": "#a3fa00",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed-dim": "#8fdb00",
+                    "on-secondary-fixed-variant": "#574500",
+                    "secondary-fixed": "#ffe088",
+                    "outline-variant": "#414a34",
+                    "on-primary": "#203600",
+                    "on-surface": "#e5e2e1",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-container-highest": "#353534",
+                    "surface-container-low": "#1c1b1b",
+                    "tertiary": "#ffffff",
+                    "inverse-on-surface": "#313030",
+                    "outline": "#8b947a",
+                    "on-secondary-container": "#342800",
+                    "surface-container-high": "#2a2a2a",
+                    "on-primary-fixed": "#112000",
+                    "error": "#ffb4ab",
+                    "secondary": "#e9c349",
+                    "surface-variant": "#353534",
+                    "primary-fixed": "#a3fa01",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "tertiary-fixed": "#e2e2e2",
+                    "secondary-fixed-dim": "#e9c349",
+                    "surface": "#131313",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-tertiary-container": "#636465",
+                    "surface-tint": "#8fdb00",
+                    "error-container": "#93000a",
+                    "secondary-container": "#af8d11",
+                    "on-secondary-fixed": "#241a00",
+                    "on-primary-container": "#466f00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "margin-desktop": "48px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-md": ["Sora"],
+                    "label-md": ["Space Grotesk"],
+                    "headline-sm": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "headline-xl": ["Sora"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["36px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/30 h-20">
+<div class="flex justify-between items-center w-full px-margin-desktop h-full max-w-container-max mx-auto">
+<div class="font-headline-sm text-headline-sm font-black tracking-tighter text-primary-fixed">UMMAH TECH FEST</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Home</a>
+<a class="text-primary-fixed border-b-2 border-primary-fixed pb-1 font-label-md" href="#">Ghana 2026</a>
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Schedule</a>
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Tickets</a>
+<a class="text-on-surface-variant font-label-md hover:text-primary-fixed transition-all duration-300" href="#">Sponsor</a>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-6 py-2 rounded-full font-label-md hover:scale-105 active:scale-95 transition-all duration-200">
+                Register
+            </button>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[819px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img alt="Accra Skyline" class="w-full h-full object-cover opacity-40" data-alt="A panoramic night view of Accra's modern skyline featuring glowing skyscrapers and busy illuminated highways. The lighting is cinematic with deep purples and neon lime reflections, capturing a high-tech metropolitan atmosphere. This visual style is futuristic and professional, serving as a background for the digital gateway theme of the Ummah Tech Fest in Ghana." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJrt-3dWnCVuSsX4uMdtocrBQRkxs1BlLJnSEF_-32AThINyPnDiMwo0HUrwwS1F-aJxVxmu4PI8X4u0rYJxqaw9FB8qY2pHqQu6Be9HHszdFAUX6-dhVb0PINSjWG7RQqx6IqaMVj5sVmTSMfv0mMh1GsuV9xb6Yv084SXNvVPyJLjgznWVSl2M-F-OzxbNK-HVDV3_wwUgnzIpwhXPA5w3aimSWdntHx8KsCm1TqIqJgVMOJ6BtdrMqEC57LU4DgdlPM4aIxrmk"/>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+</div>
+<div class="relative z-10 px-margin-desktop max-w-container-max mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div class="space-y-6">
+<span class="inline-block px-4 py-1 rounded-full border border-primary-fixed text-primary-fixed font-label-md uppercase tracking-widest">Digital Gateway</span>
+<h1 class="font-headline-xl text-headline-xl text-primary leading-none">ACCRA<br/><span class="text-secondary">2026</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                        Step into the heart of West Africa's technological revolution. Ummah Tech Fest lands in Ghana, bridging global innovation with rich heritage.
+                    </p>
+<div class="flex gap-4">
+<button class="bg-primary-fixed text-on-primary-fixed px-8 py-4 rounded-lg font-label-md font-bold hover:shadow-[0_0_20px_rgba(163,250,1,0.4)] transition-all">Explore Venue</button>
+<button class="border-2 border-secondary text-secondary px-8 py-4 rounded-lg font-label-md font-bold hover:bg-secondary/10 transition-all">Download Travel Guide</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Venue Section: Bento Grid -->
+<section class="py-24 px-margin-desktop max-w-container-max mx-auto">
+<div class="mb-16">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">The Venue</h2>
+<div class="w-24 h-1 bg-primary-fixed"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl kente-border min-h-[400px]">
+<img alt="AICC" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A grand architectural shot of the Accra International Conference Centre's modernist facade during a vibrant evening event. The building is bathed in warm gold and sharp neon lime spotlights, highlighting its unique geometric structures. People in professional attire are seen walking toward the entrance, creating a sense of high-profile global tech activity and excitement." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8eIKnXOnFX20GgHdNCzN2RoSEnFrUML1bfgoQ2FGFSXLgCzldbJ-21TCx2eZh_Q8nUbYzKF_Y-Y3NY3I2ZR-HYCZvdlz_6cd079oE4B8dDlJUBS5IMaTL-IpgEPxWi5C1ZE6bs_ORU_Kkgva0AYe3s6g076wTCVO_BCgLibhkcN__f3kzTlw3VBhWY2XJUPdgQvC1gZkLNThDjwj7JNv81IKZa-fkyfBxK96alOTUuJnhSdnjd6JNcU2tzGW0duaZEK_TwsK4gt0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Accra International Conference Centre</h3>
+<p class="font-body-md text-on-surface-variant max-w-md">Ghana's premier hub for diplomacy and global exchange, transformed into a state-of-the-art tech arena.</p>
+</div>
+</div>
+<div class="md:col-span-4 glass-card p-8 rounded-xl flex flex-col justify-between border border-primary-fixed/30">
+<div class="space-y-4">
+<span class="material-symbols-outlined text-primary-fixed text-4xl">location_on</span>
+<h4 class="font-headline-sm text-headline-sm text-secondary">Prime Location</h4>
+<p class="font-body-md text-on-surface-variant">Located in the heart of Osu, Accra, surrounded by the city's finest business hotels and digital hubs.</p>
+</div>
+<div class="pt-8 border-t border-outline-variant/30 mt-8">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary-fixed">wifi</span>
+<span class="font-label-md text-primary">Ultra-Fast Fiber Connectivity</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed">meeting_room</span>
+<span class="font-label-md text-primary">2,500+ Attendee Capacity</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Connectivity & Heritage -->
+<section class="py-24 bg-surface-container-lowest">
+<div class="px-margin-desktop max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+<div class="space-y-8">
+<h2 class="font-headline-lg text-headline-lg text-primary">Heritage Meets Digital Future</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Experience the "Year of Return" legacy through a lens of digital sovereignity. Ghana isn't just a destination; it's a partner in the global Ummah's technological advancement.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="glass-card p-6 rounded-lg">
+<h5 class="font-label-md text-secondary mb-2">Tech Ecosystem</h5>
+<p class="font-body-md text-on-surface-variant">Home to Google's AI Research lab and Twitter's Africa HQ.</p>
+</div>
+<div class="glass-card p-6 rounded-lg">
+<h5 class="font-label-md text-secondary mb-2">Islamic Legacy</h5>
+<p class="font-body-md text-on-surface-variant">Vibrant Muslim communities and historic mosques in Accra and Larabanga.</p>
+</div>
+</div>
+</div>
+<div class="relative">
+<div class="aspect-square rounded-full border-[12px] border-primary-fixed/10 absolute -inset-8 animate-pulse"></div>
+<img alt="Heritage Tech" class="relative rounded-2xl w-full h-[500px] object-cover kente-border" data-alt="A close-up shot of traditional Ghanaian Kente fabric patterns being woven on a loom, blended with digital circuit board overlays. The colors are rich golds, reds, and greens, with glowing neon green digital data streams flowing through the fabric's threads. The lighting is focused and warm, symbolizing the fusion of ancient craftsmanship and modern computing power." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBpWpJnUCc_qZRQJzkpIo0n_ydB5mKnH0HueSSjPWaaQraV83Giz3vMwx28f1P2C2pUgYr102MRCyE517wLkuz4y5-pHXVVekderGGNz9kHwj0zzR-IEH26EzEso9vdU8e_wQb6S2zr6L3NKhagIKVfvtjw7KDTF6QGJvFBtd05qAIo5mVaAtSK9AQzqTZCyqXAX02tSLuV5Irn3jOekhh7sCyfGnBPngwpj8aQqFheayLVw-zZKCc64fMRWHI5hwa5MNykTN6GX0"/>
+</div>
+</div>
+</section>
+<!-- Travel Logistics: 3-Column Layout -->
+<section class="py-24 px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Plan Your Journey</h2>
+<p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Seamless logistics for our international delegates. From visa support to luxury accommodation.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Arrival -->
+<div class="glass-card p-10 rounded-xl hover:border-primary-fixed transition-colors duration-300">
+<div class="bg-primary-container/10 w-16 h-16 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">flight_land</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-4">Arrival</h3>
+<p class="font-body-md text-on-surface-variant mb-6">Fly into Kotoka International Airport (ACC), West Africa's best-rated airport. Only 15 minutes from the venue and major hotels.</p>
+<ul class="space-y-3 font-label-md text-primary/80">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">check_circle</span> 24/7 Shuttle Service</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-secondary">check_circle</span> Welcome Desk at ACC</li>
+</ul>
+</div>
+<!-- Accommodation -->
+<div class="glass-card p-10 rounded-xl hover:border-primary-fixed transition-colors duration-300 relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-secondary text-on-secondary px-4 py-1 font-label-md">Discounted</div>
+<div class="bg-primary-container/10 w-16 h-16 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">hotel</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-4">Accommodation</h3>
+<p class="font-body-md text-on-surface-variant mb-6">We've partnered with Kempinski, Marriott, and Labadi Beach Hotel for exclusive delegate rates.</p>
+<button class="text-primary-fixed font-label-md flex items-center gap-2 hover:translate-x-1 transition-transform">
+                        View Partner Hotels <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- Visa -->
+<div class="glass-card p-10 rounded-xl hover:border-primary-fixed transition-colors duration-300">
+<div class="bg-primary-container/10 w-16 h-16 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">description</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-4">Visa Support</h3>
+<p class="font-body-md text-on-surface-variant mb-6">Simplified visa-on-arrival for many nationalities. We provide official invitation letters for all registered delegates.</p>
+<a class="text-secondary font-label-md underline decoration-secondary/30 hover:decoration-secondary" href="#">Check Visa Requirements</a>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-24 px-margin-desktop">
+<div class="max-w-container-max mx-auto kente-border p-12 md:p-20 bg-surface-container relative overflow-hidden rounded-2xl flex flex-col md:flex-row items-center gap-12">
+<div class="relative z-10 flex-1">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6">Ready to Experience Ghana?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8 max-w-xl">Download our comprehensive 50-page travel guide covering Halal food spots, prayer times, cultural etiquette, and tech networking zones.</p>
+<button class="bg-secondary text-on-secondary-fixed font-bold font-label-md px-10 py-5 rounded-lg flex items-center gap-3 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">download</span>
+                        Download Travel Guide (PDF)
+                    </button>
+</div>
+<div class="flex-1 relative">
+<img alt="Guide Preview" class="rounded-xl shadow-2xl transform rotate-3" data-alt="A professional 3D render of a smartphone displaying a travel guide app with a vibrant interface. The screen shows a map of Accra with neon-colored landmarks. Surrounding the phone are abstract digital 3D shapes in neon lime and gold. The background is a clean dark studio setting with soft volumetric lighting, conveying a premium and tech-savvy travel experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpyvi8MNIhv-BzvbAkJIy6L-4T8dF91Mn3L-8bnuaYThHAIWm0c_fxFCY5gwsHHg_piT7nACA8DvWZR3a0Ean0A2N_aXOVqRc9i7FKYlHSsWHXZC_F-drt1yWBoJaOLKjaJya3sEf7h1p_5v8mod2Mvmo6StgFDGkLC1UEvGK55B-R54SltiqkFIpjzz6jIeyKdmcDB6jVERz970vZTB4gaggJV5wTOGkQd_BGkRODaW7Qi6CKoN1IoW2oe8NIlyClYLDTXIQl8Cg"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter py-20 px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="font-headline-sm text-headline-sm font-bold text-primary-fixed mb-6">UMMAH TECH FEST</div>
+<p class="font-body-md text-on-surface-variant">© 2026 Ummah Tech Fest Ghana. Empowering the Next Generation of Muslim Tech Talent.</p>
+</div>
+<div>
+<h5 class="font-label-md text-secondary mb-6 uppercase tracking-widest">Resources</h5>
+<ul class="space-y-4 font-body-md text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Code of Conduct</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Press Kit</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-md text-secondary mb-6 uppercase tracking-widest">Ghana 2026</h5>
+<ul class="space-y-4 font-body-md text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Venue Details</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Partner Hotels</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">Visa Guide</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#">City Tours</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-md text-secondary mb-6 uppercase tracking-widest">Connect</h5>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed transition-all" href="#">
+<span class="material-symbols-outlined text-xl">share</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed transition-all" href="#">
+<span class="material-symbols-outlined text-xl">public</span>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
