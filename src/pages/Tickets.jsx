@@ -35,7 +35,7 @@ export default function Tickets() {
           </div>
           <div className="relative group hidden lg:block" data-aos="fade-left">
             <div className="aspect-video rounded-2xl overflow-hidden kente-border">
-              <img className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-1000" src="/assets/images/tickets-hero.jpg" loading="lazy"/>
+              <img className="w-full h-full object-cover transition-all duration-1000" src="/assets/images/tickets-hero.jpg" loading="lazy"/>
             </div>
             <div className="absolute -bottom-6 -right-6 p-8 glass-panel rounded-xl border border-primary-fixed/30 shadow-2xl group-hover:-translate-y-2 transition-transform duration-500">
               <div className="text-center">
