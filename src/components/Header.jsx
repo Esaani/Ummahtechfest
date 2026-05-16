@@ -59,7 +59,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link to="/login" className="hidden sm:block label-md text-on-surface-variant hover:text-primary-fixed transition-colors">
+            <Link to="/login" className="hidden sm:flex items-center justify-center bg-primary-fixed text-on-primary-fixed px-6 py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest active:scale-95 transition-all duration-300 neon-glow hover:shadow-[0_0_20px_rgba(163,250,1,0.5)]">
               Login
             </Link>
             <Link to="/signup" className="hidden sm:flex items-center justify-center bg-primary-fixed text-on-primary-fixed px-6 py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest active:scale-95 transition-all duration-300 neon-glow hover:shadow-[0_0_20px_rgba(163,250,1,0.5)]">

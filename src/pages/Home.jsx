@@ -4,20 +4,38 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-12 md:py-24 pt-24 md:pt-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="space-y-6 md:space-y-8 text-center lg:text-left" data-aos="fade-right">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full border border-outline-variant/30 mx-auto lg:mx-0">
+      <section className="relative min-h-[90vh] flex items-center py-12 md:py-24 pt-24 md:pt-32 overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0 pointer-events-none bg-black overflow-hidden">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            poster="/assets/images/hero.webp"
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
+          >
+            <source src="/assets/videos/hero.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 w-full h-full bg-black/40"></div>
+        </div>
+
+        {/* Content Container */}
+        <div className="relative z-10 w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="flex flex-col items-center justify-center max-w-4xl mx-auto h-full text-center">
+            <div className="space-y-6 md:space-y-8" data-aos="fade-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full border border-outline-variant/30 mx-auto">
               <span className="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></span>
               <span className="label-md text-secondary uppercase tracking-widest text-[10px] md:text-xs">ACCRA, GHANA • JULY 2026</span>
             </div>
-            <h1 className="headline-xl text-primary uppercase leading-[1.1]">
-              The Future of <span className="text-primary-fixed">Muslim Tech</span> Excellence
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-headline text-primary uppercase leading-[1.1] md:leading-[1.1]">
+              The Future of <br className="md:hidden" /> <span className="text-primary-fixed">Muslim Tech</span> Excellence
             </h1>
-            <p className="body-lg text-on-surface-variant max-w-xl mx-auto lg:mx-0">
-              Join 5,000+ developers, innovators, and visionaries for Africa's largest gathering of Muslim tech talent. Bridging tradition and transformation in the heart of West Africa.
+            <p className="text-sm md:text-base lg:text-lg text-on-surface-variant max-w-xl mx-auto px-4 md:px-0">
+              <span className="md:hidden">Join 5,000+ innovators for Africa's largest gathering of Muslim tech talent.</span>
+              <span className="hidden md:inline">Join 5,000+ developers, innovators, and visionaries for Africa's largest gathering of Muslim tech talent. Bridging tradition and transformation in the heart of West Africa.</span>
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/signup" className="btn-primary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest text-sm text-center">
                 Get Your Pass
               </Link>
@@ -25,11 +43,6 @@ export default function Home() {
                 View Agenda
               </Link>
             </div>
-          </div>
-          <div className="relative group hidden lg:block" data-aos="fade-left">
-            <div className="absolute -inset-4 bg-primary-fixed/20 blur-3xl rounded-full opacity-30 group-hover:opacity-50 transition-opacity"></div>
-            <div className="relative kente-border overflow-hidden aspect-square">
-              <img alt="Tech professionals" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop" loading="lazy"/>
             </div>
           </div>
         </div>
