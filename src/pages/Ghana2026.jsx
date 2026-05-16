@@ -6,7 +6,7 @@ export default function Ghana2026() {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center overflow-hidden pt-24 md:pt-20">
         <div className="absolute inset-0 z-0">
-          <img alt="Accra Skyline" className="w-full h-full object-cover opacity-30 md:opacity-40 grayscale" src="https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?q=80&w=1200&auto=format&fit=crop" loading="lazy"/>
+          <img alt="Ummah Tech Fest Ghana" className="w-full h-full object-cover opacity-40" src="/assets/images/ghana-2026-event.jpg" loading="lazy"/>
           <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-background via-background/90 md:via-background/80 to-transparent"></div>
         </div>
         <div className="relative z-10 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">

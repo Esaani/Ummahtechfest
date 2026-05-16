@@ -6,7 +6,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div className="bg-[#050505] text-[#e5e2e1] min-h-screen flex items-center justify-center p-6 font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <div className="bg-[#050505] text-[#e5e2e1] min-h-screen flex items-center justify-center p-4 py-8 md:p-6 font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
       {/* Background Layer */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 z-0">
@@ -27,27 +27,27 @@ export default function Login() {
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] min-h-[550px] rounded-[24px] overflow-hidden border border-outline-variant/30 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)]">
           
           {/* Left Column: Branding */}
-          <section className="bg-surface-container-lowest p-8 flex flex-col items-center justify-between relative border-r border-outline-variant/10 overflow-hidden">
+          <section className="bg-surface-container-lowest p-4 py-6 md:p-8 flex flex-col items-center justify-between relative border-b md:border-b-0 md:border-r border-outline-variant/10 overflow-hidden">
             <div className="absolute inset-0 kente-tech-pattern opacity-10 pointer-events-none"></div>
             {/* Logo Section */}
             <div className="flex-1 flex flex-col items-center justify-center text-center">
-              <div className="w-32 h-32 mb-8 flex items-center justify-center relative">
+              <div className="w-16 h-16 md:w-32 md:h-32 mb-2 md:mb-8 flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-primary-fixed/5 rounded-full animate-pulse"></div>
                 <img src={logo} alt="Ummah Tech Fest" className="w-full h-auto object-contain relative z-10" />
               </div>
-              <p className="body-md text-on-surface-variant/80 max-w-xs leading-relaxed mb-8">
+              <p className="hidden md:block body-md text-base text-on-surface-variant/80 max-w-xs leading-relaxed mb-8">
                 Where Africa's innovators, investors, and leaders connect. Sign in to access your Ummah Tech Fest Ghana account and join the summit.
               </p>
               
               {/* Back to Home Button */}
-              <Link to="/" className="flex items-center gap-3 px-8 py-3 border border-outline-variant/50 rounded-xl label-md font-bold text-on-surface hover:bg-surface-bright/10 transition-all group">
-                <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                Back to Home
+              <Link to="/" className="flex items-center gap-2 md:gap-3 px-6 py-2 md:px-8 md:py-3 border border-outline-variant/50 rounded-xl label-md font-bold text-on-surface hover:bg-surface-bright/10 transition-all group">
+                <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform text-sm md:text-base">arrow_back</span>
+                <span className="text-sm md:text-base">Back to Home</span>
               </Link>
             </div>
 
             {/* Pagination Dots (Decoration) */}
-            <div className="flex gap-3 mt-12">
+            <div className="hidden md:flex gap-3 mt-12">
               <div className="w-3 h-3 rounded-full bg-primary-fixed"></div>
               <div className="w-3 h-3 rounded-full bg-outline-variant/30"></div>
               <div className="w-3 h-3 rounded-full bg-outline-variant/30"></div>
@@ -55,7 +55,7 @@ export default function Login() {
           </section>
 
           {/* Right Column: Login Form */}
-          <section className="bg-surface-container/80 backdrop-blur-2xl p-8 md:p-12 flex flex-col justify-center relative">
+          <section className="bg-surface-container/80 backdrop-blur-2xl p-6 md:p-12 flex flex-col justify-center relative">
             {/* Subtle glow behind the form */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary-fixed/5 rounded-full blur-[80px] pointer-events-none"></div>
             
@@ -63,8 +63,7 @@ export default function Login() {
               <header className="mb-10 text-center md:text-left">
                 <h1 className="headline-md text-primary mb-3">Let's get you signed in</h1>
                 <p className="body-md text-on-surface-variant leading-relaxed">
-                  Use the credentials sent to your email after registration. 
-                  Your digital pass in the portal is linked to this account.
+                  Enter your registration email &amp; password to access your pass.
                 </p>
               </header>
 

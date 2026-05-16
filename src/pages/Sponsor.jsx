@@ -17,7 +17,7 @@ export default function Sponsor() {
           </div>
           <div className="relative hidden lg:block" data-aos="fade-left">
             <div className="aspect-square rounded-2xl overflow-hidden kente-border">
-              <img className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop"/>
+              <img className="w-full h-full object-cover hover:grayscale-0 transition-all duration-700" src="/assets/images/platform-shift.jpg" />
             </div>
             <div className="absolute -bottom-6 -left-6 glass-panel p-6 rounded-xl border-l-4 border-primary-fixed max-w-xs shadow-2xl">
               <p className="headline-sm text-primary-fixed mb-1">5,000+</p>
@@ -41,15 +41,15 @@ export default function Sponsor() {
                 <th className="p-8 headline-sm text-primary">Benefits</th>
                 <th className="p-8 text-center border-x border-outline-variant/30">
                   <div className="headline-sm text-secondary uppercase">Silver</div>
-                  <div className="label-md text-on-surface-variant font-normal mt-2">$5,000</div>
+                  <div className="label-md text-on-surface-variant font-normal mt-2">₵5,000</div>
                 </th>
                 <th className="p-8 text-center border-x border-outline-variant/30 bg-primary-fixed/5">
                   <div className="headline-sm text-primary-fixed uppercase">Gold</div>
-                  <div className="label-md text-on-surface-variant font-normal mt-2">$15,000</div>
+                  <div className="label-md text-on-surface-variant font-normal mt-2">₵15,000</div>
                 </th>
                 <th className="p-8 text-center">
                   <div className="headline-sm text-primary uppercase">Diamond</div>
-                  <div className="label-md text-on-surface-variant font-normal mt-2">$35,000</div>
+                  <div className="label-md text-on-surface-variant font-normal mt-2">₵35,000</div>
                 </th>
               </tr>
             </thead>
@@ -129,7 +129,8 @@ export default function Sponsor() {
                 </div>
                 <div>
                   <p className="text-[10px] label-md text-on-surface-variant uppercase tracking-widest font-black">Phone</p>
-                  <p className="text-sm md:body-md text-primary font-bold">+233 (0) 50 123 4567</p>
+                  <p className="text-sm md:body-md text-primary font-bold">+233 24 086 3405</p>
+                  <p className="text-sm md:body-md text-primary font-bold">+233 24 584 5315</p>
                 </div>
               </div>
             </div>

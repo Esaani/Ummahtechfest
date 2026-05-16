@@ -26,7 +26,7 @@ export default function Home() {
             <div className="space-y-6 md:space-y-8" data-aos="fade-up">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full border border-outline-variant/30 mx-auto">
               <span className="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></span>
-              <span className="label-md text-secondary uppercase tracking-widest text-[10px] md:text-xs">ACCRA, GHANA • JULY 2026</span>
+              <span className="label-md text-secondary uppercase tracking-widest text-[10px] md:text-xs">ACCRA, GHANA • NOV 2026</span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-headline text-primary uppercase leading-[1.1] md:leading-[1.1]">
               The Future of <br className="md:hidden" /> <span className="text-primary-fixed">Muslim Tech</span> Excellence
@@ -64,22 +64,22 @@ export default function Home() {
             { 
               title: "Owning the platform shift", 
               text: "Bricks to bytes. Factories to platforms. The greatest opportunity of our lifetime is here, and we intend to own it.",
-              img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"
+              img: "/assets/images/platform-shift.jpg"
             },
             { 
               title: "We are the guardians of tech", 
               text: "We are guardians of mankind. It's our responsibility to ensure technology serves humanity the right way.",
-              img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+              img: "/assets/images/guardians-of-tech.jpg"
             },
             { 
               title: "Ummah is the standard", 
               text: "Pioneers. Category-defining founders. Legendary engineers. Excellence isn't the goal — it's the entry requirement.",
-              img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop"
+              img: "/assets/images/ummah-standard.jpg"
             }
           ].map((card, i) => (
             <div key={i} className="glass-panel group overflow-hidden rounded-xl border border-outline-variant/20 hover:border-primary-fixed transition-all duration-500" data-aos="fade-up" data-aos-delay={i * 100}>
               <div className="aspect-video relative overflow-hidden">
-                <img alt={card.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110" src={`${card.img}&w=800`} loading="lazy"/>
+                <img alt={card.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110" src={card.img.startsWith('http') ? `${card.img}&w=800` : card.img} loading="lazy"/>
                 <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
               </div>
               <div className="p-6 md:p-8">
@@ -92,14 +92,19 @@ export default function Home() {
       </section>
 
       {/* Partners */}
-      <section className="py-12 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto border-y border-outline-variant/10">
+      <section className="py-12 border-y border-outline-variant/10 overflow-hidden">
         <p className="text-center label-md text-on-surface-variant uppercase tracking-widest mb-10 text-[10px] md:text-xs">Global Partners & Sponsors</p>
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-24 opacity-60">
-          <div className="text-sm md:text-xl font-headline text-primary grayscale hover:grayscale-0 transition-all cursor-pointer">TECH-HUB</div>
-          <div className="text-sm md:text-xl font-headline text-primary grayscale hover:grayscale-0 transition-all cursor-pointer">ISLAMIC-FIN</div>
-          <div className="text-sm md:text-xl font-headline text-primary grayscale hover:grayscale-0 transition-all cursor-pointer">AFRICA-CLOUD</div>
-          <div className="text-sm md:text-xl font-headline text-primary grayscale hover:grayscale-0 transition-all cursor-pointer">MODERN-HALAL</div>
-          <div className="text-sm md:text-xl font-headline text-primary grayscale hover:grayscale-0 transition-all cursor-pointer">ACCRA-VENTURES</div>
+        <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+          <div className="flex gap-16 md:gap-24 w-max animate-marquee">
+            {/* First set */}
+            {['TECH-HUB', 'ISLAMIC-FIN', 'AFRICA-CLOUD', 'MODERN-HALAL', 'ACCRA-VENTURES', 'GLOBAL-MUSLIM', 'WEST-AFRICA-VC', 'HALAL-TECH'].map((name, i) => (
+              <div key={i} className="text-sm md:text-xl font-headline text-primary opacity-50 hover:opacity-100 hover:text-primary-fixed transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0">{name}</div>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {['TECH-HUB', 'ISLAMIC-FIN', 'AFRICA-CLOUD', 'MODERN-HALAL', 'ACCRA-VENTURES', 'GLOBAL-MUSLIM', 'WEST-AFRICA-VC', 'HALAL-TECH'].map((name, i) => (
+              <div key={`dup-${i}`} className="text-sm md:text-xl font-headline text-primary opacity-50 hover:opacity-100 hover:text-primary-fixed transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0">{name}</div>
+            ))}
+          </div>
         </div>
       </section>
 
