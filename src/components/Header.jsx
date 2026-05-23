@@ -56,6 +56,7 @@ export default function Header() {
             <Link to="/schedule" className={`nav-link text-xs uppercase font-black tracking-widest ${isActive('/schedule') ? 'nav-link-active' : ''}`}>Schedule</Link>
             <Link to="/tickets" className={`nav-link text-xs uppercase font-black tracking-widest ${isActive('/tickets') ? 'nav-link-active' : ''}`}>Tickets</Link>
             <Link to="/sponsor" className={`nav-link text-xs uppercase font-black tracking-widest ${isActive('/sponsor') ? 'nav-link-active' : ''}`}>Sponsor</Link>
+            <Link to="/volunteer" className={`nav-link text-xs uppercase font-black tracking-widest ${isActive('/volunteer') ? 'nav-link-active' : ''}`}>Volunteer</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -86,6 +87,7 @@ export default function Header() {
         <Link to="/schedule" className={`text-2xl font-black uppercase tracking-tighter transition-all duration-300 ${isActive('/schedule') ? 'text-primary-fixed scale-110' : 'text-primary hover:text-primary-fixed'}`}>Schedule</Link>
         <Link to="/tickets" className={`text-2xl font-black uppercase tracking-tighter transition-all duration-300 ${isActive('/tickets') ? 'text-primary-fixed scale-110' : 'text-primary hover:text-primary-fixed'}`}>Tickets</Link>
         <Link to="/sponsor" className={`text-2xl font-black uppercase tracking-tighter transition-all duration-300 ${isActive('/sponsor') ? 'text-primary-fixed scale-110' : 'text-primary hover:text-primary-fixed'}`}>Sponsor</Link>
+        <Link to="/volunteer" className={`text-2xl font-black uppercase tracking-tighter transition-all duration-300 ${isActive('/volunteer') ? 'text-primary-fixed scale-110' : 'text-primary hover:text-primary-fixed'}`}>Volunteer</Link>
         
         <div className="mt-8 w-full px-margin-mobile flex flex-col gap-4">
           <Link to="/signup" className="w-full btn-primary py-5 rounded-2xl shadow-2xl flex items-center justify-center text-sm">REGISTER NOW</Link>

@@ -43,6 +43,7 @@ export default function Footer() {
             <li><Link className="text-xs md:label-md text-on-surface-variant hover:text-primary-fixed transition-colors uppercase font-bold tracking-wider" to="/schedule">Schedule</Link></li>
             <li><Link className="text-xs md:label-md text-on-surface-variant hover:text-primary-fixed transition-colors uppercase font-bold tracking-wider" to="/tickets">Tickets</Link></li>
             <li><Link className="text-xs md:label-md text-on-surface-variant hover:text-primary-fixed transition-colors uppercase font-bold tracking-wider" to="/sponsor">Sponsor</Link></li>
+            <li><Link className="text-xs md:label-md text-on-surface-variant hover:text-primary-fixed transition-colors uppercase font-bold tracking-wider" to="/volunteer">Volunteer</Link></li>
           </ul>
         </div>
         

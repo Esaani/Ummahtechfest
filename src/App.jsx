@@ -9,6 +9,7 @@ import Ghana2026 from './pages/Ghana2026.jsx'
 import Tickets from './pages/Tickets.jsx'
 import Sponsor from './pages/Sponsor.jsx'
 import ApplyToSpeak from './pages/ApplyToSpeak.jsx'
+import Volunteer from './pages/Volunteer.jsx'
 import Accommodation from './pages/Accommodation.jsx'
 import VisaSupport from './pages/VisaSupport.jsx'
 import SignUp from './pages/SignUp.jsx'
@@ -38,6 +39,7 @@ function AppContent() {
         <Route path="/tickets" element={<Tickets />} />
         <Route path="/sponsor" element={<Sponsor />} />
         <Route path="/apply-to-speak" element={<ApplyToSpeak />} />
+        <Route path="/volunteer" element={<Volunteer />} />
         <Route path="/accommodation" element={<Accommodation />} />
         <Route path="/visa-support" element={<VisaSupport />} />
         <Route path="/signup" element={<SignUp />} />

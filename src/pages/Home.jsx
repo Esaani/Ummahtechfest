@@ -36,11 +36,11 @@ export default function Home() {
               <span className="hidden md:inline">Join 5,000+ developers, innovators, and visionaries for Africa's largest gathering of Muslim tech talent. Bridging tradition and transformation in the heart of West Africa.</span>
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/signup" className="btn-primary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest text-sm text-center">
-                Get Your Pass
+              <Link to="/volunteer" className="btn-primary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest text-sm text-center">
+                Volunteer
               </Link>
-              <Link to="/schedule" className="btn-secondary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest flex items-center justify-center gap-2 text-sm">
-                View Agenda
+              <Link to="/sponsor" className="btn-secondary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest flex items-center justify-center gap-2 text-sm">
+                Sponsor
               </Link>
             </div>
             </div>
