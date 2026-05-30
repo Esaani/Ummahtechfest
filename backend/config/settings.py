@@ -106,11 +106,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Cloudflare R2 (S3-compatible) — set R2_ACCESS_KEY_ID to enable in production
+# Cloudflare R2 (S3-compatible) — all four values required to enable R2 storage.
+# Aliases supported: R2_STORAGE_BUCKET_NAME, R2_S3_ENDPOINT_URL (see .env.live).
 R2_ACCESS_KEY_ID = env('R2_ACCESS_KEY_ID', default='')
 R2_SECRET_ACCESS_KEY = env('R2_SECRET_ACCESS_KEY', default='')
-R2_BUCKET_NAME = env('R2_BUCKET_NAME', default='')
-R2_ENDPOINT_URL = env('R2_ENDPOINT_URL', default='')
+R2_BUCKET_NAME = env('R2_BUCKET_NAME', default='') or env('R2_STORAGE_BUCKET_NAME', default='')
+R2_ENDPOINT_URL = env('R2_ENDPOINT_URL', default='') or env('R2_S3_ENDPOINT_URL', default='')
 R2_PUBLIC_URL = env('R2_PUBLIC_URL', default='')
 
 _USE_R2 = bool(R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_BUCKET_NAME and R2_ENDPOINT_URL)
@@ -125,7 +126,7 @@ if _USE_R2:
     AWS_SECRET_ACCESS_KEY = R2_SECRET_ACCESS_KEY
     AWS_STORAGE_BUCKET_NAME = R2_BUCKET_NAME
     AWS_S3_ENDPOINT_URL = R2_ENDPOINT_URL
-    AWS_S3_REGION_NAME = 'auto'
+    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='') or env('R2_S3_REGION_NAME', default='auto')
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = False

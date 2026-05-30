@@ -3,15 +3,13 @@
 from uuid import UUID
 
 from apps.cms.models import MediaAsset
+from common.media_urls import public_media_url
 
 
 def _asset_url(asset, request):
     if not asset or not asset.file:
         return ''
-    url = asset.file.url
-    if request and url.startswith('/'):
-        return request.build_absolute_uri(url)
-    return url
+    return public_media_url(asset.file, request)
 
 
 def _collect_asset_ids(content):

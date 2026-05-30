@@ -16,16 +16,14 @@ from apps.cms.models import (
     SponsorshipPackage,
 )
 from apps.cms.section_media import publish_section_content
+from common.media_urls import public_media_url
 from common.slug_utils import unique_slug_for_model
 
 
 def _asset_url(asset, request):
     if not asset or not asset.file:
         return ''
-    url = asset.file.url
-    if request and url.startswith('/'):
-        return request.build_absolute_uri(url)
-    return url
+    return public_media_url(asset.file, request)
 
 
 def _speaker_image(speaker, request):
@@ -91,13 +89,7 @@ class MediaAssetSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'mime_type', 'file_size', 'url', 'created_at', 'updated_at']
 
     def get_url(self, obj):
-        request = self.context.get('request')
-        if not obj.file:
-            return ''
-        url = obj.file.url
-        if request and url.startswith('/'):
-            return request.build_absolute_uri(url)
-        return url
+        return public_media_url(obj.file, self.context.get('request'))
 
 
 class MediaAssetUploadSerializer(serializers.ModelSerializer):

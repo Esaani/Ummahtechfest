@@ -5,6 +5,7 @@ from rest_framework.test import APIClient
 
 from apps.cms.models import CmsPage, MediaAsset, SiteSection
 from apps.cms.section_media import publish_section_content
+from common.media_urls import public_media_url
 
 User = get_user_model()
 
@@ -15,6 +16,7 @@ User = get_user_model()
         'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
     },
     MEDIA_ROOT='/tmp/ummah_cms_section_media_test',
+    USE_R2_STORAGE=False,
 )
 class SectionMediaTest(TestCase):
     def setUp(self):
@@ -33,7 +35,9 @@ class SectionMediaTest(TestCase):
             ],
         }
         published = publish_section_content(content)
-        self.assertTrue(published['cards'][0]['image_url'].endswith('hero.jpg'))
+        image_url = published['cards'][0]['image_url']
+        self.assertIn('/media/cms/home/', image_url)
+        self.assertIn('hero', image_url)
 
     def test_public_sections_api_returns_resolved_urls(self):
         SiteSection.objects.create(
@@ -51,7 +55,23 @@ class SectionMediaTest(TestCase):
         section = next(s for s in r.data['data'] if s['slug'] == 'home-why-build')
         self.assertTrue(section['content']['cards'][0]['image_url'])
 
-    def test_media_file_served_when_not_using_r2(self):
-        with self.settings(USE_R2_STORAGE=False, MEDIA_ROOT='/tmp/ummah_cms_section_media_test'):
-            r = self.client.get(self.asset.file.url)
-            self.assertEqual(r.status_code, 200)
+    def test_media_file_served_from_disk(self):
+        r = self.client.get(self.asset.file.url)
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(b''.join(r.streaming_content), b'jpeg-bytes')
+
+    def test_media_rejects_path_outside_cms(self):
+        r = self.client.get('/media/other/secret.jpg')
+        self.assertEqual(r.status_code, 404)
+
+    def test_public_media_url_uses_site_url_when_no_request(self):
+        with self.settings(SITE_URL='https://ummahtechfest.com'):
+            url = public_media_url(self.asset.file)
+            self.assertTrue(url.startswith('https://ummahtechfest.com/media/'))
+
+    def test_public_media_url_returns_absolute_when_file_url_is_absolute(self):
+        class FakeField:
+            url = 'https://media.ummahtechfest.com/cms/home/hero.mp4'
+
+        url = public_media_url(FakeField())
+        self.assertEqual(url, 'https://media.ummahtechfest.com/cms/home/hero.mp4')
