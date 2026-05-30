@@ -50,3 +50,8 @@ class SectionMediaTest(TestCase):
         self.assertEqual(r.status_code, 200)
         section = next(s for s in r.data['data'] if s['slug'] == 'home-why-build')
         self.assertTrue(section['content']['cards'][0]['image_url'])
+
+    def test_media_file_served_when_not_using_r2(self):
+        with self.settings(USE_R2_STORAGE=False, MEDIA_ROOT='/tmp/ummah_cms_section_media_test'):
+            r = self.client.get(self.asset.file.url)
+            self.assertEqual(r.status_code, 200)

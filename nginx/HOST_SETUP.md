@@ -126,4 +126,6 @@ location / {
 }
 ```
 
-Keep `/api/` proxied to `127.0.0.1:8000`.
+Keep `/api/` and `/media/` proxied to `127.0.0.1:8000`. Do **not** add a separate `/admin/` block to Django — `/admin` is the React CMS (frontend).
+
+Django’s built-in admin is **disabled** by default (`ENABLE_DJANGO_ADMIN=false`). Your team uses **Admin → Homepage** in the React app.

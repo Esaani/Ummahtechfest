@@ -114,6 +114,11 @@ R2_ENDPOINT_URL = env('R2_ENDPOINT_URL', default='')
 R2_PUBLIC_URL = env('R2_PUBLIC_URL', default='')
 
 _USE_R2 = bool(R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_BUCKET_NAME and R2_ENDPOINT_URL)
+USE_R2_STORAGE = _USE_R2
+
+# Django's built-in /admin/ site — off by default; use the React CMS at /admin/* instead.
+ENABLE_DJANGO_ADMIN = env.bool('ENABLE_DJANGO_ADMIN', default=False)
+DJANGO_ADMIN_URL_PATH = env('DJANGO_ADMIN_URL_PATH', default='internal-django-admin')
 
 if _USE_R2:
     AWS_ACCESS_KEY_ID = R2_ACCESS_KEY_ID
