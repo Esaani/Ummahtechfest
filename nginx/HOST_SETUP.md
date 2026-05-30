@@ -10,6 +10,8 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 Or: `make prod-up`
 
+Set `API_PORT` and `FRONTEND_STATIC_PORT` in `.env` to match `nginx/host-production.live.conf` (or edit the nginx upstreams to match your `.env`).
+
 ## Architecture
 
 ```

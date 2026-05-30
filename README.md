@@ -37,13 +37,16 @@ docker compose up --build
 
 ### Configurable ports (`.env`)
 
+**Local dev** (`docker compose up`):
+
 | Variable | Default | Service |
 |----------|---------|---------|
-| `VOLUNTEER_APP_PORT` | 5173 | Volunteer React app (host) |
-| `VOLUNTEER_APP_CONTAINER_PORT` | 5173 | Same app inside container |
+| `VOLUNTEER_APP_PORT` | 5173 | React app (Vite dev server) |
 | `API_PORT` | 8000 | Django API |
-| `NGINX_PORT` | 8080 | Gateway (proxies UI + API) |
+| `NGINX_PORT` | 8080 | Dev gateway (proxies UI + API) |
 | `REDIS_PORT` | 6380 | Redis |
+
+**Production** (`docker compose -f docker-compose.prod.yml`): use `API_PORT`, `FRONTEND_STATIC_PORT` (built site, default 8081), and `REDIS_PORT` only — see `.env.example` production section.
 
 Example — run volunteer UI on host port **3001**:
 
