@@ -97,6 +97,24 @@ docker compose -f docker-compose.prod.yml up -d --build
 docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
 ```
 
+### Images or hero video show 403
+
+Static files live inside the **frontend** container (`/usr/share/nginx/html/assets/...`). After deploy, verify:
+
+```bash
+docker compose -f docker-compose.prod.yml exec frontend ls -la /usr/share/nginx/html/assets/images/
+docker compose -f docker-compose.prod.yml exec frontend ls -la /usr/share/nginx/html/assets/videos/
+```
+
+If files are missing, rebuild the frontend image (no cache):
+
+```bash
+docker compose -f docker-compose.prod.yml build --no-cache frontend
+docker compose -f docker-compose.prod.yml up -d frontend
+```
+
+Then hard-refresh the browser (or purge Cloudflare cache if you use it).
+
 ## Optional: serve frontend from disk
 
 If you prefer not to run the frontend container, build once and point nginx `root` at `frontend/dist`:

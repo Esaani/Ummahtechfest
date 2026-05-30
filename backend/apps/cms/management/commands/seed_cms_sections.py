@@ -20,8 +20,8 @@ DEFAULT_SECTIONS = [
             'subtitle_mobile': (
                 "Join 5,000+ innovators for Africa's largest gathering of Muslim tech talent."
             ),
-            'video_url': '/assets/videos/hero.mp4',
-            'poster_url': '/assets/images/hero.webp',
+            'video_url': '',
+            'poster_url': '',
         },
     },
     {
@@ -41,17 +41,17 @@ DEFAULT_SECTIONS = [
                 {
                     'title': 'Owning the platform shift',
                     'text': 'Bricks to bytes. Factories to platforms. The greatest opportunity of our lifetime is here, and we intend to own it.',
-                    'image_url': '/assets/images/platform-shift.jpg',
+                    'image_url': '',
                 },
                 {
                     'title': 'We are the guardians of tech',
                     'text': "We are guardians of mankind. It's our responsibility to ensure technology serves humanity the right way.",
-                    'image_url': '/assets/images/guardians-of-tech.jpg',
+                    'image_url': '',
                 },
                 {
                     'title': 'Ummah is the standard',
                     'text': "Pioneers. Category-defining founders. Legendary engineers. Excellence isn't the goal — it's the entry requirement.",
-                    'image_url': '/assets/images/ummah-standard.jpg',
+                    'image_url': '',
                 },
             ],
         },

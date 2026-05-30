@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ApiError, cmsApi, outreachApi } from '../api/client'
 import HoneypotField from '../components/HoneypotField'
 import { FormField, FormInput } from '../components/forms/FormField'
+import { useCmsSections } from '../hooks/useCmsSections'
 import { validateWaitlist } from '../utils/formValidation'
 
 const DEFAULT_HERO = {
@@ -13,8 +14,8 @@ const DEFAULT_HERO = {
   subtitle:
     "Join 5,000+ developers, innovators, and visionaries for Africa's largest gathering of Muslim tech talent. Bridging tradition and transformation in the heart of West Africa.",
   subtitle_mobile: "Join 5,000+ innovators for Africa's largest gathering of Muslim tech talent.",
-  video_url: '/assets/videos/hero.mp4',
-  poster_url: '/assets/images/hero.webp',
+  video_url: '',
+  poster_url: '',
 }
 
 const DEFAULT_WHY_BUILD = {
@@ -29,17 +30,17 @@ const DEFAULT_WHY_BUILD = {
     {
       title: 'Owning the platform shift',
       text: 'Bricks to bytes. Factories to platforms. The greatest opportunity of our lifetime is here, and we intend to own it.',
-      image_url: '/assets/images/platform-shift.jpg',
+      image_url: '',
     },
     {
       title: 'We are the guardians of tech',
       text: "We are guardians of mankind. It's our responsibility to ensure technology serves humanity the right way.",
-      image_url: '/assets/images/guardians-of-tech.jpg',
+      image_url: '',
     },
     {
       title: 'Ummah is the standard',
       text: "Pioneers. Category-defining founders. Legendary engineers. Excellence isn't the goal — it's the entry requirement.",
-      image_url: '/assets/images/ummah-standard.jpg',
+      image_url: '',
     },
   ],
 }
@@ -67,12 +68,13 @@ const DEFAULT_CTA = {
 }
 
 export default function Home() {
-  const hero = DEFAULT_HERO
-  const whyBuild = DEFAULT_WHY_BUILD
-  const stats = DEFAULT_STATS
-  const partners = DEFAULT_PARTNERS
-  const finalCta = DEFAULT_CTA
-  const whyCards = whyBuild.cards
+  const { get } = useCmsSections('home')
+  const hero = { ...DEFAULT_HERO, ...get('home-hero') }
+  const whyBuild = { ...DEFAULT_WHY_BUILD, ...get('home-why-build') }
+  const stats = { ...DEFAULT_STATS, ...get('home-stats') }
+  const partners = { ...DEFAULT_PARTNERS, ...get('home-partners') }
+  const finalCta = { ...DEFAULT_CTA, ...get('home-final-cta') }
+  const whyCards = whyBuild.cards?.length ? whyBuild.cards : DEFAULT_WHY_BUILD.cards
   const statItems = stats.items
   const [partnerNames, setPartnerNames] = useState(DEFAULT_PARTNERS.names)
 
@@ -90,16 +92,20 @@ export default function Home() {
     <main>
       <section className="relative min-h-[90vh] flex items-center py-12 md:py-24 pt-24 md:pt-32 overflow-hidden">
         <div className="absolute inset-0 z-0 pointer-events-none bg-black overflow-hidden">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster={hero.poster_url}
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
-          >
-            <source src={hero.video_url} type="video/mp4" />
-          </video>
+          {hero.video_url ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster={hero.poster_url || undefined}
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+            >
+              <source src={hero.video_url} type="video/mp4" />
+            </video>
+          ) : hero.poster_url ? (
+            <img src={hero.poster_url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+          ) : null}
           <div className="absolute inset-0 w-full h-full bg-black/40" />
         </div>
 
@@ -151,12 +157,18 @@ export default function Home() {
               data-aos-delay={i * 100}
             >
               <div className="aspect-video relative overflow-hidden">
-                <img
-                  alt={card.title}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
-                  src={card.image_url?.startsWith('http') ? `${card.image_url}&w=800` : card.image_url}
-                  loading="lazy"
-                />
+                {card.image_url ? (
+                  <img
+                    alt={card.title}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                    src={card.image_url?.startsWith('http') ? `${card.image_url}${card.image_url.includes('?') ? '&' : '?'}w=800` : card.image_url}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+                    <span className="material-symbols-outlined text-on-surface-variant text-4xl">image</span>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60" />
               </div>
               <div className="p-6 md:p-8">

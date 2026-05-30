@@ -14,6 +14,7 @@ import AdminSubmissions from './AdminSubmissions.jsx'
 import AdminSpeakers from './AdminSpeakers.jsx'
 import AdminSponsors from './AdminSponsors.jsx'
 import AdminUsers from './AdminUsers.jsx'
+import AdminHomeContent from './AdminHomeContent.jsx'
 
 export default function AdminPortal() {
   return (
@@ -22,6 +23,14 @@ export default function AdminPortal() {
         <Routes>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route
+              path="home"
+              element={
+                <AdminRoute permission={PERM_CMS_MANAGE}>
+                  <AdminHomeContent />
+                </AdminRoute>
+              }
+            />
             <Route
               path="speakers"
               element={

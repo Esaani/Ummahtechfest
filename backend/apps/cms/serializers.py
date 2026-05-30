@@ -15,6 +15,7 @@ from apps.cms.models import (
     SponsorshipBenefitRow,
     SponsorshipPackage,
 )
+from apps.cms.section_media import publish_section_content
 from common.slug_utils import unique_slug_for_model
 
 
@@ -44,10 +45,15 @@ def _sponsor_logo(sponsor, request):
 
 
 class SiteSectionPublicSerializer(serializers.ModelSerializer):
+    content = serializers.SerializerMethodField()
+
     class Meta:
         model = SiteSection
         fields = ['slug', 'page', 'label', 'content', 'sort_order']
         read_only_fields = fields
+
+    def get_content(self, obj):
+        return publish_section_content(obj.content, self.context.get('request'))
 
 
 class SiteSectionAdminSerializer(serializers.ModelSerializer):
@@ -58,6 +64,11 @@ class SiteSectionAdminSerializer(serializers.ModelSerializer):
             'sort_order', 'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['content'] = publish_section_content(instance.content, self.context.get('request'))
+        return data
 
     def validate_page(self, value):
         if value not in CmsPage.values:
@@ -95,9 +106,14 @@ class MediaAssetUploadSerializer(serializers.ModelSerializer):
         fields = ['file', 'title', 'alt_text', 'folder']
 
     def validate_file(self, value):
-        max_bytes = 50 * 1024 * 1024
+        mime = getattr(value, 'content_type', '') or ''
+        is_video = mime.startswith('video/') or (value.name or '').lower().endswith(
+            ('.mp4', '.webm', '.mov')
+        )
+        max_bytes = 100 * 1024 * 1024 if is_video else 50 * 1024 * 1024
         if value.size > max_bytes:
-            raise serializers.ValidationError('File must be 50MB or smaller.')
+            limit = '100MB' if is_video else '50MB'
+            raise serializers.ValidationError(f'File must be {limit} or smaller.')
         return value
 
     def create(self, validated_data):

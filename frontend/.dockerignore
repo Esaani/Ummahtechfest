@@ -1,0 +1,3 @@
+# Large homepage media is served from CMS / R2 — not bundled in the production image
+public/assets/videos
+public/assets/images
