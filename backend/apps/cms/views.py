@@ -31,7 +31,8 @@ from apps.cms.serializers import (
     SponsorshipBenefitRowAdminSerializer,
     SponsorshipPackageAdminSerializer,
 )
-from apps.cms.sponsorship import build_public_sponsorship_payload
+from apps.cms.sponsorship import build_public_sponsorship_payload, sponsor_page_hero
+from apps.cms.section_media import publish_section_content
 from apps.cms.services import CmsCacheService
 from common.admin_roles import PERM_CMS_MANAGE
 from common.permissions import HasAdminPermission
@@ -48,6 +49,16 @@ def _sections_queryset(page=None, published_only=True):
     return qs.order_by('sort_order', 'slug')
 
 
+def _resolve_public_sections(data, request):
+    """Re-resolve media URLs (R2 vs local) on every response, including cache hits."""
+    resolved = []
+    for item in data:
+        row = dict(item)
+        row['content'] = publish_section_content(row.get('content') or {}, request)
+        resolved.append(row)
+    return resolved
+
+
 class PublicSectionListView(APIView):
     permission_classes = [AllowAny]
 
@@ -56,10 +67,13 @@ class PublicSectionListView(APIView):
         cache_key = CmsCacheService.sections_key(page)
         cached = cache.get(cache_key)
         if cached is not None:
-            return Response({'data': cached, 'meta': {'cached': True}})
+            return Response({
+                'data': _resolve_public_sections(cached, request),
+                'meta': {'cached': True},
+            })
 
         sections = _sections_queryset(page=page, published_only=True)
-        data = SiteSectionPublicSerializer(sections, many=True).data
+        data = SiteSectionPublicSerializer(sections, many=True, context={'request': request}).data
         cache.set(cache_key, data, timeout=300)
         return Response({'data': data, 'meta': {'cached': False}})
 
@@ -335,8 +349,10 @@ class PublicSponsorshipView(APIView):
         cache_key = CmsCacheService.sponsorship_key()
         cached = cache.get(cache_key)
         if cached is not None:
-            return Response({'data': cached, 'meta': {'cached': True}})
-        data = build_public_sponsorship_payload()
+            data = dict(cached)
+            data['hero'] = sponsor_page_hero(request)
+            return Response({'data': data, 'meta': {'cached': True}})
+        data = build_public_sponsorship_payload(request)
         cache.set(cache_key, data, timeout=300)
         return Response({'data': data, 'meta': {'cached': False}})
 

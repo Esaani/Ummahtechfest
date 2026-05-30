@@ -5,6 +5,7 @@ from rest_framework.test import APIClient
 
 from apps.cms.models import CmsPage, MediaAsset, SiteSection
 from apps.cms.section_media import publish_section_content
+from apps.cms.views import _resolve_public_sections
 from common.media_urls import public_media_url
 
 User = get_user_model()
@@ -75,3 +76,30 @@ class SectionMediaTest(TestCase):
 
         url = public_media_url(FakeField())
         self.assertEqual(url, 'https://media.ummahtechfest.com/cms/home/hero.mp4')
+
+    def test_publish_keeps_direct_r2_video_url_without_asset(self):
+        content = {'video_url': 'https://media.ummahtechfest.com/cms/home/hero.mp4'}
+        published = publish_section_content(content)
+        self.assertEqual(published['video_url'], 'https://media.ummahtechfest.com/cms/home/hero.mp4')
+
+    def test_publish_clears_stale_local_media_url_without_asset(self):
+        content = {'video_url': '/media/cms/home/old.mp4'}
+        published = publish_section_content(content)
+        self.assertEqual(published['video_url'], '')
+
+    def test_resolve_cached_sections_re_resolves_video_url(self):
+        cached = [{
+            'slug': 'home-hero',
+            'page': 'home',
+            'label': 'Hero',
+            'content': {
+                'video_asset_id': str(self.asset.id),
+                'video_url': '/media/cms/home/stale.mp4',
+            },
+            'sort_order': 0,
+        }]
+        request = self.client.get('/').wsgi_request
+        resolved = _resolve_public_sections(cached, request)
+        video_url = resolved[0]['content']['video_url']
+        self.assertIn('hero', video_url)
+        self.assertNotIn('stale.mp4', video_url)

@@ -5,6 +5,7 @@ import HoneypotField from '../components/HoneypotField'
 import { FormField, FormInput } from '../components/forms/FormField'
 import { useCmsSections } from '../hooks/useCmsSections'
 import { validateWaitlist } from '../utils/formValidation'
+import { cmsMediaUrl } from '../utils/mediaUrl'
 
 const DEFAULT_HERO = {
   badge: 'ACCRA, GHANA • NOV 2026',
@@ -94,10 +95,12 @@ export default function Home() {
         <div className="absolute inset-0 z-0 pointer-events-none bg-black overflow-hidden">
           {hero.video_url ? (
             <video
+              key={hero.video_url}
               autoPlay
               loop
               muted
               playsInline
+              preload="auto"
               poster={hero.poster_url || undefined}
               className="absolute inset-0 w-full h-full object-cover opacity-60"
             >
@@ -157,18 +160,24 @@ export default function Home() {
               data-aos-delay={i * 100}
             >
               <div className="aspect-video relative overflow-hidden">
-                {card.image_url ? (
-                  <img
-                    alt={card.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
-                    src={card.image_url?.startsWith('http') ? `${card.image_url}${card.image_url.includes('?') ? '&' : '?'}w=800` : card.image_url}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
-                    <span className="material-symbols-outlined text-on-surface-variant text-4xl">image</span>
-                  </div>
-                )}
+                {(() => {
+                  const src = cmsMediaUrl(card.image_url, '')
+                  if (!src) {
+                    return (
+                      <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+                        <span className="material-symbols-outlined text-on-surface-variant text-4xl">image</span>
+                      </div>
+                    )
+                  }
+                  return (
+                    <img
+                      alt={card.title}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                      src={src.startsWith('http') ? `${src}${src.includes('?') ? '&' : '?'}w=800` : src}
+                      loading="lazy"
+                    />
+                  )
+                })()}
                 <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60" />
               </div>
               <div className="p-6 md:p-8">

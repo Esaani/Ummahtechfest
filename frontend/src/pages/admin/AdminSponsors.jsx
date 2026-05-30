@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ApiError, cmsApi } from '../../api/client'
 import ImageUploadField from '../../components/admin/ImageUploadField.jsx'
+import MediaUploadField from '../../components/admin/MediaUploadField.jsx'
 import SponsorshipBenefitField from '../../components/admin/SponsorshipBenefitField.jsx'
 import { slugifyTierName } from '../../config/sponsorshipBenefitFields'
 
 const MAIN_TABS = [
   { id: 'packages', label: 'Sponsorship tiers' },
   { id: 'benefits', label: 'Table benefits' },
+  { id: 'page', label: 'Sponsor page' },
   { id: 'logos', label: 'Homepage logos' },
 ]
 
@@ -673,6 +675,116 @@ function HomepageLogosPanel({ onError }) {
   )
 }
 
+function SponsorPagePanel({ onError }) {
+  const [section, setSection] = useState(null)
+  const [form, setForm] = useState({
+    hero_image_asset_id: null,
+    hero_image_url: '',
+    hero_preview: '',
+    stat_value: '5,000+',
+    stat_label: 'Targeted Tech Professionals',
+  })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const load = useCallback(() => {
+    setLoading(true)
+    cmsApi
+      .adminSections()
+      .then((res) => {
+        const hero = (res.data || []).find((s) => s.slug === 'sponsor-hero')
+        setSection(hero || null)
+        if (hero?.content) {
+          setForm({
+            hero_image_asset_id: hero.content.hero_image_asset_id || null,
+            hero_image_url: hero.content.hero_image_url || '',
+            hero_preview: hero.content.hero_image_url || '',
+            stat_value: hero.content.stat_value || '5,000+',
+            stat_label: hero.content.stat_label || 'Targeted Tech Professionals',
+          })
+        }
+      })
+      .catch((err) => onError(err instanceof ApiError ? err.message : 'Failed to load sponsor page'))
+      .finally(() => setLoading(false))
+  }, [onError])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  const handleSave = async (e) => {
+    e.preventDefault()
+    if (!section) {
+      onError('Sponsor page section missing. Run: python manage.py seed')
+      return
+    }
+    setSaving(true)
+    setMessage('')
+    onError('')
+    try {
+      await cmsApi.updateSection(section.id, {
+        content: {
+          hero_image_asset_id: form.hero_image_asset_id,
+          hero_image_url: form.hero_image_asset_id ? '' : (form.hero_image_url || '').trim(),
+          stat_value: form.stat_value,
+          stat_label: form.stat_label,
+        },
+      })
+      setMessage('Sponsor page saved.')
+      load()
+    } catch (err) {
+      onError(err instanceof ApiError ? err.message : 'Save failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return <p className="body-md text-on-surface-variant">Loading…</p>
+  }
+
+  return (
+    <form onSubmit={handleSave} className="glass-card p-6 rounded-2xl border border-outline-variant/30 space-y-6 max-w-2xl">
+      <p className="body-md text-on-surface-variant">
+        Hero image on the public <strong>/sponsor</strong> page (large image beside the headline on desktop).
+      </p>
+      {message && <p className="p-3 rounded-lg bg-primary-fixed/10 body-md text-primary-fixed">{message}</p>}
+      <MediaUploadField
+        label="Hero image"
+        folder="sponsor"
+        accept="image/*"
+        previewUrl={form.hero_preview || form.hero_image_url}
+        showUrlFallback
+        optionalUrl={form.hero_image_url}
+        onOptionalUrlChange={(url) => setForm({
+          ...form,
+          hero_image_url: url,
+          hero_image_asset_id: url ? null : form.hero_image_asset_id,
+          hero_preview: url || form.hero_preview,
+        })}
+        onChange={({ assetId, url }) => setForm({
+          ...form,
+          hero_image_asset_id: assetId,
+          hero_preview: url,
+          hero_image_url: assetId ? '' : form.hero_image_url,
+        })}
+      />
+      <label className="block">
+        <span className="label-md text-on-surface-variant mb-1 block">Stat value</span>
+        <input className="w-full h-12 px-4 rounded-lg bg-surface-container-low border border-outline-variant/30" value={form.stat_value} onChange={(e) => setForm({ ...form, stat_value: e.target.value })} />
+      </label>
+      <label className="block">
+        <span className="label-md text-on-surface-variant mb-1 block">Stat label</span>
+        <input className="w-full h-12 px-4 rounded-lg bg-surface-container-low border border-outline-variant/30" value={form.stat_label} onChange={(e) => setForm({ ...form, stat_label: e.target.value })} />
+      </label>
+      <button type="submit" disabled={saving} className="btn-primary px-8 py-3 rounded-lg label-md font-bold uppercase disabled:opacity-60">
+        {saving ? 'Saving…' : 'Save sponsor page'}
+      </button>
+    </form>
+  )
+}
+
 export default function AdminSponsors() {
   const [mainTab, setMainTab] = useState('packages')
   const [error, setError] = useState('')
@@ -703,6 +815,7 @@ export default function AdminSponsors() {
 
       {mainTab === 'packages' && <SponsorshipPackagesPanel onError={setError} />}
       {mainTab === 'benefits' && <BenefitRowsPanel onError={setError} />}
+      {mainTab === 'page' && <SponsorPagePanel onError={setError} />}
       {mainTab === 'logos' && <HomepageLogosPanel onError={setError} />}
     </div>
   )

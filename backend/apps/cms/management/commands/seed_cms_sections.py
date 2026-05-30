@@ -113,6 +113,17 @@ DEFAULT_SECTIONS = [
         },
     },
     {
+        'slug': 'sponsor-hero',
+        'page': CmsPage.GLOBAL,
+        'label': 'Sponsor page — Hero image',
+        'sort_order': 5,
+        'content': {
+            'hero_image_url': '',
+            'stat_value': '5,000+',
+            'stat_label': 'Targeted Tech Professionals',
+        },
+    },
+    {
         'slug': 'global-footer',
         'page': CmsPage.GLOBAL,
         'label': 'Global — Footer tagline',
@@ -130,9 +141,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         created = 0
-        updated = 0
+        skipped = 0
         for item in DEFAULT_SECTIONS:
-            section, was_created = SiteSection.objects.update_or_create(
+            section, was_created = SiteSection.objects.get_or_create(
                 slug=item['slug'],
                 defaults={
                     'page': item['page'],
@@ -145,7 +156,13 @@ class Command(BaseCommand):
             if was_created:
                 created += 1
                 self.stdout.write(self.style.SUCCESS(f'Created {section.slug}'))
-            else:
-                updated += 1
-                self.stdout.write(f'Updated {section.slug}')
-        self.stdout.write(self.style.SUCCESS(f'Done: {created} created, {updated} updated'))
+                continue
+
+            section.page = item['page']
+            section.label = item['label']
+            section.sort_order = item['sort_order']
+            section.is_published = True
+            section.save(update_fields=['page', 'label', 'sort_order', 'is_published', 'updated_at'])
+            skipped += 1
+            self.stdout.write(f'Kept content for {section.slug}')
+        self.stdout.write(self.style.SUCCESS(f'Done: {created} created, {skipped} existing (content preserved)'))

@@ -97,7 +97,17 @@ docker compose -f docker-compose.prod.yml up -d --build
 docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
 ```
 
-### Images or hero video show 403
+### Admin refresh shows “Not Found”
+
+If `/admin/sponsors` (or any `/admin/*` URL) 404s on browser refresh, host nginx is still sending `/admin` to Django. Copy the latest `nginx/host-production.live.conf` and ensure it has `location ^~ /admin { proxy_pass http://utf_frontend; ... }`, then:
+
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+docker compose -f docker-compose.prod.yml build frontend
+docker compose -f docker-compose.prod.yml up -d frontend
+```
+
+## Images or hero video show 403
 
 Static files live inside the **frontend** container (`/usr/share/nginx/html/assets/...`). After deploy, verify:
 

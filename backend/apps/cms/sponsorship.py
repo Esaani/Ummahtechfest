@@ -1,6 +1,7 @@
 """Helpers for sponsorship packages shown on /sponsor and outreach forms."""
 
-from apps.cms.models import SponsorshipBenefitRow, SponsorshipPackage
+from apps.cms.models import SiteSection, SponsorshipBenefitRow, SponsorshipPackage
+from apps.cms.section_media import publish_section_content
 from apps.outreach.models import SponsorTierInterest
 
 
@@ -38,7 +39,24 @@ def tier_label_for_slug(slug):
         return slug
 
 
-def build_public_sponsorship_payload():
+def sponsor_page_hero(request=None):
+    section = SiteSection.objects.filter(slug='sponsor-hero', is_published=True).first()
+    defaults = {
+        'hero_image_url': '',
+        'stat_value': '5,000+',
+        'stat_label': 'Targeted Tech Professionals',
+    }
+    if not section:
+        return defaults
+    content = publish_section_content(section.content, request)
+    return {
+        'hero_image_url': content.get('hero_image_url') or '',
+        'stat_value': content.get('stat_value') or defaults['stat_value'],
+        'stat_label': content.get('stat_label') or defaults['stat_label'],
+    }
+
+
+def build_public_sponsorship_payload(request=None):
     all_packages = list(published_packages())
     columns = [p for p in all_packages if p.show_in_comparison_table]
     inquiry_packages = [p for p in all_packages if p.show_on_inquiry_form]
@@ -80,4 +98,5 @@ def build_public_sponsorship_payload():
         ],
         'comparison_rows': table_rows,
         'inquiry_tiers': inquiry_tiers,
+        'hero': sponsor_page_hero(request),
     }

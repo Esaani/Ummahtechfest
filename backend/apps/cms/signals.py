@@ -1,7 +1,8 @@
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
-from apps.cms.models import FeaturedSpeaker, FeaturedSponsor, SiteSection, SponsorshipBenefitRow, SponsorshipPackage
+from apps.cms.models import FeaturedSpeaker, FeaturedSponsor, MediaAsset, SiteSection, SponsorshipBenefitRow, SponsorshipPackage
+from apps.cms.models import CmsPage
 from apps.cms.services import CmsCacheService
 
 
@@ -9,6 +10,15 @@ from apps.cms.services import CmsCacheService
 def invalidate_cms_section_cache(sender, instance, **kwargs):
     try:
         CmsCacheService.invalidate_sections(instance.page)
+    except Exception:
+        pass
+
+
+@receiver([post_save, post_delete], sender=MediaAsset)
+def invalidate_cms_media_cache(sender, instance, **kwargs):
+    try:
+        for page_code, _ in CmsPage.choices:
+            CmsCacheService.invalidate_sections(page_code)
     except Exception:
         pass
 

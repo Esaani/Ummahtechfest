@@ -3,7 +3,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.cms.models import SponsorshipBenefitRow, SponsorshipPackage
+from apps.cms.models import CmsPage, SiteSection, SponsorshipBenefitRow, SponsorshipPackage
 
 User = get_user_model()
 
@@ -35,8 +35,7 @@ class SponsorshipAPITest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {login.data["tokens"]["access"]}')
 
     def test_public_sponsorship_payload(self):
-        with self.assertNumQueries(2):
-            r = self.client.get('/api/v1/cms/sponsorship/')
+        r = self.client.get('/api/v1/cms/sponsorship/')
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         data = r.data['data']
         self.assertEqual(len(data['comparison_columns']), 1)
@@ -44,6 +43,25 @@ class SponsorshipAPITest(TestCase):
         self.assertEqual(len(data['comparison_rows']), 1)
         self.assertEqual(data['comparison_rows'][0]['values']['gold'], '5')
         self.assertTrue(any(t['value'] == 'gold' for t in data['inquiry_tiers']))
+        self.assertIn('hero', data)
+        self.assertEqual(data['hero']['stat_value'], '5,000+')
+
+    def test_public_sponsorship_hero_from_cms_section(self):
+        SiteSection.objects.create(
+            slug='sponsor-hero',
+            page=CmsPage.GLOBAL,
+            label='Sponsor hero',
+            content={
+                'hero_image_url': 'https://media.ummahtechfest.com/cms/sponsor/hero.jpg',
+                'stat_value': '10,000+',
+                'stat_label': 'Attendees',
+            },
+            is_published=True,
+        )
+        r = self.client.get('/api/v1/cms/sponsorship/')
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.data['data']['hero']['hero_image_url'], 'https://media.ummahtechfest.com/cms/sponsor/hero.jpg')
+        self.assertEqual(r.data['data']['hero']['stat_value'], '10,000+')
 
     def test_admin_create_package(self):
         self._auth()

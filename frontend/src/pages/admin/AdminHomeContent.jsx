@@ -171,8 +171,21 @@ export default function AdminHomeContent() {
             accept="video/mp4,video/webm,video/quicktime"
             hint="MP4 recommended · max 100MB"
             previewType="video"
-            previewUrl={heroForm.video_preview}
-            onChange={({ assetId, url }) => setHeroForm({ ...heroForm, video_asset_id: assetId, video_preview: url, video_url: assetId ? '' : heroForm.video_url })}
+            previewUrl={heroForm.video_preview || heroForm.video_url}
+            showUrlFallback
+            optionalUrl={heroForm.video_url}
+            onOptionalUrlChange={(url) => setHeroForm({
+              ...heroForm,
+              video_url: url,
+              video_asset_id: url ? null : heroForm.video_asset_id,
+              video_preview: url || heroForm.video_preview,
+            })}
+            onChange={({ assetId, url }) => setHeroForm({
+              ...heroForm,
+              video_asset_id: assetId,
+              video_preview: url,
+              video_url: assetId ? '' : heroForm.video_url,
+            })}
           />
           <MediaUploadField
             label="Poster image (shown before video loads)"

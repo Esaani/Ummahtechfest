@@ -96,3 +96,4 @@ class CmsAPITest(TestCase):
         r = self.client.get('/api/v1/auth/me/')
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertTrue(r.data['data']['is_superuser'])
+
