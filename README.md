@@ -111,20 +111,27 @@ cd backend && .venv/bin/python manage.py test common apps.accounts apps.voluntee
 
 ## Production (single VPS)
 
-Docker runs **backend**, **frontend** (built SPA), **redis**, and **celery** only — **not** nginx.
+**Not a one-click deploy** — you need host Postgres, a production `.env`, and host nginx.
+
+Docker runs **backend**, **frontend** (built SPA), **redis**, and **celery** only. The dev **nginx container is disabled** in production; use host nginx instead.
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.production.yml up -d --build
+make prod-up          # or: docker compose -f docker-compose.prod.yml up -d --build
+make prod-migrate     # after first deploy / schema changes
+make prod-seed        # pass types, CMS, schedule, sponsorship tiers (idempotent)
+make prod-superuser   # first admin login
 ```
 
-Install host nginx from `nginx/host-production.conf` (see `nginx/HOST_SETUP.md`). It proxies:
+Full checklist: `nginx/HOST_SETUP.md` (TLS, `.env`, first-time `createsuperuser`, health checks).
 
-- `/api/`, `/admin/`, `/media/` → `127.0.0.1:8000`
+Host nginx config: `nginx/host-production.conf` — proxies:
+
+- `/api/`, `/admin/`, `/static/`, `/media/` → `127.0.0.1:8000`
 - `/` → `127.0.0.1:8081` (frontend container)
 
-Set `APP_ENV=production` and enable Telegram monitoring in `.env` (`TELEGRAM_MONITOR_ENABLED`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`) to receive alerts for signups, pass registrations, volunteer applications, outreach forms, and similar events. Each message includes **app name** and **environment**.
+Production compose binds API, frontend, and Redis to **localhost only**. Uploaded media persists in the `utf_media` Docker volume unless you use Cloudflare R2.
 
-Schedule `pg_dump` for host Postgres backups.
+Set `APP_ENV=production`, `DEBUG=False`, and configure SMTP + Telegram in `.env`. Schedule `pg_dump` for host Postgres backups.
 
 ## Makefile shortcuts
 

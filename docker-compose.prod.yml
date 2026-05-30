@@ -1,0 +1,68 @@
+# Standalone production stack — use this file only (no dev compose merge).
+# Host nginx: nginx/host-production.conf (see nginx/HOST_SETUP.md)
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
+#   docker compose -f docker-compose.prod.yml exec backend python manage.py seed
+#   docker compose -f docker-compose.prod.yml exec backend python manage.py seed_sponsorship
+#   docker compose -f docker-compose.prod.yml exec backend python manage.py createsuperuser
+
+services:
+  backend:
+    build: ./backend
+    container_name: utf_backend
+    env_file: .env
+    environment:
+      DB_HOST: host.docker.internal
+      DEBUG: "False"
+      SEED_ON_START: "false"
+      RUN_COLLECTSTATIC: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - utf_media:/app/media
+    ports:
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    depends_on:
+      - redis
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_API_BASE_URL: /api/v1
+    container_name: utf_frontend
+    ports:
+      - "127.0.0.1:${FRONTEND_STATIC_PORT:-8081}:80"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: utf_redis
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
+    restart: unless-stopped
+
+  celery:
+    build: ./backend
+    container_name: utf_celery
+    env_file: .env
+    environment:
+      DB_HOST: host.docker.internal
+      SEED_ON_START: "false"
+      RUN_COLLECTSTATIC: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - utf_media:/app/media
+    depends_on:
+      - redis
+      - backend
+    command: celery -A config worker -l info --concurrency=2
+    restart: unless-stopped
+
+volumes:
+  utf_media:

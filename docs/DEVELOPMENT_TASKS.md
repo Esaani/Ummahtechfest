@@ -128,7 +128,7 @@
 
 ## Infrastructure & DevOps
 
-- [x] Production: host nginx config (`nginx/host-production.conf`) — no Docker nginx in `docker-compose.production.yml`
+- [x] Production: standalone `docker-compose.prod.yml` + host nginx (`nginx/host-production.conf`)
 - [x] Telegram monitoring for major user events (`TELEGRAM_*` in `.env`, Celery task)
 - [ ] Production R2 env vars on host (`R2_*` in `.env.example`)
 - [ ] CI: backend tests + frontend tests on PR
