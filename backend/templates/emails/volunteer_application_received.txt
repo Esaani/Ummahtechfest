@@ -1,0 +1,6 @@
+Hi {{ first_name }},
+
+We received your volunteer application{% if pathway_name %} for {{ pathway_name }}{% endif %}. We will notify you when your application is reviewed.
+
+{{ site_name }}
+{{ support_email }}

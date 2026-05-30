@@ -1,0 +1,6 @@
+Hi {{ first_name }},
+
+Your {{ pass_title }} registration is on file. We will share next steps as they become available.
+
+{{ site_name }}
+{{ support_email }}

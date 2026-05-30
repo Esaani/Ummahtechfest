@@ -1,0 +1,8 @@
+You have been invited to the {{ site_name }} admin portal as {{ admin_role_label }}.
+
+Accept your invite and set your password:
+{{ invite_url }}
+
+This link expires in {{ expiry_hours }} hours.
+
+Questions? {{ support_email }}

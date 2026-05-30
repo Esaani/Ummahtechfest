@@ -1,0 +1,5 @@
+Welcome to {{ site_name }}, {{ first_name|default:"there" }}!
+
+Your account is ready. Sign in at {{ site_url }} to continue.
+
+Questions? {{ support_email }}

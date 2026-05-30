@@ -1,0 +1,13 @@
+FROM node:22-alpine
+WORKDIR /app
+
+ARG VOLUNTEER_APP_CONTAINER_PORT=5173
+ENV VITE_DEV_SERVER_PORT=${VOLUNTEER_APP_CONTAINER_PORT}
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+EXPOSE ${VOLUNTEER_APP_CONTAINER_PORT}
+
+CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0 --port ${VITE_DEV_SERVER_PORT}"]

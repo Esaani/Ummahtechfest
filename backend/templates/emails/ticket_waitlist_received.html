@@ -1,0 +1,11 @@
+{% extends "emails/base.html" %}
+{% block title %}Ticket waitlist — {{ site_name }}{% endblock %}
+{% block content %}
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">You're on the list</h1>
+<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Hi {{ full_name }},
+</p>
+<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Thanks for joining the ticket waitlist for {{ site_name }}. We'll email you as soon as sales open.
+</p>
+{% endblock %}

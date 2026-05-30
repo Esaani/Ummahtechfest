@@ -1,0 +1,5 @@
+Hi {{ full_name }},
+
+Thanks for joining the ticket waitlist for {{ site_name }}. We'll email you as soon as sales open.
+
+— {{ site_name }}

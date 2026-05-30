@@ -1,0 +1,6 @@
+Thank you, {{ full_name }}.
+
+We received your sponsorship inquiry for {{ company_name }}. Our team will follow up soon.
+
+{{ site_name }}
+{{ support_email }}

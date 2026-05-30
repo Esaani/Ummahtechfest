@@ -1,0 +1,8 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<p>Hello,</p>
+<p>You have been invited to the <strong>{{ site_name }}</strong> admin portal as <strong>{{ admin_role_label }}</strong>.</p>
+<p><a href="{{ invite_url }}">Accept invite and set your password</a></p>
+<p>This link expires in {{ expiry_hours }} hours. If you did not expect this email, you can ignore it.</p>
+<p>Questions? Contact <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>
+{% endblock %}

@@ -1,0 +1,6 @@
+Hi {{ full_name }},
+
+We received your speaker application for "{{ session_title }}". Our program committee will review it and contact you by email.
+
+{{ site_name }}
+{{ support_email }}

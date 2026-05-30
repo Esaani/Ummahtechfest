@@ -1,0 +1,10 @@
+{{ site_name }} — Verify your email
+
+Your verification code: {{ otp_code }}
+
+This code expires in {{ expiry_minutes }} minutes.
+
+If you did not request this code, ignore this email.
+
+Questions? {{ support_email }}
+{{ site_url }}
