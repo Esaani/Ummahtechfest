@@ -1,3 +1,6 @@
 # Large homepage media is served from CMS / R2 — not bundled in the production image
 public/assets/videos
 public/assets/images
+
+# Allow specific bundled images used in auth/register screens
+!public/assets/images/umma-volunteer.webp

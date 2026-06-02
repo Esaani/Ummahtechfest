@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError, cmsApi, outreachApi } from '../api/client'
+import SpeakerBioModal from '../components/SpeakerBioModal'
 import HoneypotField from '../components/HoneypotField'
 import { FormField, FormInput } from '../components/forms/FormField'
 import { useCmsSections } from '../hooks/useCmsSections'
@@ -300,6 +301,8 @@ const FALLBACK_SPEAKERS = [
 
 function Speakers() {
   const [speakers, setSpeakers] = useState(FALLBACK_SPEAKERS)
+  const [selectedSpeaker, setSelectedSpeaker] = useState(null)
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     cmsApi
@@ -310,9 +313,15 @@ function Speakers() {
       .catch(() => {})
   }, [])
 
+  const scrollBy = (direction) => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollBy({ left: direction * 280, behavior: 'smooth' })
+  }
+
   return (
     <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-surface-container-low/30">
-      <div className="mb-12 md:mb-20 text-center" data-aos="fade-up">
+      <div className="mb-10 md:mb-14 text-center" data-aos="fade-up">
         <h2 className="headline-lg text-primary uppercase mb-4">
           World-class <span className="text-primary-fixed">speakers</span>
         </h2>
@@ -323,27 +332,77 @@ function Speakers() {
           Apply to speak
         </Link>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 px-4 md:px-0">
-        {speakers.map((s, i) => (
-          <div key={s.id || i} className="group relative" data-aos="zoom-in" data-aos-delay={i * 100}>
-            <div className="kente-border p-1 bg-background rounded-xl overflow-hidden transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(163,250,1,0.2)]">
-              <div className="relative overflow-hidden aspect-[4/5] rounded-lg">
-                <img
-                  alt={s.name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
-                  src={(s.image || s.img || '').includes('?') ? `${s.image || s.img}&w=600` : `${s.image || s.img}?w=600`}
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-90" />
-                <div className="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6">
-                  <h4 className="headline-sm text-primary mb-1 text-lg md:text-xl">{s.name}</h4>
-                  <p className="label-md text-primary-fixed uppercase tracking-widest text-[10px] md:text-[12px]">{s.role}</p>
+
+      <div className="relative px-4 md:px-0" data-aos="fade-up">
+        {speakers.length > 3 && (
+          <>
+            <button
+              type="button"
+              onClick={() => scrollBy(-1)}
+              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/40 items-center justify-center text-primary-fixed hover:bg-primary-fixed/10"
+              aria-label="Previous speakers"
+            >
+              <span className="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/40 items-center justify-center text-primary-fixed hover:bg-primary-fixed/10"
+              aria-label="Next speakers"
+            >
+              <span className="material-symbols-outlined">chevron_right</span>
+            </button>
+          </>
+        )}
+
+        <div
+          ref={scrollRef}
+          className="flex justify-center gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth no-scrollbar"
+        >
+          {speakers.map((s, i) => {
+            const image = s.image || s.img || ''
+            return (
+              <button
+                key={s.id || i}
+                type="button"
+                onClick={() => setSelectedSpeaker(s)}
+                className="group relative shrink-0 w-[140px] sm:w-[160px] md:w-[180px] snap-start text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-fixed rounded-xl"
+                aria-label={`View bio for ${s.name}`}
+              >
+                <div className="kente-border p-0.5 bg-background rounded-xl overflow-hidden transition-all duration-500 group-hover:shadow-[0_0_24px_rgba(163,250,1,0.15)]">
+                  <div className="relative overflow-hidden aspect-[3/4] rounded-lg">
+                    {image ? (
+                      <img
+                        alt={s.name}
+                        className="w-full h-full object-cover md:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                        src={image.includes('?') ? `${image}&w=400` : `${image}?w=400`}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+                        <span className="material-symbols-outlined text-on-surface-variant text-3xl">person</span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-3 left-3 right-3 rounded-lg bg-background/55 backdrop-blur-sm border border-outline-variant/20 px-3 py-2">
+                      <h4 className="text-sm font-headline text-primary mb-0.5 leading-tight line-clamp-2">{s.name}</h4>
+                      <p className="text-[9px] md:text-[10px] label-md text-primary-fixed uppercase tracking-widest line-clamp-2">{s.role}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        ))}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-center text-[10px] label-md text-on-surface-variant uppercase tracking-widest mt-4">
+          Tap a speaker to read their bio
+        </p>
       </div>
+
+      <SpeakerBioModal
+        isOpen={!!selectedSpeaker}
+        onClose={() => setSelectedSpeaker(null)}
+        speaker={selectedSpeaker}
+      />
     </section>
   )
 }

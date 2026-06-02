@@ -1,0 +1,13 @@
+Hello {{ name }},
+
+The status of your {{ submission_type }} has been updated to: {{ status_label }}
+
+{% if message %}
+Note from our team:
+{{ message }}
+{% endif %}
+
+You can view more details on our website or reply to this email if you have any questions.
+
+Best regards,
+The {{ site_name }} Team

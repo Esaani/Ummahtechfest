@@ -1,8 +1,130 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import NavPageLink from './NavPageLink.jsx'
 import logo from '../assets/logo.png'
+
+function initialsForUser(user) {
+  const first = (user?.first_name || '').trim()
+  const last = (user?.last_name || '').trim()
+  if (first || last) {
+    return `${(first[0] || '').toUpperCase()}${(last[0] || '').toUpperCase()}` || 'U'
+  }
+  const email = (user?.email || '').trim()
+  if (email) return email[0].toUpperCase()
+  return 'U'
+}
+
+function ProfileMenu({ onNavigate }) {
+  const { isAuthenticated, user, logout, isAdminUser } = useAuth()
+  const [open, setOpen] = useState(false)
+  const btnRef = useRef(null)
+  const panelRef = useRef(null)
+
+  const displayName = useMemo(() => {
+    const name = [user?.first_name, user?.last_name].filter(Boolean).join(' ').trim()
+    return name || user?.email || 'Account'
+  }, [user])
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    const onPointerDown = (e) => {
+      const t = e.target
+      if (panelRef.current?.contains(t)) return
+      if (btnRef.current?.contains(t)) return
+      setOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [open])
+
+  if (!isAuthenticated) return null
+
+  return (
+    <div className="relative shrink-0">
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="hidden xl:inline-flex items-center gap-3 rounded-full border border-outline-variant/40 bg-surface-container/40 hover:bg-surface-container/70 px-2 py-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-fixed"
+        aria-haspopup="menu"
+        aria-expanded={open ? 'true' : 'false'}
+        aria-label="Account menu"
+      >
+        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-fixed/15 text-primary-fixed font-black text-xs">
+          {initialsForUser(user)}
+        </span>
+        <span className="hidden 2xl:block text-[10px] font-black uppercase tracking-widest text-on-surface-variant max-w-[160px] truncate">
+          {displayName}
+        </span>
+        <span className="material-symbols-outlined text-on-surface-variant text-xl">expand_more</span>
+      </button>
+
+      {open && (
+        <div
+          ref={panelRef}
+          role="menu"
+          aria-label="Account"
+          className="hidden xl:block absolute right-0 mt-3 w-[280px] rounded-2xl border border-outline-variant/30 bg-background/95 backdrop-blur-xl shadow-2xl overflow-hidden"
+        >
+          <div className="p-4 border-b border-outline-variant/20">
+            <p className="label-md text-primary font-bold truncate">{displayName}</p>
+            {user?.email && <p className="text-xs text-on-surface-variant truncate mt-1">{user.email}</p>}
+          </div>
+          <div className="p-2">
+            <Link
+              role="menuitem"
+              to="/registration/status"
+              onClick={() => { setOpen(false); onNavigate?.() }}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
+            >
+              <span className="material-symbols-outlined text-lg text-primary-fixed">confirmation_number</span>
+              Registration status
+            </Link>
+            <Link
+              role="menuitem"
+              to="/volunteer/status"
+              onClick={() => { setOpen(false); onNavigate?.() }}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
+            >
+              <span className="material-symbols-outlined text-lg text-primary-fixed">volunteer_activism</span>
+              Volunteer status
+            </Link>
+            {isAdminUser && (
+              <Link
+                role="menuitem"
+                to="/admin"
+                onClick={() => { setOpen(false); onNavigate?.() }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
+              >
+                <span className="material-symbols-outlined text-lg text-secondary">space_dashboard</span>
+                CMS
+              </Link>
+            )}
+          </div>
+          <div className="p-2 border-t border-outline-variant/20">
+            <button
+              role="menuitem"
+              type="button"
+              onClick={() => { setOpen(false); logout(); onNavigate?.() }}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-error/10 text-sm text-error"
+            >
+              <span className="material-symbols-outlined text-lg">logout</span>
+              Log out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 function DesktopAuthActions({ onNavigate }) {
   const { isAuthenticated, user, logout, isAdminUser } = useAuth()
@@ -10,25 +132,12 @@ function DesktopAuthActions({ onNavigate }) {
   if (isAuthenticated) {
     return (
       <div className="flex items-center gap-2 2xl:gap-3 shrink-0">
-        {isAdminUser && (
-          <Link
-            to="/admin"
-            onClick={onNavigate}
-            className="hidden xl:inline-flex items-center text-secondary-fixed hover:text-primary-fixed px-2 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all"
-          >
-            CMS
-          </Link>
-        )}
-        <span
-          className="hidden 2xl:inline label-md text-on-surface-variant truncate max-w-[140px]"
-          title={user?.email}
-        >
-          {user?.first_name || user?.email}
-        </span>
+        <ProfileMenu onNavigate={onNavigate} />
+        {/* Keep a compact logout on smaller desktops if needed */}
         <button
           type="button"
           onClick={() => { logout(); onNavigate?.() }}
-          className="hidden xl:inline-flex items-center text-on-surface-variant hover:text-primary-fixed px-2 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap"
+          className="xl:hidden inline-flex items-center text-on-surface-variant hover:text-primary-fixed px-2 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap"
         >
           Log out
         </button>
@@ -192,6 +301,12 @@ export default function Header() {
                   CMS Admin
                 </Link>
               )}
+              <Link to="/registration/status" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
+                Registration status
+              </Link>
+              <Link to="/volunteer/status" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
+                Volunteer status
+              </Link>
               <button
                 type="button"
                 onClick={() => { logout(); closeMenu() }}

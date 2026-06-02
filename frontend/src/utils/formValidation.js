@@ -38,7 +38,11 @@ export function validateSpeakerStep1(data) {
     errors.roleKey = 'Please describe your role.'
   }
   if ((data.organization || '').trim().length < 2) errors.organization = 'Organization is required.'
+  if ((data.occupation || '').trim().length < 2) errors.occupation = 'Occupation is required.'
+  if ((data.role || '').trim().length < 2) errors.role = 'Primary role is required.'
   if ((data.bio || '').trim().length < 40) errors.bio = 'Bio must be at least 40 characters.'
+  if (!data.profilePhoto) errors.profilePhoto = 'Upload a professional headshot.'
+  if (!data.cv) errors.cv = 'Upload your CV/Resume.'
   return errors
 }
 

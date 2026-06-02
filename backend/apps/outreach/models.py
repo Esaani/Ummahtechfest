@@ -63,7 +63,23 @@ class SpeakerApplication(BaseModel):
     email = models.EmailField(db_index=True)
     professional_title = models.CharField(max_length=200)
     organization = models.CharField(max_length=255)
+    occupation = models.CharField(max_length=200, blank=True)
+    role = models.CharField(max_length=200, blank=True)
     bio = models.TextField()
+    cv_asset = models.ForeignKey(
+        'cms.MediaAsset',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='speaker_cvs',
+    )
+    profile_image_asset = models.ForeignKey(
+        'cms.MediaAsset',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='speaker_applications',
+    )
     linkedin_url = models.URLField(blank=True)
     twitter_handle = models.CharField(max_length=120, blank=True)
     instagram_handle = models.CharField(max_length=120, blank=True)

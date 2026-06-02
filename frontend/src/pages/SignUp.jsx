@@ -77,7 +77,7 @@ export default function SignUp() {
           <img
             alt="Tech Conference Atmosphere"
             className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1200&auto=format&fit=crop"
+            src="/assets/images/umma-volunteer.webp"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent flex items-end p-8 md:p-12">
             <div className="max-w-xl">

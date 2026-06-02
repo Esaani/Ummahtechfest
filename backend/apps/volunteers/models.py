@@ -7,6 +7,7 @@ from common.models import BaseModel
 class VolunteerRoleCategory(models.TextChoices):
     EVENT_SUPPORT = 'event_support', 'Event & Community Support'
     CREATIVE_MEDIA = 'creative_media', 'Creative & Multimedia'
+    TECHNICAL_TRAINING = 'tech_training', 'Technical & Training'
 
 
 class VolunteerApplicationStatus(models.TextChoices):
@@ -55,6 +56,21 @@ class VolunteerApplication(BaseModel):
     phone = models.CharField(max_length=32, blank=True)
     city = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=120, blank=True)
+    occupation = models.CharField(max_length=200, blank=True)
+    cv_asset = models.ForeignKey(
+        'cms.MediaAsset',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='volunteer_cvs',
+    )
+    profile_image_asset = models.ForeignKey(
+        'cms.MediaAsset',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='volunteer_photos',
+    )
     skills_summary = models.TextField()
     motivation = models.TextField()
     availability = models.JSONField(default=dict)

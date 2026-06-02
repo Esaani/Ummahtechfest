@@ -46,7 +46,8 @@ export default function Sponsor() {
   const [tiers, setTiers] = useState(FALLBACK_TIERS)
   const [columns, setColumns] = useState(FALLBACK_COLUMNS)
   const [tableRows, setTableRows] = useState(FALLBACK_ROWS)
-  const [heroImage, setHeroImage] = useState('')
+  const [heroImage, setHeroImage] = useState(null)
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false)
   const [heroStat, setHeroStat] = useState({ value: '5,000+', label: 'Targeted Tech Professionals' })
   const [cmsLoading, setCmsLoading] = useState(true)
   const [form, setForm] = useState({
@@ -82,6 +83,7 @@ export default function Sponsor() {
         if (data.comparison_columns?.length) setColumns(data.comparison_columns)
         if (data.comparison_rows?.length) setTableRows(data.comparison_rows)
         if (data.hero) {
+          setHeroImageLoaded(false)
           setHeroImage(cmsMediaUrl(data.hero.hero_image_url, ''))
           setHeroStat({
             value: data.hero.stat_value || '5,000+',
@@ -106,6 +108,8 @@ export default function Sponsor() {
       })
       .finally(() => setCmsLoading(false))
   }, [])
+
+  const heroSrc = heroImage || FALLBACK_HERO_IMAGE
 
   const selectedTier = useMemo(
     () => tiers.find((t) => t.value === form.tier_interest) || tiers[0],
@@ -152,12 +156,17 @@ export default function Sponsor() {
           </div>
           <div className="relative hidden lg:block" data-aos="fade-left">
             <div className="aspect-square rounded-2xl overflow-hidden kente-border">
-              <img
-                className="w-full h-full object-cover hover:grayscale-0 transition-all duration-700"
-                src={heroImage || FALLBACK_HERO_IMAGE}
-                alt=""
-                loading="lazy"
-              />
+              {cmsLoading ? (
+                <div className="w-full h-full bg-surface-container-high animate-pulse" />
+              ) : (
+                <img
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  src={heroSrc}
+                  alt=""
+                  loading="eager"
+                  onLoad={() => setHeroImageLoaded(true)}
+                />
+              )}
             </div>
             <div className="absolute -bottom-6 -left-6 glass-panel p-6 rounded-xl border-l-4 border-primary-fixed max-w-xs shadow-2xl">
               <p className="headline-sm text-primary-fixed mb-1">{heroStat.value}</p>

@@ -1,0 +1,26 @@
+{% extends "emails/base.html" %}
+
+{% block title %}Application Status Update - {{ site_name }}{% endblock %}
+
+{% block content %}
+<p>Hello {{ name }},</p>
+
+<p>The status of your <strong>{{ submission_type }}</strong> has been updated to:</p>
+
+<div style="background-color: #f1f5f9; padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
+  <span style="font-size: 18px; font-weight: 700; color: #c9a227; text-transform: uppercase; letter-spacing: 0.05em;">
+    {{ status_label }}
+  </span>
+</div>
+
+{% if message %}
+<p>Note from our team:</p>
+<blockquote style="border-left: 4px solid #e2e8f0; padding-left: 16px; color: #475569; font-style: italic;">
+  {{ message }}
+</blockquote>
+{% endif %}
+
+<p>You can view more details on our website or reply to this email if you have any questions.</p>
+
+<p>Best regards,<br>The {{ site_name }} Team</p>
+{% endblock %}

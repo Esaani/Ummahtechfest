@@ -41,9 +41,15 @@ export default function ApplyToSpeak() {
     fullName: '',
     roleKey: '',
     roleCustom: '',
+    occupation: '',
+    role: '',
     organization: '',
     email: '',
     bio: '',
+    profilePhoto: null,
+    profilePhotoPreview: '',
+    cv: null,
+    cvName: '',
     sessionTitle: '',
     track: '',
     format: '',
@@ -108,23 +114,27 @@ export default function ApplyToSpeak() {
     setError('')
     setSubmitting(true)
     try {
-      await outreachApi.submitSpeakerApplication({
-        full_name: formData.fullName.trim(),
-        email: formData.email.trim(),
-        professional_title: roleToProfessionalTitle(formData.roleKey, formData.roleCustom),
-        organization: formData.organization.trim(),
-        bio: formData.bio.trim(),
-        linkedin_url: formData.linkedin.trim(),
-        twitter_handle: formData.twitter.trim(),
-        session_title: formData.sessionTitle.trim(),
-        track: formData.track,
-        session_format: formData.format,
-        abstract: formData.abstract.trim(),
-        key_takeaways: formData.keyTakeaways.trim(),
-        tech_requirements: formData.techRequirements.trim(),
-        co_speakers: formData.coSpeakers.trim(),
-        website: honeypot,
-      })
+      const body = new FormData()
+      body.append('full_name', formData.fullName.trim())
+      body.append('email', formData.email.trim())
+      body.append('occupation', formData.occupation.trim())
+      body.append('role', formData.role.trim())
+      body.append('professional_title', roleToProfessionalTitle(formData.roleKey, formData.roleCustom))
+      body.append('organization', formData.organization.trim())
+      body.append('bio', formData.bio.trim())
+      body.append('profile_photo', formData.profilePhoto)
+      body.append('cv', formData.cv)
+      body.append('linkedin_url', formData.linkedin.trim())
+      body.append('twitter_handle', formData.twitter.trim())
+      body.append('session_title', formData.sessionTitle.trim())
+      body.append('track', formData.track)
+      body.append('session_format', formData.format)
+      body.append('abstract', formData.abstract.trim())
+      body.append('key_takeaways', formData.keyTakeaways.trim())
+      body.append('tech_requirements', formData.techRequirements.trim())
+      body.append('co_speakers', formData.coSpeakers.trim())
+      if (honeypot) body.append('website', honeypot)
+      await outreachApi.submitSpeakerApplication(body)
       setIsSubmitted(true)
       window.scrollTo(0, 0)
     } catch (err) {
@@ -256,6 +266,103 @@ export default function ApplyToSpeak() {
                       hasError={!!fieldErrors.organization}
                     />
                   </FormField>
+                  <FormField label="Occupation" htmlFor="occupation" required error={fieldErrors.occupation}>
+                    <FormInput
+                      id="occupation"
+                      name="occupation"
+                      placeholder="e.g. Software Engineer, Researcher"
+                      value={formData.occupation}
+                      onChange={handleChange}
+                      hasError={!!fieldErrors.occupation}
+                    />
+                  </FormField>
+                  <FormField label="Primary Role" htmlFor="role" required error={fieldErrors.role}>
+                    <FormInput
+                      id="role"
+                      name="role"
+                      placeholder="e.g. Lead Speaker, Panelist"
+                      value={formData.role}
+                      onChange={handleChange}
+                      hasError={!!fieldErrors.role}
+                    />
+                  </FormField>
+                  <div className="md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <FormField
+                        label="Profile photo"
+                        htmlFor="profilePhoto"
+                        hint="Professional headshot · JPEG/PNG · max 5MB"
+                        required
+                        error={fieldErrors.profilePhoto}
+                      >
+                        <div className="flex flex-wrap items-start gap-4">
+                          {formData.profilePhotoPreview && (
+                            <img
+                              src={formData.profilePhotoPreview}
+                              alt=""
+                              className="w-12 h-12 rounded-lg object-cover border border-outline-variant/30"
+                            />
+                          )}
+                          <input
+                            id="profilePhoto"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            className="block w-full text-xs text-on-surface-variant file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-primary-fixed/15 file:text-primary-fixed file:font-bold file:uppercase file:text-[10px]"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (!file) return
+                              if (file.size > 5 * 1024 * 1024) {
+                                setFieldErrors((prev) => ({ ...prev, profilePhoto: 'Photo must be 5MB or smaller.' }))
+                                return
+                              }
+                              setFieldErrors((prev) => ({ ...prev, profilePhoto: '' }))
+                              setFormData((prev) => ({
+                                ...prev,
+                                profilePhoto: file,
+                                profilePhotoPreview: URL.createObjectURL(file),
+                              }))
+                            }}
+                          />
+                        </div>
+                      </FormField>
+
+                      <FormField
+                        label="CV / Resume"
+                        htmlFor="cv"
+                        hint="PDF or Word · max 10MB"
+                        required
+                        error={fieldErrors.cv}
+                      >
+                        <div className="flex flex-col gap-2">
+                          <input
+                            id="cv"
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            className="block w-full text-xs text-on-surface-variant file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-primary-fixed/15 file:text-primary-fixed file:font-bold file:uppercase file:text-[10px]"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (!file) return
+                              if (file.size > 10 * 1024 * 1024) {
+                                setFieldErrors((prev) => ({ ...prev, cv: 'CV must be 10MB or smaller.' }))
+                                return
+                              }
+                              setFieldErrors((prev) => ({ ...prev, cv: '' }))
+                              setFormData((prev) => ({
+                                ...prev,
+                                cv: file,
+                                cvName: file.name,
+                              }))
+                            }}
+                          />
+                          {formData.cvName && (
+                            <span className="text-[10px] text-secondary font-medium truncate italic">
+                              Selected: {formData.cvName}
+                            </span>
+                          )}
+                        </div>
+                      </FormField>
+                    </div>
+                  </div>
                   <div className="md:col-span-2">
                     <FormField
                       label="Speaker bio"

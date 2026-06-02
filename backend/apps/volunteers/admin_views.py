@@ -9,6 +9,7 @@ from apps.volunteers.models import (
 )
 from apps.volunteers.serializers import VolunteerApplicationAdminSerializer
 from common.admin_roles import PERM_SUBMISSIONS_MANAGE
+from common.email_service import send_templated_email
 from common.permissions import HasAdminPermission
 
 
@@ -64,6 +65,17 @@ class AdminVolunteerApplicationDetailView(APIView):
                 to_status=application.status,
                 changed_by=request.user,
                 note=request.data.get('status_note', ''),
+            )
+            # Send notification
+            send_templated_email(
+                'submission_status_updated',
+                application.user.email,
+                {
+                    'name': application.user.full_name or application.user.email,
+                    'submission_type': 'Volunteer Application',
+                    'status_label': application.get_status_display(),
+                    'message': request.data.get('status_note'),
+                },
             )
         application = (
             VolunteerApplication.objects.select_related('user', 'assigned_role')

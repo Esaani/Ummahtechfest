@@ -1,4 +1,6 @@
+from unittest.mock import patch
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -13,6 +15,8 @@ class OutreachAPITest(TestCase):
             'full_name': 'Amina Asante',
             'email': 'amina@example.com',
             'professional_title': 'Lead Engineer',
+            'occupation': 'Software Engineer',
+            'role': 'Lead Speaker',
             'organization': 'EthioChain',
             'bio': 'Building ethical fintech across East Africa with a focus on community impact.',
             'linkedin_url': 'https://linkedin.com/in/amina',
@@ -60,18 +64,26 @@ class OutreachAPITest(TestCase):
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_speaker_application_create(self):
-        r = self.client.post('/api/v1/outreach/speaker-applications/', self.speaker_payload, format='json')
+        photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
+        cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
+        payload = {**self.speaker_payload, 'profile_photo': photo, 'cv': cv}
+        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
         self.assertEqual(r.data['data']['status'], 'submitted')
 
     def test_speaker_short_abstract_rejected(self):
-        payload = {**self.speaker_payload, 'abstract': 'Too short.'}
-        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='json')
+        photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
+        cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
+        payload = {**self.speaker_payload, 'abstract': 'Too short.', 'profile_photo': photo, 'cv': cv}
+        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_speaker_duplicate_email_blocked(self):
-        self.client.post('/api/v1/outreach/speaker-applications/', self.speaker_payload, format='json')
-        r = self.client.post('/api/v1/outreach/speaker-applications/', self.speaker_payload, format='json')
+        photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
+        cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
+        payload = {**self.speaker_payload, 'profile_photo': photo, 'cv': cv}
+        self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
+        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_ticket_waitlist_create(self):
@@ -122,10 +134,22 @@ class OutreachAPITest(TestCase):
         }, format='json')
         inquiry_id = create.data['data']['id']
         self.client.force_authenticate(user=self.admin)
-        r = self.client.patch(
-            f'/api/v1/outreach/admin/sponsor-inquiries/{inquiry_id}/',
-            {'status': 'contacted'},
-            format='json',
-        )
-        self.assertEqual(r.status_code, status.HTTP_200_OK)
-        self.assertEqual(r.data['data']['status'], 'contacted')
+        
+        with patch('apps.outreach.admin_views.send_templated_email') as mock_send:
+            r = self.client.patch(
+                f'/api/v1/outreach/admin/sponsor-inquiries/{inquiry_id}/',
+                {'status': 'contacted', 'status_note': 'Test note'},
+                format='json',
+            )
+            self.assertEqual(r.status_code, status.HTTP_200_OK)
+            self.assertEqual(r.data['data']['status'], 'contacted')
+            mock_send.assert_called_once_with(
+                'submission_status_updated',
+                'status@co.com',
+                {
+                    'name': 'Test',
+                    'submission_type': 'Sponsorship Inquiry',
+                    'status_label': 'Contacted',
+                    'message': 'Test note',
+                },
+            )

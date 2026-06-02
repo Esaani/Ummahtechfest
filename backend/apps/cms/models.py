@@ -87,6 +87,13 @@ class FeaturedSpeaker(BaseModel):
         blank=True,
         related_name='featured_speakers',
     )
+    speaker_application = models.OneToOneField(
+        'outreach.SpeakerApplication',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='featured_speaker',
+    )
     sort_order = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=True, db_index=True)
 

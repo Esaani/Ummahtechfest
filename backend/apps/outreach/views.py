@@ -1,6 +1,7 @@
 import logging
 
 from rest_framework import status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -77,6 +78,7 @@ class SpeakerApplicationCreateView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [ScopedAnonRateThrottle]
     throttle_scope = 'public_form'
+    parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
         serializer = SpeakerApplicationCreateSerializer(data=request.data)

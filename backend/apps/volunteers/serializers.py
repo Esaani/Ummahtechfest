@@ -2,12 +2,25 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from common.security import HoneypotSerializerMixin
+from apps.cms.models import MediaAsset
 from apps.volunteers.constants import WITHDRAWABLE_STATUSES
 from apps.volunteers.models import (
     VolunteerApplication,
     VolunteerApplicationStatus,
     VolunteerRole,
 )
+
+
+def _create_volunteer_asset(uploaded, folder):
+    import mimetypes
+    mime, _ = mimetypes.guess_type(uploaded.name)
+    return MediaAsset.objects.create(
+        title=uploaded.name,
+        folder=folder,
+        file=uploaded,
+        mime_type=mime or getattr(uploaded, 'content_type', '') or '',
+        file_size=uploaded.size,
+    )
 
 
 class VolunteerRoleSerializer(serializers.ModelSerializer):
@@ -25,14 +38,16 @@ class VolunteerApplicationSerializer(HoneypotSerializerMixin, serializers.ModelS
     preferred_roles = VolunteerRoleSerializer(many=True, read_only=True)
     assigned_role = VolunteerRoleSerializer(read_only=True)
     can_withdraw = serializers.SerializerMethodField()
+    cv = serializers.FileField(write_only=True, required=True)
+    profile_photo = serializers.FileField(write_only=True, required=True)
 
     class Meta:
         model = VolunteerApplication
         fields = [
-            'id', 'status', 'phone', 'city', 'country', 'skills_summary', 'motivation',
+            'id', 'status', 'phone', 'city', 'country', 'occupation', 'skills_summary', 'motivation',
             'availability', 'experience_years', 'portfolio_url', 'linkedin_url',
             'code_of_conduct_accepted', 'preferred_role_ids', 'preferred_roles',
-            'assigned_role', 'can_withdraw', 'created_at', 'updated_at',
+            'assigned_role', 'can_withdraw', 'cv', 'profile_photo', 'created_at', 'updated_at',
         ]
         read_only_fields = [
             'id', 'status', 'preferred_roles', 'assigned_role', 'can_withdraw',
@@ -55,13 +70,31 @@ class VolunteerApplicationSerializer(HoneypotSerializerMixin, serializers.ModelS
             raise serializers.ValidationError('One or more selected pathways are invalid.')
         return value
 
+    def validate_cv(self, value):
+        if value.size > 10 * 1024 * 1024:
+            raise serializers.ValidationError('CV file must be 10MB or smaller.')
+        return value
+
+    def validate_profile_photo(self, value):
+        if value.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError('Profile photo must be 5MB or smaller.')
+        return value
+
     def create(self, validated_data):
         role_ids = validated_data.pop('preferred_role_ids', [])
+        cv = validated_data.pop('cv', None)
+        photo = validated_data.pop('profile_photo', None)
         user = self.context['request'].user
         if VolunteerApplication.objects.filter(user=user).exists():
             raise serializers.ValidationError(
                 'You have already submitted a volunteer application. Each person may apply only once.'
             )
+
+        if cv:
+            validated_data['cv_asset'] = _create_volunteer_asset(cv, 'volunteer-applications/cvs')
+        if photo:
+            validated_data['profile_image_asset'] = _create_volunteer_asset(photo, 'volunteer-applications/photos')
+
         application = VolunteerApplication.objects.create(user=user, **validated_data)
         if role_ids:
             roles = VolunteerRole.objects.filter(id__in=role_ids)
@@ -93,7 +126,7 @@ class VolunteerApplicationAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = VolunteerApplication
         fields = [
-            'id', 'status', 'user', 'phone', 'city', 'country', 'skills_summary', 'motivation',
+            'id', 'status', 'user', 'phone', 'city', 'country', 'occupation', 'skills_summary', 'motivation',
             'availability', 'experience_years', 'portfolio_url', 'linkedin_url',
             'preferred_roles', 'assigned_role', 'assigned_role_id', 'admin_notes',
             'created_at', 'updated_at',

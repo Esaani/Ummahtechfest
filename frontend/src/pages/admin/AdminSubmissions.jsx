@@ -24,16 +24,20 @@ function formatDate(iso) {
   return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
 }
 
-function StatusSelect({ value, options, onChange, disabled }) {
+function StatusSelect({ value, options, onChange, disabled, isStaged }) {
   return (
     <select
-      className="bg-surface-container border border-outline-variant/40 rounded-lg px-2 py-1 text-xs label-md"
+      className={`bg-surface-container border rounded-lg px-2 py-1 text-xs label-md transition-all ${
+        isStaged ? 'border-primary shadow-[0_0_0_1px_rgba(var(--primary-rgb),0.2)]' : 'border-outline-variant/40'
+      }`}
       value={value}
       disabled={disabled}
       onChange={(e) => onChange(e.target.value)}
     >
       {options.map((o) => (
-        <option key={o.value} value={o.value}>{o.label}</option>
+        <option key={o.value} value={o.value}>
+          {o.label} {isStaged && o.value === value ? '(Staged)' : ''}
+        </option>
       ))}
     </select>
   )
@@ -48,6 +52,8 @@ export default function AdminSubmissions() {
   const [expandedId, setExpandedId] = useState(null)
   const [detail, setDetail] = useState(null)
   const [volunteerRoles, setVolunteerRoles] = useState([])
+  const [stagedStatus, setStagedStatus] = useState({})
+  const [stagedNotes, setStagedNotes] = useState({})
 
   useEffect(() => {
     if (tab === 'volunteers') {
@@ -81,9 +87,19 @@ export default function AdminSubmissions() {
   const updateStatus = async (id, status, updater) => {
     setUpdatingId(id)
     try {
-      const res = await updater(id, { status })
+      const res = await updater(id, { status, status_note: stagedNotes[id] || '' })
       setItems((prev) => prev.map((row) => (row.id === id ? res.data : row)))
       if (detail?.id === id) setDetail(res.data)
+      setStagedStatus((prev) => {
+        const next = { ...prev }
+        delete next[id]
+        return next
+      })
+      setStagedNotes((prev) => {
+        const next = { ...prev }
+        delete next[id]
+        return next
+      })
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Update failed')
     } finally {
@@ -119,6 +135,18 @@ export default function AdminSubmissions() {
       const res = await volunteerApi.updateAdminApplication(id, payload)
       setItems((prev) => prev.map((row) => (row.id === id ? res.data : row)))
       if (detail?.id === id) setDetail(res.data)
+      if (payload.status) {
+        setStagedStatus((prev) => {
+          const next = { ...prev }
+          delete next[id]
+          return next
+        })
+        setStagedNotes((prev) => {
+          const next = { ...prev }
+          delete next[id]
+          return next
+        })
+      }
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Update failed')
     } finally {
@@ -267,101 +295,288 @@ export default function AdminSubmissions() {
                       {formatDate(row.created_at)}
                     </td>
                     <td className="py-4">
-                      <StatusSelect
-                        value={row.status}
-                        disabled={updatingId === row.id}
-                        options={
-                          tab === 'partners'
-                            ? PARTNER_STATUS
-                            : tab === 'speakers'
-                              ? SPEAKER_STATUS
-                              : tab === 'volunteers'
-                                ? VOLUNTEER_STATUS
-                                : WAITLIST_STATUS
-                        }
-                        onChange={(status) => {
-                          if (tab === 'volunteers') {
-                            patchVolunteer(row.id, { status })
-                            return
-                          }
-                          updateStatus(
-                            row.id,
-                            status,
+                      <div className="flex flex-col gap-2 min-w-[140px]">
+                        <StatusSelect
+                          value={stagedStatus[row.id] || row.status}
+                          isStaged={!!stagedStatus[row.id]}
+                          disabled={updatingId === row.id}
+                          options={
                             tab === 'partners'
-                              ? outreachApi.updateSponsorInquiry
+                              ? PARTNER_STATUS
                               : tab === 'speakers'
-                                ? outreachApi.updateSpeakerApplication
-                                : outreachApi.updateTicketWaitlist,
-                          )
-                        }}
-                      />
+                                ? SPEAKER_STATUS
+                                : tab === 'volunteers'
+                                  ? VOLUNTEER_STATUS
+                                  : WAITLIST_STATUS
+                          }
+                          onChange={(status) => {
+                            if (status === row.status) {
+                              setStagedStatus((prev) => {
+                                const next = { ...prev }
+                                delete next[row.id]
+                                return next
+                              })
+                            } else {
+                              setStagedStatus((prev) => ({ ...prev, [row.id]: status }))
+                            }
+                          }}
+                        />
+                        {stagedStatus[row.id] && (
+                          <div className="flex flex-col gap-2">
+                            <textarea
+                              placeholder="Add a note to applicant..."
+                              className="text-[10px] p-1 bg-surface-container-high border border-primary/20 rounded h-12 w-full focus:outline-none focus:border-primary/50"
+                              value={stagedNotes[row.id] || ''}
+                              onChange={(e) => setStagedNotes((prev) => ({ ...prev, [row.id]: e.target.value }))}
+                            />
+                            <div className="flex gap-1 justify-end">
+                              <button
+                                type="button"
+                                className="px-2 py-0.5 rounded text-[10px] border border-outline-variant hover:bg-surface-bright"
+                                onClick={() => {
+                                  setStagedStatus((prev) => {
+                                    const n = { ...prev }; delete n[row.id]; return n
+                                  })
+                                  setStagedNotes((prev) => {
+                                    const n = { ...prev }; delete n[row.id]; return n
+                                  })
+                                }}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="button"
+                                className="px-2 py-0.5 rounded text-[10px] bg-primary text-on-primary font-medium hover:bg-primary/90 flex items-center gap-1"
+                                onClick={() => {
+                                  const status = stagedStatus[row.id]
+                                  if (tab === 'volunteers') {
+                                    patchVolunteer(row.id, {
+                                      status,
+                                      status_note: stagedNotes[row.id] || '',
+                                    })
+                                    return
+                                  }
+                                  updateStatus(
+                                    row.id,
+                                    status,
+                                    tab === 'partners'
+                                      ? outreachApi.updateSponsorInquiry
+                                      : tab === 'speakers'
+                                        ? outreachApi.updateSpeakerApplication
+                                        : outreachApi.updateTicketWaitlist,
+                                  )
+                                }}
+                              >
+                                <span className="material-symbols-outlined text-[12px]">check</span>
+                                Apply
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                   {expandedId === row.id && detail && (
                     <tr>
                       <td colSpan={6} className="pb-6">
-                        <div className="glass-panel p-6 rounded-xl text-sm space-y-3">
-                          {tab === 'partners' && detail.requirements && (
-                            <p><span className="text-on-surface-variant">Requirements:</span> {detail.requirements}</p>
-                          )}
-                          {tab === 'speakers' && (
-                            <>
-                              <p><span className="text-on-surface-variant">Bio:</span> {detail.bio}</p>
-                              <p><span className="text-on-surface-variant">Abstract:</span> {detail.abstract}</p>
-                              <p><span className="text-on-surface-variant">Takeaways:</span> {detail.key_takeaways}</p>
-                              {(detail.linkedin_url || detail.twitter_handle) && (
-                                <p>
-                                  <span className="text-on-surface-variant">Social:</span>{' '}
-                                  {detail.linkedin_url} {detail.twitter_handle}
-                                </p>
+                        <div className="glass-panel p-8 rounded-2xl shadow-xl border-primary/10 overflow-hidden relative">
+                          <div className="absolute top-0 left-0 w-1 h-full bg-primary/20" />
+                          <div className="flex justify-between items-center mb-6">
+                            <h4 className="text-base font-semibold text-primary flex items-center gap-2">
+                              <span className="material-symbols-outlined">description</span>
+                              Application Details
+                            </h4>
+                            <div className="flex items-center gap-2 text-xs text-on-surface-variant">
+                              <span className="material-symbols-outlined text-sm">schedule</span>
+                              Submitted {formatDate(detail.created_at)}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-6">
+                              {tab === 'partners' && (
+                                <div className="space-y-4">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Company Bio / Requirements</label>
+                                    <p className="text-on-surface leading-relaxed">{detail.requirements || 'N/A'}</p>
+                                  </div>
+                                </div>
                               )}
-                            </>
-                          )}
-                          {tab === 'volunteers' && (
-                            <>
-                              <p><span className="text-on-surface-variant">Skills:</span> {detail.skills_summary}</p>
-                              <p><span className="text-on-surface-variant">Motivation:</span> {detail.motivation}</p>
-                              {(detail.city || detail.country) && (
-                                <p>
-                                  <span className="text-on-surface-variant">Location:</span>{' '}
-                                  {[detail.city, detail.country].filter(Boolean).join(', ')}
-                                </p>
+
+                              {tab === 'speakers' && (
+                                <div className="space-y-6">
+                                  <div className="flex gap-4">
+                                    {detail.profile_image_url && (
+                                      <img
+                                        src={detail.profile_image_url}
+                                        alt=""
+                                        className="w-24 h-24 rounded-2xl object-cover border-2 border-primary/10"
+                                      />
+                                    )}
+                                    <div className="space-y-2">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Social Links</label>
+                                      <div className="flex flex-col gap-2">
+                                        {detail.linkedin_url && (
+                                          <a href={detail.linkedin_url} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
+                                            <span className="material-symbols-outlined text-[14px]">link</span> LinkedIn Profile
+                                          </a>
+                                        )}
+                                        {detail.twitter_handle && (
+                                          <div className="text-on-surface flex items-center gap-1 text-xs">
+                                            <span className="material-symbols-outlined text-[14px]">alternate_email</span> @{detail.twitter_handle}
+                                          </div>
+                                        )}
+                                        {detail.instagram_handle && (
+                                          <div className="text-on-surface flex items-center gap-1 text-xs">
+                                            <span className="material-symbols-outlined text-[14px]">group</span> {detail.instagram_handle} (IG)
+                                          </div>
+                                        )}
+                                        {!detail.linkedin_url && !detail.twitter_handle && !detail.instagram_handle && <span className="text-on-surface-variant italic text-xs">No social links provided</span>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4 pt-2">
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Track</label>
+                                      <p className="text-on-surface text-sm">{detail.track_label || detail.track}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Format</label>
+                                      <p className="text-on-surface text-sm">{detail.session_format_label || detail.session_format}</p>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Speaker Bio</label>
+                                    <p className="text-on-surface leading-relaxed bg-surface-container/30 p-3 rounded-lg border border-outline-variant/20">{detail.bio}</p>
+                                  </div>
+                                </div>
                               )}
-                              <div className="flex flex-wrap gap-4 pt-2">
-                                <label className="flex flex-col gap-1">
-                                  <span className="text-on-surface-variant text-xs uppercase">Assigned role</span>
-                                  <select
-                                    className="bg-surface-container border border-outline-variant/40 rounded-lg px-2 py-1"
-                                    value={detail.assigned_role?.id || ''}
-                                    disabled={updatingId === detail.id}
-                                    onChange={(e) =>
-                                      patchVolunteer(detail.id, {
-                                        assigned_role_id: e.target.value || null,
-                                      })
-                                    }
-                                  >
-                                    <option value="">—</option>
-                                    {volunteerRoles.map((r) => (
-                                      <option key={r.id} value={r.id}>{r.name}</option>
-                                    ))}
-                                  </select>
-                                </label>
-                              </div>
-                              <label className="block pt-2">
-                                <span className="text-on-surface-variant text-xs uppercase">Admin notes</span>
-                                <textarea
-                                  className="mt-1 w-full bg-surface-container border border-outline-variant/40 rounded-lg px-3 py-2 min-h-[80px]"
-                                  defaultValue={detail.admin_notes || ''}
-                                  disabled={updatingId === detail.id}
-                                  onBlur={(e) => {
-                                    if (e.target.value !== (detail.admin_notes || '')) {
-                                      patchVolunteer(detail.id, { admin_notes: e.target.value })
-                                    }
-                                  }}
-                                />
-                              </label>
-                            </>
-                          )}
+
+                              {tab === 'waitlist' && (
+                                <div className="space-y-6">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Waitlist Interest</label>
+                                    <p className="text-on-surface text-lg font-medium">{detail.tier_interest_label || detail.tier_interest}</p>
+                                  </div>
+                                  <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
+                                    <p className="text-xs text-primary font-medium mb-1">Waitlist Management</p>
+                                    <p className="text-[11px] text-on-surface-variant">Update the status above to move this person through the registration funnel.</p>
+                                  </div>
+                                </div>
+                              )}
+
+                              {tab === 'volunteers' && (
+                                <div className="space-y-6">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Location</label>
+                                      <p className="text-on-surface flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-sm">location_on</span>
+                                        {[detail.city, detail.country].filter(Boolean).join(', ') || 'Remote'}
+                                      </p>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Current Status</label>
+                                      <p className="text-on-surface">{detail.status_label}</p>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Motivation & Interest</label>
+                                    <p className="text-on-surface leading-relaxed bg-surface-container/30 p-3 rounded-lg border border-outline-variant/20">{detail.motivation}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="space-y-6">
+                              {tab === 'speakers' && (
+                                <div className="space-y-6">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Talk Title & Abstract</label>
+                                    <h5 className="text-sm font-bold text-on-surface">{detail.session_title}</h5>
+                                    <p className="text-on-surface leading-relaxed text-sm pt-1">{detail.abstract}</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Key Takeaways</label>
+                                    <p className="text-on-surface-variant leading-relaxed text-xs italic">"{detail.key_takeaways}"</p>
+                                  </div>
+                                  {detail.tech_requirements && (
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Technical Requirements</label>
+                                      <p className="text-on-surface text-xs leading-relaxed">{detail.tech_requirements}</p>
+                                    </div>
+                                  )}
+                                  {detail.co_speakers && (
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Co-Speakers</label>
+                                      <p className="text-on-surface text-xs leading-relaxed">{detail.co_speakers}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {tab === 'volunteers' && (
+                                <div className="space-y-6">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Skills Summary</label>
+                                    <p className="text-on-surface leading-relaxed">{detail.skills_summary}</p>
+                                  </div>
+                                  
+                                  <div className="pt-4 border-t border-outline-variant/30 space-y-4">
+                                    <div className="flex flex-wrap gap-4">
+                                      <label className="flex flex-col gap-1.5 flex-1 max-w-[240px]">
+                                        <span className="text-[10px] uppercase font-bold text-primary tracking-wider">Assignment Decision</span>
+                                        <div className="flex items-center gap-2">
+                                          <select
+                                            className="bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-sm w-full focus:ring-2 focus:ring-primary/20 transition-all"
+                                            value={detail.assigned_role?.id || ''}
+                                            disabled={updatingId === detail.id}
+                                            onChange={(e) =>
+                                              patchVolunteer(detail.id, {
+                                                assigned_role_id: e.target.value || null,
+                                              })
+                                            }
+                                          >
+                                            <option value="">No Role Assigned</option>
+                                            {volunteerRoles.map((r) => (
+                                              <option key={r.id} value={r.id}>{r.name}</option>
+                                            ))}
+                                          </select>
+                                          {updatingId === detail.id && (
+                                            <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
+                                          )}
+                                        </div>
+                                      </label>
+                                    </div>
+
+                                    <label className="block">
+                                      <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Private Admin Review Notes</span>
+                                      <textarea
+                                        className="mt-2 w-full bg-surface-container border border-outline-variant/40 rounded-xl px-4 py-3 text-sm min-h-[120px] focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/40"
+                                        placeholder="Add private notes only visible to staff..."
+                                        defaultValue={detail.admin_notes || ''}
+                                        disabled={updatingId === detail.id}
+                                        onBlur={(e) => {
+                                          if (e.target.value !== (detail.admin_notes || '')) {
+                                            patchVolunteer(detail.id, { admin_notes: e.target.value })
+                                          }
+                                        }}
+                                      />
+                                    </label>
+                                  </div>
+                                </div>
+                              )}
+
+                              {tab === 'partners' && (
+                                <div className="space-y-4 pt-4 border-t border-outline-variant/30">
+                                   <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
+                                      <p className="text-xs text-primary font-medium mb-1">Status Management</p>
+                                      <p className="text-[11px] text-on-surface-variant">Update the partner status above to notify them of their acceptance or review stage.</p>
+                                   </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </td>
                     </tr>

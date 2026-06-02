@@ -1,5 +1,8 @@
+import mimetypes
+
 from rest_framework import serializers
 
+from apps.cms.models import MediaAsset
 from apps.cms.sponsorship import inquiry_tier_slugs, tier_label_for_slug
 from apps.outreach.models import (
     SpeakerApplication,
@@ -17,7 +20,30 @@ from common.form_validators import (
     validate_optional_url,
     validate_person_name,
 )
+from common.media_urls import public_media_url
 from common.security import HoneypotSerializerMixin
+
+
+def _create_speaker_profile_asset(uploaded):
+    mime, _ = mimetypes.guess_type(uploaded.name)
+    return MediaAsset.objects.create(
+        title=uploaded.name,
+        folder='speaker-applications/photos',
+        file=uploaded,
+        mime_type=mime or getattr(uploaded, 'content_type', '') or '',
+        file_size=uploaded.size,
+    )
+
+
+def _create_speaker_cv_asset(uploaded):
+    mime, _ = mimetypes.guess_type(uploaded.name)
+    return MediaAsset.objects.create(
+        title=uploaded.name,
+        folder='speaker-applications/cvs',
+        file=uploaded,
+        mime_type=mime or getattr(uploaded, 'content_type', '') or '',
+        file_size=uploaded.size,
+    )
 
 
 class SponsorInquiryCreateSerializer(HoneypotSerializerMixin, serializers.ModelSerializer):
@@ -82,14 +108,48 @@ class SponsorInquiryAdminSerializer(serializers.ModelSerializer):
 
 
 class SpeakerApplicationCreateSerializer(HoneypotSerializerMixin, serializers.ModelSerializer):
+    profile_photo = serializers.FileField(write_only=True)
+    cv = serializers.FileField(write_only=True)
+
     class Meta:
         model = SpeakerApplication
         fields = [
-            'full_name', 'email', 'professional_title', 'organization', 'bio',
+            'full_name', 'email', 'occupation', 'role', 'professional_title', 'organization', 'bio',
+            'profile_photo', 'cv',
             'linkedin_url', 'twitter_handle', 'instagram_handle',
             'session_title', 'track', 'session_format', 'target_audience',
             'abstract', 'key_takeaways', 'tech_requirements', 'co_speakers',
         ]
+
+    def validate_profile_photo(self, value):
+        if value.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError('Profile photo must be 5MB or smaller.')
+        content_type = getattr(value, 'content_type', '') or ''
+        name = (getattr(value, 'name', '') or '').lower()
+        if content_type and not content_type.startswith('image/'):
+            raise serializers.ValidationError('Profile photo must be an image file.')
+        if not content_type and not name.endswith(('.jpg', '.jpeg', '.png', '.webp', '.gif')):
+            raise serializers.ValidationError('Profile photo must be an image file.')
+        return value
+
+    def validate_cv(self, value):
+        if value.size > 10 * 1024 * 1024:
+            raise serializers.ValidationError('CV file must be 10MB or smaller.')
+        content_type = getattr(value, 'content_type', '') or ''
+        name = (getattr(value, 'name', '') or '').lower()
+        allowed_exts = ('.pdf', '.doc', '.docx', '.odt')
+        if content_type and content_type not in (
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.oasis.opendocument.text',
+        ):
+            # Fallback to extension check if mime type is generic
+            if not name.endswith(allowed_exts):
+                raise serializers.ValidationError('CV must be a PDF or Word document.')
+        elif not name.endswith(allowed_exts):
+            raise serializers.ValidationError('CV must be a PDF or Word document.')
+        return value
 
     def validate_full_name(self, value):
         return validate_person_name(value, 'Full name')
@@ -155,6 +215,17 @@ class SpeakerApplicationCreateSerializer(HoneypotSerializerMixin, serializers.Mo
     def validate_instagram_handle(self, value):
         return (value or '').strip()[:120]
 
+    def create(self, validated_data):
+        photo = validated_data.pop('profile_photo')
+        cv = validated_data.pop('cv')
+        photo_asset = _create_speaker_profile_asset(photo)
+        cv_asset = _create_speaker_cv_asset(cv)
+        return SpeakerApplication.objects.create(
+            profile_image_asset=photo_asset,
+            cv_asset=cv_asset,
+            **validated_data,
+        )
+
 
 class SpeakerApplicationSerializer(serializers.ModelSerializer):
     track_label = serializers.CharField(source='get_track_display', read_only=True)
@@ -163,7 +234,7 @@ class SpeakerApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpeakerApplication
         fields = [
-            'id', 'full_name', 'email', 'professional_title', 'organization',
+            'id', 'full_name', 'email', 'occupation', 'role', 'professional_title', 'organization',
             'session_title', 'track', 'track_label', 'session_format',
             'session_format_label', 'status', 'created_at',
         ]
@@ -173,23 +244,37 @@ class SpeakerApplicationSerializer(serializers.ModelSerializer):
 class SpeakerApplicationAdminSerializer(serializers.ModelSerializer):
     track_label = serializers.CharField(source='get_track_display', read_only=True)
     session_format_label = serializers.CharField(source='get_session_format_display', read_only=True)
+    profile_image_url = serializers.SerializerMethodField()
+    cv_url = serializers.SerializerMethodField()
 
     class Meta:
         model = SpeakerApplication
         fields = [
-            'id', 'full_name', 'email', 'professional_title', 'organization', 'bio',
+            'id', 'full_name', 'email', 'occupation', 'role', 'professional_title', 'organization', 'bio',
+            'profile_image_url', 'cv_url',
             'linkedin_url', 'twitter_handle', 'instagram_handle',
             'session_title', 'track', 'track_label', 'session_format', 'session_format_label',
             'target_audience', 'abstract', 'key_takeaways', 'tech_requirements', 'co_speakers',
             'status', 'created_at', 'updated_at',
         ]
         read_only_fields = [
-            'id', 'full_name', 'email', 'professional_title', 'organization', 'bio',
+            'id', 'full_name', 'email', 'occupation', 'role', 'professional_title', 'organization', 'bio',
+            'profile_image_url', 'cv_url',
             'linkedin_url', 'twitter_handle', 'instagram_handle',
             'session_title', 'track', 'session_format', 'target_audience',
             'abstract', 'key_takeaways', 'tech_requirements', 'co_speakers',
             'created_at', 'updated_at',
         ]
+
+    def get_profile_image_url(self, obj):
+        if not obj.profile_image_asset_id or not obj.profile_image_asset:
+            return ''
+        return public_media_url(obj.profile_image_asset.file, self.context.get('request'))
+
+    def get_cv_url(self, obj):
+        if not obj.cv_asset_id or not obj.cv_asset:
+            return ''
+        return public_media_url(obj.cv_asset.file, self.context.get('request'))
 
     def validate_status(self, value):
         if value not in SpeakerApplicationStatus.values:

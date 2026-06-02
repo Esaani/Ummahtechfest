@@ -24,6 +24,7 @@ const INITIAL_FORM = {
   phone: '',
   city: '',
   country: 'Ghana',
+  occupation: '',
   skills_summary: '',
   motivation: '',
   experience_years: 0,
@@ -32,6 +33,10 @@ const INITIAL_FORM = {
   availability: { days: [] },
   preferred_role_ids: [],
   code_of_conduct_accepted: false,
+  cv: null,
+  cvName: '',
+  profile_photo: null,
+  profilePhotoPreview: '',
 }
 
 export default function VolunteerApply() {
@@ -90,14 +95,22 @@ export default function VolunteerApply() {
         }
         break
       case 2:
-        if (!form.city.trim() || !form.country.trim()) {
-          setError('City and country are required.')
+        if (!form.city.trim() || !form.country.trim() || !form.occupation.trim()) {
+          setError('City, country, and occupation are required.')
           return false
         }
         break
       case 3:
         if (!form.skills_summary.trim() || !form.motivation.trim()) {
           setError('Please share your skills and motivation.')
+          return false
+        }
+        if (!form.cv) {
+          setError('Please upload your CV/Resume.')
+          return false
+        }
+        if (!form.profile_photo) {
+          setError('Please upload a profile photo.')
           return false
         }
         break
@@ -138,11 +151,24 @@ export default function VolunteerApply() {
     setError('')
     setSubmitting(true)
     try {
-      await volunteerApi.submitApplication({
-        ...form,
-        experience_years: Number(form.experience_years) || 0,
-        website: honeypot,
-      })
+      const body = new FormData()
+      body.append('phone', form.phone)
+      body.append('city', form.city)
+      body.append('country', form.country)
+      body.append('occupation', form.occupation)
+      body.append('skills_summary', form.skills_summary)
+      body.append('motivation', form.motivation)
+      body.append('experience_years', Number(form.experience_years) || 0)
+      body.append('portfolio_url', form.portfolio_url)
+      body.append('linkedin_url', form.linkedin_url)
+      body.append('code_of_conduct_accepted', form.code_of_conduct_accepted)
+      body.append('availability', JSON.stringify(form.availability))
+      form.preferred_role_ids.forEach(id => body.append('preferred_role_ids', id))
+      if (form.cv) body.append('cv', form.cv)
+      if (form.profile_photo) body.append('profile_photo', form.profile_photo)
+      if (honeypot) body.append('website', honeypot)
+
+      await volunteerApi.submitApplication(body)
       navigate('/volunteer/status')
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Submission failed. Please try again.')
@@ -301,6 +327,16 @@ export default function VolunteerApply() {
                   required
                 />
               </div>
+              <div>
+                <label className="label-md uppercase tracking-widest text-secondary block mb-2">Occupation</label>
+                <input
+                  className="w-full h-14 bg-surface-container-low border border-outline-variant/30 rounded-lg px-4 text-on-surface"
+                  value={form.occupation}
+                  onChange={(e) => updateForm({ occupation: e.target.value })}
+                  placeholder="e.g. Software Engineer, Student"
+                  required
+                />
+              </div>
             </div>
           </div>
         )}
@@ -358,6 +394,52 @@ export default function VolunteerApply() {
                 onChange={(e) => updateForm({ linkedin_url: e.target.value })}
                 placeholder="https://linkedin.com/in/..."
               />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4">
+              <div>
+                <label className="label-md uppercase tracking-widest text-secondary block mb-2">Profile Photo</label>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        updateForm({
+                          profile_photo: file,
+                          profilePhotoPreview: URL.createObjectURL(file)
+                        })
+                      }
+                    }}
+                    className="block w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-fixed/15 file:text-primary-fixed file:font-bold file:uppercase file:text-[10px]"
+                  />
+                  {form.profilePhotoPreview && (
+                    <img src={form.profilePhotoPreview} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-outline-variant/30" />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label className="label-md uppercase tracking-widest text-secondary block mb-2">CV / Resume</label>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        updateForm({
+                          cv: file,
+                          cvName: file.name
+                        })
+                      }
+                    }}
+                    className="block w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-fixed/15 file:text-primary-fixed file:font-bold file:uppercase file:text-[10px]"
+                  />
+                  {form.cvName && (
+                    <span className="text-[10px] text-primary-fixed font-medium italic">Selected: {form.cvName}</span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}

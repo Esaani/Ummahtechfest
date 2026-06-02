@@ -23,6 +23,16 @@ ROLES = [
      'Turn raw footage into recap videos and promotional edits.'),
     ('social-media', 'Social Media Content Creator', VolunteerRoleCategory.CREATIVE_MEDIA,
      'Plan and create platform-ready posts and campaign content.'),
+    ('coding-trainer', 'Coding Trainer', VolunteerRoleCategory.TECHNICAL_TRAINING,
+     'Teach and guide participants through coding exercises and best practices.'),
+    ('ai-facilitator', 'AI & Emerging Tech Facilitator', VolunteerRoleCategory.TECHNICAL_TRAINING,
+     'Facilitate sessions on AI tools, ethics, and emerging technological trends.'),
+    ('tech-mentor', 'Tech Mentor', VolunteerRoleCategory.TECHNICAL_TRAINING,
+     'Provide one-on-one or small group guidance to aspiring tech professionals.'),
+    ('stem-education', 'STEM Education Volunteer', VolunteerRoleCategory.TECHNICAL_TRAINING,
+     'Support educational initiatives and hands-on STEM activities.'),
+    ('tech-support-volunteer', 'Technical Support Volunteer', VolunteerRoleCategory.TECHNICAL_TRAINING,
+     'Provide on-site technical assistance for venue setup and equipment.'),
 ]
 
 
