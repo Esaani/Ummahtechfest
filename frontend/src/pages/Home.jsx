@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError, cmsApi, outreachApi } from '../api/client'
+import DonationWidget from '../components/DonationWidget.jsx'
+import DonationModal from '../components/DonationModal.jsx'
 import SpeakerBioModal from '../components/SpeakerBioModal'
 import HoneypotField from '../components/HoneypotField'
 import { FormField, FormInput } from '../components/forms/FormField'
@@ -58,7 +60,7 @@ const DEFAULT_STATS = {
 
 const DEFAULT_PARTNERS = {
   title: 'Global Partners & Sponsors',
-  names: ['TECH-HUB', 'ISLAMIC-FIN', 'AFRICA-CLOUD', 'MODERN-HALAL', 'ACCRA-VENTURES', 'GLOBAL-MUSLIM', 'WEST-AFRICA-VC', 'HALAL-TECH'],
+  names: [],
 }
 
 const DEFAULT_CTA = {
@@ -71,6 +73,7 @@ const DEFAULT_CTA = {
 
 export default function Home() {
   const { get } = useCmsSections('home')
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false)
   const hero = { ...DEFAULT_HERO, ...get('home-hero') }
   const whyBuild = { ...DEFAULT_WHY_BUILD, ...get('home-why-build') }
   const stats = { ...DEFAULT_STATS, ...get('home-stats') }
@@ -78,14 +81,17 @@ export default function Home() {
   const finalCta = { ...DEFAULT_CTA, ...get('home-final-cta') }
   const whyCards = whyBuild.cards?.length ? whyBuild.cards : DEFAULT_WHY_BUILD.cards
   const statItems = stats.items
-  const [partnerNames, setPartnerNames] = useState(DEFAULT_PARTNERS.names)
+  const [partnerNames, setPartnerNames] = useState([])
 
+  // Homepage marquee uses global_partner tier only (Admin → Sponsors → Homepage logos → Global partners).
+  // Do not merge sponsor tier here — that caused seeded names (Flutterwave, Paystack, etc.) to appear
+  // when only global_partner was configured.
   useEffect(() => {
     cmsApi
-      .publicSponsors()
+      .publicSponsors('global_partner')
       .then((res) => {
-        const names = (res.data || []).map((s) => s.name)
-        if (names.length) setPartnerNames(names)
+        const names = (res.data || []).map((s) => s.name).filter(Boolean)
+        setPartnerNames(names)
       })
       .catch(() => {})
   }, [])
@@ -195,16 +201,20 @@ export default function Home() {
           {partners.title}
         </p>
         <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
-          <div className="flex gap-16 md:gap-24 w-max animate-marquee">
-            {[...partnerNames, ...partnerNames].map((name, i) => (
-              <div
-                key={i}
-                className="text-sm md:text-xl font-headline text-primary opacity-50 hover:opacity-100 hover:text-primary-fixed transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0"
-              >
-                {name}
-              </div>
-            ))}
-          </div>
+          {partnerNames.length === 0 ? (
+            <p className="text-center text-sm text-on-surface-variant/60 py-2">Partner announcements coming soon</p>
+          ) : (
+            <div className="flex gap-16 md:gap-24 w-max animate-marquee">
+              {[...partnerNames, ...partnerNames].map((name, i) => (
+                <div
+                  key={`${name}-${i}`}
+                  className="text-sm md:text-xl font-headline text-primary opacity-50 hover:opacity-100 hover:text-primary-fixed transition-all duration-300 whitespace-nowrap shrink-0"
+                >
+                  {name}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -230,7 +240,8 @@ export default function Home() {
       <Speakers />
       <AgendaPreview />
       <Waitlist />
-      <FinalCta cta={finalCta} />
+      <FinalCta cta={finalCta} onDonateClick={() => setIsDonationModalOpen(true)} />
+      <DonationModal isOpen={isDonationModalOpen} onClose={() => setIsDonationModalOpen(false)} />
     </main>
   )
 }
@@ -557,20 +568,45 @@ function Waitlist() {
   )
 }
 
-function FinalCta({ cta }) {
+function FinalCta({ cta, onDonateClick }) {
   return (
     <section className="py-10 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-6 md:mb-20">
-      <div className="relative bg-primary-fixed p-8 md:p-16 overflow-hidden rounded-3xl group shadow-[0_20px_50px_rgba(163,250,1,0.3)]">
+      <div className="relative bg-primary-fixed p-8 md:p-12 lg:p-16 overflow-hidden rounded-3xl group shadow-[0_20px_50px_rgba(163,250,1,0.3)]">
         <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-black/5 rounded-full -mr-32 md:-mr-64 -mt-32 md:-mt-64 transition-transform duration-1000 group-hover:scale-125" />
-        <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="inline-block px-4 md:px-6 py-1 md:py-2 bg-black text-primary-fixed text-[10px] md:label-md rounded-full mb-6 md:mb-8 uppercase tracking-widest font-black">
-            {cta.badge}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+            <div className="inline-block px-4 md:px-6 py-1 md:py-2 bg-black text-primary-fixed text-[10px] md:label-md rounded-full mb-6 uppercase tracking-widest font-black">
+              {cta.badge}
+            </div>
+            <h2 className="text-3xl md:text-5xl lg:headline-xl text-on-primary-fixed uppercase mb-6 max-w-4xl leading-tight">
+              {cta.headline}
+            </h2>
+            <p className="body-md md:body-lg text-on-primary-fixed-variant mb-8 max-w-2xl font-medium opacity-90 text-sm md:text-base">
+              {cta.body}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <Link
+                to={cta.button_url || '/signup'}
+                className="bg-background text-primary-fixed px-12 md:px-16 py-4 md:py-6 text-base md:headline-sm font-black uppercase tracking-[0.1em] hover:scale-105 transition-all duration-500 shadow-2xl rounded-xl text-center"
+              >
+                {cta.button_text}
+              </Link>
+            </div>
           </div>
-          <h2 className="text-3xl md:text-5xl lg:headline-xl text-on-primary-fixed uppercase mb-6 md:mb-8 max-w-4xl leading-tight">{cta.headline}</h2>
-          <p className="body-md md:body-lg text-on-primary-fixed-variant mb-8 md:mb-12 max-w-2xl font-medium opacity-90 text-sm md:text-base">{cta.body}</p>
-          <Link to={cta.button_url || '/signup'} className="bg-background text-primary-fixed px-12 md:px-20 py-4 md:py-8 text-base md:headline-sm font-black uppercase tracking-[0.1em] md:tracking-[0.2em] hover:scale-110 transition-all duration-500 shadow-2xl rounded-xl inline-block">
-            {cta.button_text}
-          </Link>
+
+          <div className="glass-panel p-8 md:p-10 rounded-2xl border border-black/10 bg-black/5 backdrop-blur-sm flex flex-col items-center text-center">
+            <span className="material-symbols-outlined text-black text-5xl mb-6 opacity-40">volunteer_activism</span>
+            <h3 className="headline-sm text-on-primary-fixed uppercase mb-4">Support the Mission</h3>
+            <p className="body-md text-on-primary-fixed-variant mb-8 opacity-80">
+              Help us provide scholarships, workshops, and community tools. Your contribution drives the future of Muslim Tech.
+            </p>
+            <button
+              onClick={onDonateClick}
+              className="w-full bg-black text-primary-fixed py-4 rounded-xl label-md font-black uppercase tracking-widest hover:scale-105 transition-all duration-500"
+            >
+              Donate Now
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -159,7 +159,7 @@ function DesktopAuthActions({ onNavigate }) {
         onClick={onNavigate}
         className="hidden xl:inline-flex items-center bg-primary-fixed text-on-primary-fixed px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all whitespace-nowrap"
       >
-        Register
+        Get your pass
       </Link>
     </div>
   )
@@ -288,7 +288,7 @@ export default function Header() {
           {!isAuthenticated ? (
             <>
               <Link to="/signup" onClick={closeMenu} className="w-full py-4 border-2 border-primary-fixed text-primary-fixed rounded-2xl flex items-center justify-center text-sm font-bold uppercase tracking-widest">
-                Get event pass
+                Get your pass
               </Link>
               <Link to="/login" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
                 Login

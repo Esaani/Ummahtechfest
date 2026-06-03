@@ -39,6 +39,13 @@ class PassType(BaseModel):
         default=True,
         help_text='When false, signup shows “coming soon” for this pass.',
     )
+    price_ghs = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='Ticket price in GHS. Falls back to PASS_DEFAULT_PRICES_GHS in settings if empty.',
+    )
 
     class Meta:
         db_table = 'pass_types'

@@ -3,10 +3,13 @@ import { getPass } from '../config/passes'
 
 const STATUS_COPY = {
   pending_payment: {
-    icon: 'hourglass_top',
+    icon: 'payments',
     title: 'Registration received',
-    body: 'Your pass registration is saved. Online payment is coming soon — we will email you when you can complete payment.',
-    cta: 'View registration status',
+    body: 'Your pass registration is saved. Complete payment now to secure your spot.',
+    cta: 'Pay now',
+    ctaTo: '/payment',
+    secondaryCta: 'View registration status',
+    secondaryTo: '/registration/status',
   },
   submitted: {
     icon: 'mark_email_read',
@@ -34,17 +37,26 @@ export default function RegistrationConfirmation() {
       <p className="body-lg text-on-surface-variant mb-10">{copy.body}</p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
-          to="/registration/status"
+          to={copy.ctaTo || '/registration/status'}
           className="btn-primary px-8 py-3 rounded-full font-bold uppercase tracking-widest"
         >
           {copy.cta}
         </Link>
-        <Link
-          to="/signup"
-          className="btn-secondary px-8 py-3 rounded-full font-bold uppercase tracking-widest"
-        >
-          Back to passes
-        </Link>
+        {copy.secondaryTo ? (
+          <Link
+            to={copy.secondaryTo}
+            className="btn-secondary px-8 py-3 rounded-full font-bold uppercase tracking-widest"
+          >
+            {copy.secondaryCta}
+          </Link>
+        ) : (
+          <Link
+            to="/signup"
+            className="btn-secondary px-8 py-3 rounded-full font-bold uppercase tracking-widest"
+          >
+            Back to passes
+          </Link>
+        )}
       </div>
     </main>
   )

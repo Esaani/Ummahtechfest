@@ -1,0 +1,5 @@
+Thank you — {{ site_name }}
+
+Hi {{ donor_name }},
+
+We received your donation of {{ amount }} {{ currency }}. JazakAllah khair for supporting Ummah Tech Fest.

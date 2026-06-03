@@ -16,7 +16,7 @@ class PassTypeSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'slug', 'name', 'description', 'flow', 'is_open_for_registration',
             'sort_order', 'icon', 'tag', 'features', 'cta', 'color', 'outline', 'wired',
-            'show_on_signup', 'is_active',
+            'show_on_signup', 'is_active', 'price_ghs',
         ]
 
 
@@ -26,7 +26,8 @@ class PassTypeAdminSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'slug', 'name', 'description', 'flow', 'is_active', 'is_open_for_registration',
             'sort_order', 'icon', 'tag', 'features', 'cta_label', 'display_color',
-            'is_outline_style', 'show_on_signup', 'is_wired', 'created_at', 'updated_at',
+            'is_outline_style', 'show_on_signup', 'is_wired', 'price_ghs',
+            'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'slug', 'created_at', 'updated_at']
 

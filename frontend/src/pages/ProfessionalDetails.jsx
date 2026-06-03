@@ -82,9 +82,9 @@ function ProfessionalDetailsForm({ pass }) {
               <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
               <span className="label-md">Details</span>
             </div>
-            <div className="flex items-center gap-3 p-3 text-on-surface-variant/40 opacity-50" title="Coming soon">
+            <div className="flex items-center gap-3 p-3 text-on-surface-variant/40 opacity-50">
               <span className="material-symbols-outlined">payments</span>
-              <span className="label-md">Payment (soon)</span>
+              <span className="label-md">Payment (after submit)</span>
             </div>
           </nav>
         </aside>

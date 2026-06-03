@@ -77,10 +77,7 @@ DEFAULT_SECTIONS = [
         'sort_order': 30,
         'content': {
             'title': 'Global Partners & Sponsors',
-            'names': [
-                'TECH-HUB', 'ISLAMIC-FIN', 'AFRICA-CLOUD', 'MODERN-HALAL',
-                'ACCRA-VENTURES', 'GLOBAL-MUSLIM', 'WEST-AFRICA-VC', 'HALAL-TECH',
-            ],
+            'names': [],
         },
     },
     {

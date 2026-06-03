@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError, registrationsApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
-import { GATED_STEPS } from '../config/passes'
 
 const STATUS_LABELS = {
   pending_payment: { label: 'Pending payment', color: 'text-secondary' },
+  paid: { label: 'Paid', color: 'text-primary-fixed' },
   submitted: { label: 'Under review', color: 'text-secondary' },
   approved: { label: 'Approved', color: 'text-primary-fixed' },
   rejected: { label: 'Not approved', color: 'text-error' },
@@ -106,9 +106,14 @@ export default function RegistrationStatus() {
       </div>
 
       {data.status === 'pending_payment' && (
-        <div className="mt-8 p-6 rounded-xl bg-secondary/10 border border-secondary/20">
-          <p className="label-md text-secondary font-bold mb-2">{GATED_STEPS.payment.title} — coming soon</p>
-          <p className="body-md text-on-surface-variant">{GATED_STEPS.payment.message}</p>
+        <div className="mt-8 p-6 rounded-xl bg-primary-fixed/10 border border-primary-fixed/30">
+          <p className="label-md text-primary-fixed font-bold mb-2">Payment required</p>
+          <p className="body-md text-on-surface-variant mb-4">
+            Complete your pass payment securely (card or mobile money).
+          </p>
+          <Link to="/payment" className="btn-primary px-6 py-3 rounded-full label-md font-bold inline-block">
+            Pay now
+          </Link>
         </div>
       )}
 

@@ -22,6 +22,8 @@ import SpecialAccess from './pages/SpecialAccess.jsx'
 import ProfessionalDetails from './pages/ProfessionalDetails.jsx'
 import Verification from './pages/Verification.jsx'
 import Payment from './pages/Payment.jsx'
+import PaymentVerify from './pages/PaymentVerify.jsx'
+import DonateVerify from './pages/DonateVerify.jsx'
 import Success from './pages/Success.jsx'
 import RegistrationConfirmation from './pages/RegistrationConfirmation.jsx'
 import RegistrationStatus from './pages/RegistrationStatus.jsx'
@@ -41,7 +43,7 @@ function AppContent() {
   const location = useLocation()
   const hideNav = [
     '/login', '/forgot-password', '/reset-password', '/accept-invite', '/create-account', '/special-access',
-    '/professional-details', '/verification', '/payment', '/success',
+    '/professional-details', '/verification', '/payment', '/payment/verify', '/donate/verify', '/success',
     '/registration/confirmation', '/registration/status',
   ].includes(location.pathname) || location.pathname.startsWith('/admin')
 
@@ -89,6 +91,8 @@ function AppContent() {
         <Route path="/professional-details" element={<ProfessionalDetails />} />
         <Route path="/verification" element={<Verification />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/payment/verify" element={<PaymentVerify />} />
+        <Route path="/donate/verify" element={<DonateVerify />} />
         <Route path="/success" element={<Success />} />
         <Route path="/registration/confirmation" element={<RegistrationConfirmation />} />
         <Route path="/registration/status" element={<RegistrationStatus />} />

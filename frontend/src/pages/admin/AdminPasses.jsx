@@ -23,6 +23,7 @@ const emptyForm = {
   is_active: true,
   is_open_for_registration: true,
   sort_order: 0,
+  price_ghs: '',
 }
 
 function apiToForm(p) {
@@ -41,6 +42,7 @@ function apiToForm(p) {
     is_active: p.is_active,
     is_open_for_registration: p.is_open_for_registration,
     sort_order: p.sort_order,
+    price_ghs: p.price_ghs != null ? String(p.price_ghs) : '',
   }
 }
 
@@ -60,6 +62,7 @@ function formToApi(form) {
     is_active: form.is_active,
     is_open_for_registration: form.is_open_for_registration,
     sort_order: form.sort_order,
+    price_ghs: form.price_ghs === '' ? null : Number(form.price_ghs),
   }
 }
 
@@ -224,6 +227,18 @@ export default function AdminPasses() {
           <label className="flex items-center gap-2">
             <input type="checkbox" checked={form.is_open_for_registration} onChange={(e) => setForm({ ...form, is_open_for_registration: e.target.checked })} />
             Accepting new registrations
+          </label>
+          <label className="block w-full md:w-auto">
+            <span className="label-md text-on-surface-variant block mb-1">Price (GHS)</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className="w-full md:w-40 h-10 px-3 rounded-lg bg-surface-container-low border border-outline-variant/30"
+              value={form.price_ghs}
+              onChange={(e) => setForm({ ...form, price_ghs: e.target.value })}
+              placeholder="e.g. 750"
+            />
           </label>
           <label className="flex items-center gap-2">
             <input type="checkbox" checked={form.is_outline_style} onChange={(e) => setForm({ ...form, is_outline_style: e.target.checked })} />

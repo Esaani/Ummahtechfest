@@ -37,8 +37,8 @@ export default function Login() {
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1200&auto=format&fit=crop" 
-            alt="Abstract Tech" 
+            src="/assets/images/umma-volunteer.webp" 
+            alt="Ummah Tech Fest community" 
             className="w-full h-full object-cover opacity-20 grayscale mix-blend-overlay"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-[#050505] via-transparent to-[#050505] opacity-90"></div>

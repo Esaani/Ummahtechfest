@@ -134,6 +134,12 @@ export const cmsApi = {
   deleteScheduleSession: (id) => apiRequest(`/cms/admin/schedule/${id}/`, { method: 'DELETE' }),
 }
 
+export const paymentsApi = {
+  initializePassPayment: () => apiRequest('/payments/initialize/', { method: 'POST', body: {} }),
+  verify: (reference) => apiRequest(`/payments/verify/${encodeURIComponent(reference)}/`),
+  donate: (data) => apiRequest('/payments/donations/', { method: 'POST', body: data }),
+}
+
 export const volunteerApi = {
   /** Volunteer pathway options (event support, creative media, etc.) */
   listPathways: () => apiRequest('/volunteers/roles/'),

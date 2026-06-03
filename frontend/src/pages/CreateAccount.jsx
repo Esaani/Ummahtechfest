@@ -162,8 +162,8 @@ export default function CreateAccount() {
         <div className="absolute inset-0 z-0">
           <img
             className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
-            alt="Cinematic high-tech digital art"
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1200&auto=format&fit=crop"
+            alt="Ummah Tech Fest community"
+            src="/assets/images/umma-volunteer.webp"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         </div>

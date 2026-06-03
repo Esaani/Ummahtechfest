@@ -8,6 +8,7 @@ SPEAKERS = [
     ('Yusuf Osei', 'Founder @ AccraData', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop', 30),
 ]
 
+# Demo sponsor names — only inserted when the table is empty (first seed on a fresh DB).
 GLOBAL_PARTNERS = [
     ('Google', 10),
     ('Microsoft', 20),
@@ -38,16 +39,24 @@ class Command(BaseCommand):
                     'is_published': True,
                 },
             )
-        for name, order in GLOBAL_PARTNERS:
-            FeaturedSponsor.objects.update_or_create(
-                name=name,
-                tier=SponsorTier.GLOBAL_PARTNER,
-                defaults={'sort_order': order, 'is_published': True},
-            )
-        for name, order in SPONSORS:
-            FeaturedSponsor.objects.update_or_create(
-                name=name,
-                tier=SponsorTier.SPONSOR,
-                defaults={'sort_order': order, 'is_published': True},
-            )
-        self.stdout.write(self.style.SUCCESS('CMS showcase (speakers & sponsors) seeded'))
+
+        if FeaturedSponsor.objects.exists():
+            self.stdout.write('Skipped sponsor logos — entries already exist (manage in Admin → Sponsors → Homepage logos)')
+        else:
+            for name, order in GLOBAL_PARTNERS:
+                FeaturedSponsor.objects.create(
+                    name=name,
+                    tier=SponsorTier.GLOBAL_PARTNER,
+                    sort_order=order,
+                    is_published=True,
+                )
+            for name, order in SPONSORS:
+                FeaturedSponsor.objects.create(
+                    name=name,
+                    tier=SponsorTier.SPONSOR,
+                    sort_order=order,
+                    is_published=True,
+                )
+            self.stdout.write(self.style.SUCCESS('Created demo sponsor logos (first run only)'))
+
+        self.stdout.write(self.style.SUCCESS('CMS showcase seed finished'))

@@ -47,6 +47,14 @@ EMAIL_TEMPLATES = {
         'subject': 'Update regarding your application',
         'template': 'emails/submission_status_updated.html',
     },
+    'pass_payment_received': {
+        'subject': 'Your Ummah Tech Fest pass payment is confirmed',
+        'template': 'emails/pass_payment_received.html',
+    },
+    'donation_received': {
+        'subject': 'Thank you for supporting Ummah Tech Fest',
+        'template': 'emails/donation_received.html',
+    },
 }
 
 

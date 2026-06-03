@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.registrations',
     'apps.cms',
     'apps.outreach',
+    'apps.payments',
 ]
 
 MIDDLEWARE = [
@@ -192,6 +193,18 @@ TELEGRAM_MONITOR_ENABLED = env.bool('TELEGRAM_MONITOR_ENABLED', default=False)
 TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN', default='')
 TELEGRAM_CHAT_ID = env('TELEGRAM_CHAT_ID', default='')
 TELEGRAM_NOTIFY_LOGIN = env.bool('TELEGRAM_NOTIFY_LOGIN', default=False)
+
+# Payments (Paystack first; provider layer supports additional backends)
+DEFAULT_PAYMENT_PROVIDER = env('DEFAULT_PAYMENT_PROVIDER', default='paystack')
+PAYSTACK_SECRET_KEY = env('PAYSTACK_SECRET_KEY', default='')
+PAYSTACK_PUBLIC_KEY = env('PAYSTACK_PUBLIC_KEY', default='')
+PAYSTACK_WEBHOOK_SECRET = env('PAYSTACK_WEBHOOK_SECRET', default='') or PAYSTACK_SECRET_KEY
+PASS_DEFAULT_PRICE_GHS = env('PASS_DEFAULT_PRICE_GHS', default='500')
+PASS_DEFAULT_PRICES_GHS = {
+    'delegate': env('PASS_PRICE_DELEGATE_GHS', default='750'),
+    'startup': env('PASS_PRICE_STARTUP_GHS', default='400'),
+    'student': env('PASS_PRICE_STUDENT_GHS', default='150'),
+}
 
 if 'test' in sys.argv:
     DATABASES['default'] = {
