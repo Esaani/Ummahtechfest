@@ -18,6 +18,7 @@ const AVAILABILITY_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday
 const CATEGORY_LABELS = {
   event_support: 'Event & Community Support',
   creative_media: 'Creative & Multimedia',
+  tech_training: 'Technical & Training',
 }
 
 const INITIAL_FORM = {

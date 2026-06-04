@@ -26,6 +26,9 @@ def validate_email_field(value):
 
 
 def validate_optional_url(value):
+    from django.core.validators import URLValidator
+    from django.core.exceptions import ValidationError as DjangoValidationError
+
     value = (value or '').strip()
     if not value:
         return ''
@@ -33,4 +36,8 @@ def validate_optional_url(value):
         value = f'https://{value}'
     if len(value) > 500:
         raise serializers.ValidationError('URL is too long.')
+    try:
+        URLValidator()(value)
+    except DjangoValidationError:
+        raise serializers.ValidationError('Enter a valid URL or leave this field empty.')
     return value

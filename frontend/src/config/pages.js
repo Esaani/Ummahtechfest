@@ -18,10 +18,23 @@ export const PAGES = {
     title: 'Volunteer',
     live: true,
   },
-  applyToSpeak: {
-    path: '/apply-to-speak',
-    title: 'Apply to Speak',
+  register: {
+    path: '/register',
+    title: 'Register',
     live: true,
+  },
+  signup: {
+    path: '/signup',
+    title: 'Passes & registration',
+    live: false,
+    icon: 'confirmation_number',
+    headline: 'Event passes',
+    message:
+      'Delegate, startup, and special-access passes are not open yet. You can apply to speak or volunteer while we finish the full registration portal.',
+    relatedLinks: [
+      { to: '/create-account', label: 'Register' },
+      { to: '/volunteer', label: 'Volunteer program' },
+    ],
   },
   ghana2026: {
     path: '/ghana-2026',
@@ -32,7 +45,7 @@ export const PAGES = {
     message:
       'We are crafting the full Accra experience — venue guides, travel tips, and heritage highlights. Check back soon.',
     relatedLinks: [
-      { to: '/signup', label: 'Register for the fest' },
+      { to: '/create-account', label: 'Register' },
       { to: '/volunteer', label: 'Volunteer program' },
     ],
   },
@@ -45,8 +58,8 @@ export const PAGES = {
     message:
       'The full three-day agenda, sessions, and workshops are being finalized. We will publish the timetable shortly.',
     relatedLinks: [
-      { to: '/signup', label: 'Choose your pass' },
-      { to: '/apply-to-speak', label: 'Apply to speak' },
+      { to: '/volunteer', label: 'Volunteer program' },
+      { to: '/create-account', label: 'Register' },
     ],
   },
   tickets: {
@@ -58,7 +71,7 @@ export const PAGES = {
     message:
       'Pass sales and pricing tiers are almost ready. Register now to secure your interest — full ticketing opens soon.',
     relatedLinks: [
-      { to: '/signup', label: 'View pass types' },
+      { to: '/volunteer', label: 'Volunteer program' },
       { to: '/sponsor', label: 'Become a sponsor' },
     ],
   },

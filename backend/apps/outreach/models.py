@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from common.models import BaseModel
@@ -52,13 +53,33 @@ class SpeakerSessionFormat(models.TextChoices):
 
 
 class SpeakerApplicationStatus(models.TextChoices):
+    DRAFT = 'draft', 'Draft'
     SUBMITTED = 'submitted', 'Submitted'
     UNDER_REVIEW = 'under_review', 'Under Review'
     ACCEPTED = 'accepted', 'Accepted'
     REJECTED = 'rejected', 'Rejected'
 
 
+class SpeakerApplicationSource(models.TextChoices):
+    PUBLIC = 'public', 'Public application'
+    INVITED = 'invited', 'Admin invite'
+
+
 class SpeakerApplication(BaseModel):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='speaker_applications',
+        db_column='user_id',
+    )
+    source = models.CharField(
+        max_length=16,
+        choices=SpeakerApplicationSource.choices,
+        default=SpeakerApplicationSource.PUBLIC,
+        db_index=True,
+    )
     full_name = models.CharField(max_length=200)
     email = models.EmailField(db_index=True)
     professional_title = models.CharField(max_length=200)
@@ -104,8 +125,13 @@ class SpeakerApplication(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=['email'],
-                condition=models.Q(deleted_at__isnull=True),
-                name='unique_speaker_application_email',
+                condition=models.Q(deleted_at__isnull=True, user__isnull=True),
+                name='unique_speaker_application_email_anon',
+            ),
+            models.UniqueConstraint(
+                fields=['user'],
+                condition=models.Q(deleted_at__isnull=True, user__isnull=False),
+                name='unique_speaker_application_per_user',
             ),
         ]
 

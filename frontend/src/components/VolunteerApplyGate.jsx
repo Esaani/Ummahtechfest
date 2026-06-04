@@ -42,9 +42,9 @@ export default function VolunteerApplyGate() {
       </div>
 
       <p className="body-md text-on-surface-variant text-center mt-8 text-sm">
-        Want to attend as a delegate?{' '}
-        <Link to="/signup" className="text-primary-fixed font-bold hover:underline">
-          Choose your pass
+        Want to speak on stage?{' '}
+        <Link to="/speaker/apply" className="text-primary-fixed font-bold hover:underline">
+          Speaker application
         </Link>
       </p>
     </main>

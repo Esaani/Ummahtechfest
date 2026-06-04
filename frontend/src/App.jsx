@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -9,6 +9,8 @@ import Ghana2026 from './pages/Ghana2026.jsx'
 import Tickets from './pages/Tickets.jsx'
 import Sponsor from './pages/Sponsor.jsx'
 import ApplyToSpeak from './pages/ApplyToSpeak.jsx'
+import AcceptParticipantInvite from './pages/AcceptParticipantInvite.jsx'
+import SpeakerOnboarding from './pages/SpeakerOnboarding.jsx'
 import Accommodation from './pages/Accommodation.jsx'
 import VisaSupport from './pages/VisaSupport.jsx'
 import SignUp from './pages/SignUp.jsx'
@@ -42,7 +44,8 @@ import { useLocation } from 'react-router-dom'
 function AppContent() {
   const location = useLocation()
   const hideNav = [
-    '/login', '/forgot-password', '/reset-password', '/accept-invite', '/create-account', '/special-access',
+    '/login', '/forgot-password', '/reset-password', '/accept-invite', '/accept-participant-invite',
+    '/create-account', '/special-access',
     '/professional-details', '/verification', '/payment', '/payment/verify', '/donate/verify', '/success',
     '/registration/confirmation', '/registration/status',
   ].includes(location.pathname) || location.pathname.startsWith('/admin')
@@ -78,10 +81,21 @@ function AppContent() {
           }
         />
         <Route path="/sponsor" element={<Sponsor />} />
-        <Route path="/apply-to-speak" element={<ApplyToSpeak />} />
+        <Route path="/register" element={<Navigate to="/create-account" replace />} />
+        <Route path="/apply-to-speak" element={<Navigate to="/speaker/apply" replace />} />
+        <Route path="/speaker/apply" element={<ApplyToSpeak />} />
+        <Route path="/speaker/onboarding" element={<SpeakerOnboarding />} />
+        <Route path="/accept-participant-invite" element={<AcceptParticipantInvite />} />
         <Route path="/accommodation" element={<Accommodation />} />
         <Route path="/visa-support" element={<VisaSupport />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/signup"
+          element={
+            <GatedPage path={PAGES.signup.path}>
+              <SignUp />
+            </GatedPage>
+          }
+        />
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

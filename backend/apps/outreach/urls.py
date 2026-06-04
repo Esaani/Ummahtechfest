@@ -5,6 +5,7 @@ from apps.outreach import admin_views, views
 urlpatterns = [
     path('options/', views.OutreachOptionsView.as_view(), name='outreach-options'),
     path('sponsor-inquiries/', views.SponsorInquiryCreateView.as_view(), name='sponsor-inquiry-create'),
+    path('speaker-applications/me/', views.SpeakerApplicationMeView.as_view(), name='speaker-application-me'),
     path('speaker-applications/', views.SpeakerApplicationCreateView.as_view(), name='speaker-application-create'),
     path('ticket-waitlist/', views.TicketWaitlistCreateView.as_view(), name='ticket-waitlist-create'),
     path('admin/sponsor-inquiries/', admin_views.AdminSponsorInquiryListView.as_view(), name='admin-sponsor-inquiries'),

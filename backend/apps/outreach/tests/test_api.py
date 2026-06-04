@@ -63,7 +63,21 @@ class OutreachAPITest(TestCase):
         }, format='json')
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_speaker_application_create(self):
+    def test_speaker_application_create_requires_auth(self):
+        photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
+        cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
+        payload = {**self.speaker_payload, 'profile_photo': photo, 'cv': cv}
+        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
+        self.assertEqual(r.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_speaker_application_create_authenticated(self):
+        applicant = User.objects.create_user(email='speaker@example.com', password='SecurePass123!')
+        login = self.client.post('/api/v1/auth/login/', {
+            'email': 'speaker@example.com',
+            'password': 'SecurePass123!',
+            'website': '',
+        }, format='json')
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {login.data["tokens"]["access"]}')
         photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
         cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
         payload = {**self.speaker_payload, 'profile_photo': photo, 'cv': cv}
@@ -71,20 +85,57 @@ class OutreachAPITest(TestCase):
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
         self.assertEqual(r.data['data']['status'], 'submitted')
 
+    def _login_speaker_applicant(self, email='amina@example.com'):
+        User.objects.create_user(email=email, password='SecurePass123!')
+        login = self.client.post('/api/v1/auth/login/', {
+            'email': email,
+            'password': 'SecurePass123!',
+            'website': '',
+        }, format='json')
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {login.data["tokens"]["access"]}')
+
     def test_speaker_short_abstract_rejected(self):
+        self._login_speaker_applicant()
         photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
         cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
         payload = {**self.speaker_payload, 'abstract': 'Too short.', 'profile_photo': photo, 'cv': cv}
         r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_speaker_duplicate_email_blocked(self):
+    def test_speaker_application_honeypot_rejected(self):
+        self._login_speaker_applicant('honeypot@example.com')
+        photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
+        cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
+        payload = {**self.speaker_payload, 'email': 'honeypot@example.com', 'website': 'bot-filled', 'profile_photo': photo, 'cv': cv}
+        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(r.data['error']['code'], 'VALIDATION_ERROR')
+        self.assertIn('website', r.data['error']['details'])
+
+    def test_speaker_invalid_linkedin_rejected(self):
+        self._login_speaker_applicant('linkedin@example.com')
+        photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
+        cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
+        payload = {
+            **self.speaker_payload,
+            'email': 'linkedin@example.com',
+            'linkedin_url': 'not a valid url',
+            'profile_photo': photo,
+            'cv': cv,
+        }
+        r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('linkedin_url', r.data['error']['details'])
+
+    def test_speaker_duplicate_application_blocked(self):
+        self._login_speaker_applicant()
         photo = SimpleUploadedFile('headshot.jpg', b'jpeg-bytes', content_type='image/jpeg')
         cv = SimpleUploadedFile('cv.pdf', b'pdf-bytes', content_type='application/pdf')
         payload = {**self.speaker_payload, 'profile_photo': photo, 'cv': cv}
         self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
         r = self.client.post('/api/v1/outreach/speaker-applications/', payload, format='multipart')
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(r.data['error']['code'], 'APPLICATION_EXISTS')
 
     def test_ticket_waitlist_create(self):
         r = self.client.post('/api/v1/outreach/ticket-waitlist/', {

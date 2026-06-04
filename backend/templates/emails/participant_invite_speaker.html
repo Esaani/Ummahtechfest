@@ -1,0 +1,9 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<p>Hello,</p>
+<p>You have been invited to speak at <strong>{{ site_name }}</strong>.</p>
+<p><a href="{{ invite_url }}">Accept your invitation and set your password</a></p>
+<p>After signing in, you will complete a short onboarding form with your session details and bio.</p>
+<p>This link expires in {{ expiry_hours }} hours. If you did not expect this email, you can ignore it.</p>
+<p>Questions? Contact <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>
+{% endblock %}

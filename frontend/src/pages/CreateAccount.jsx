@@ -3,21 +3,24 @@ import { useEffect, useState } from 'react'
 import { ApiError, authApi, registrationsApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import { useRegistration } from '../context/RegistrationContext'
-import { getPass } from '../config/passes'
+import { getPass, isPassRegistrationPubliclyOpen } from '../config/passes'
 import HoneypotField from '../components/HoneypotField'
 import logo from '../assets/logo.png'
 import { mapPassFromConfig, mapPassTypeFromApi } from '../utils/passHelpers'
 
-function nextStepAfterAccount(pass) {
+function nextStepAfterAccount(pass, fromPath) {
+  if (fromPath === '/speaker/apply' || fromPath === '/speaker/onboarding') return fromPath
+  if (fromPath?.startsWith('/volunteer')) return '/volunteer/apply'
   if (!pass) return '/'
   if (pass.flow === 'volunteer') return '/volunteer/apply'
+  if (!isPassRegistrationPubliclyOpen()) return '/volunteer'
   const slug = pass.slug || pass.id
   if (pass.flow === 'approval') return `/special-access?pass=${slug}`
   if (pass.flow === 'open') {
-    if (pass.is_open_for_registration === false) return '/signup'
+    if (pass.is_open_for_registration === false) return '/volunteer'
     return `/professional-details?pass=${slug}`
   }
-  return '/signup'
+  return '/volunteer'
 }
 
 export default function CreateAccount() {
@@ -44,7 +47,7 @@ export default function CreateAccount() {
   const pass = resolvedPass || staticFallback
 
   const volunteerFromState = location.state?.from?.startsWith?.('/volunteer')
-  const redirectTo = location.state?.from || nextStepAfterAccount(pass)
+  const redirectTo = location.state?.from || nextStepAfterAccount(pass, location.state?.from)
   const isVolunteerSignup = volunteerFromState || pass?.flow === 'volunteer'
 
   useEffect(() => {
@@ -72,6 +75,13 @@ export default function CreateAccount() {
     const id = pass?.slug || pass?.id
     if (passId && id) setSelectedPass(id)
   }, [passId, pass?.slug, pass?.id, setSelectedPass])
+
+  useEffect(() => {
+    if (!passId || isVolunteerSignup) return
+    if (!isPassRegistrationPubliclyOpen()) {
+      navigate('/volunteer', { replace: true })
+    }
+  }, [passId, isVolunteerSignup, navigate])
 
   useEffect(() => {
     if (resendCooldown <= 0) return undefined

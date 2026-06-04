@@ -160,7 +160,7 @@ export default function Login() {
               <footer className="mt-12 text-center space-y-6 border-t border-outline-variant/20 pt-8">
                 <p className="body-md text-on-surface-variant">
                   Don't have an account yet? 
-                  <Link className="text-primary-fixed font-bold hover:underline ml-2" to="/signup">Apply for Access</Link>
+                  <Link className="text-primary-fixed font-bold hover:underline ml-2" to="/volunteer/apply">Apply to volunteer</Link>
                 </p>
                 <p className="label-md text-on-surface-variant/40 uppercase tracking-[0.2em] text-[10px]">
                   &copy; 2026 Ummah Tech Fest Ghana.<br className="md:hidden"/> All rights reserved.

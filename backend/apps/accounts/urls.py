@@ -1,9 +1,11 @@
 from django.urls import path
 
 from apps.accounts.admin_views import (
+    AdminParticipantInviteView,
     AdminStaffInviteView,
     AdminUserDetailView,
     AdminUserListView,
+    ParticipantInviteAcceptView,
     StaffInviteAcceptView,
 )
 from apps.accounts.views import (
@@ -34,4 +36,6 @@ urlpatterns = [
     path('admin/users/invite/', AdminStaffInviteView.as_view(), name='auth-admin-user-invite'),
     path('admin/users/<uuid:user_id>/', AdminUserDetailView.as_view(), name='auth-admin-user-detail'),
     path('staff-invite/accept/', StaffInviteAcceptView.as_view(), name='auth-staff-invite-accept'),
+    path('admin/participants/invite/', AdminParticipantInviteView.as_view(), name='auth-admin-participant-invite'),
+    path('participant-invite/accept/', ParticipantInviteAcceptView.as_view(), name='auth-participant-invite-accept'),
 ]

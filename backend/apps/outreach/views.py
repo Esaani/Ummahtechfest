@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,6 +15,8 @@ from apps.outreach.models import (
 from common.tasks import send_email_task
 from common.telegram_monitor import monitor_event
 from common.throttling import ScopedAnonRateThrottle
+from apps.accounts.models import ParticipantInvite, ParticipantInviteType
+from apps.outreach.models import SpeakerApplication, SpeakerApplicationStatus
 from apps.outreach.serializers import (
     OutreachOptionsSerializer,
     SpeakerApplicationCreateSerializer,
@@ -74,14 +76,54 @@ class SponsorInquiryCreateView(APIView):
         )
 
 
+def _user_needs_speaker_onboarding(user):
+    has_invite = ParticipantInvite.objects.filter(
+        user=user,
+        invite_type=ParticipantInviteType.SPEAKER,
+        accepted_at__isnull=False,
+    ).exists()
+    if not has_invite:
+        return False
+    app = SpeakerApplication.objects.filter(user=user).first()
+    return app is None
+
+
+class SpeakerApplicationMeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        application = SpeakerApplication.objects.filter(user=request.user).first()
+        return Response({
+            'data': SpeakerApplicationSerializer(application).data if application else None,
+            'meta': {
+                'has_application': application is not None,
+                'can_apply': application is None,
+                'needs_onboarding': _user_needs_speaker_onboarding(request.user),
+            },
+        })
+
+
 class SpeakerApplicationCreateView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     throttle_classes = [ScopedAnonRateThrottle]
     throttle_scope = 'public_form'
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
-        serializer = SpeakerApplicationCreateSerializer(data=request.data)
+        if SpeakerApplication.objects.filter(user=request.user).exists():
+            return Response(
+                {
+                    'error': {
+                        'code': 'APPLICATION_EXISTS',
+                        'message': 'You have already submitted a speaker application.',
+                    },
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = SpeakerApplicationCreateSerializer(
+            data=request.data,
+            context={'request': request},
+        )
         serializer.is_valid(raise_exception=True)
         application = serializer.save()
         logger.info('speaker_application_created id=%s email=%s', application.id, application.email)

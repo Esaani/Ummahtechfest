@@ -43,6 +43,14 @@ EMAIL_TEMPLATES = {
         'subject': 'You are invited to the Ummah Tech Fest admin portal',
         'template': 'emails/staff_invite.html',
     },
+    'participant_invite_speaker': {
+        'subject': 'You are invited to speak at Ummah Tech Fest',
+        'template': 'emails/participant_invite_speaker.html',
+    },
+    'participant_invite_volunteer': {
+        'subject': 'You are invited to volunteer at Ummah Tech Fest',
+        'template': 'emails/participant_invite_volunteer.html',
+    },
     'submission_status_updated': {
         'subject': 'Update regarding your application',
         'template': 'emails/submission_status_updated.html',

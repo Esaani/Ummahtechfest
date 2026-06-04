@@ -1,0 +1,9 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<p>Hello,</p>
+<p>You have been invited to join the <strong>{{ site_name }}</strong> volunteer team.</p>
+<p><a href="{{ invite_url }}">Accept your invitation and set your password</a></p>
+<p>After signing in, you can complete your volunteer application with your skills and availability.</p>
+<p>This link expires in {{ expiry_hours }} hours. If you did not expect this email, you can ignore it.</p>
+<p>Questions? Contact <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>
+{% endblock %}

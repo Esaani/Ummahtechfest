@@ -1,0 +1,12 @@
+Hello,
+
+You have been invited to join the {{ site_name }} volunteer team.
+
+Accept your invitation and set your password:
+{{ invite_url }}
+
+After signing in, you can complete your volunteer application.
+
+This link expires in {{ expiry_hours }} hours.
+
+Questions? {{ support_email }}

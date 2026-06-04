@@ -11,12 +11,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.serializers import (
     AdminUserSerializer,
+    ParticipantInviteAcceptSerializer,
+    ParticipantInviteCreateSerializer,
     StaffInviteAcceptSerializer,
     StaffInviteCreateSerializer,
     UserSerializer,
 )
+from apps.accounts.services.participant_invite import (
+    ParticipantInviteError,
+    _next_path_for_type,
+    accept_participant_invite,
+    create_participant_invite,
+)
 from apps.accounts.services.staff_invite import StaffInviteError, accept_staff_invite, create_staff_invite
-from common.admin_roles import PERM_USERS_MANAGE
+from common.admin_roles import PERM_SUBMISSIONS_MANAGE, PERM_USERS_MANAGE
 from common.permissions import HasAdminPermission
 
 logger = logging.getLogger('ummah_tech_fest')
@@ -99,5 +107,64 @@ class StaffInviteAcceptView(APIView):
             'tokens': {
                 'access': str(refresh.access_token),
                 'refresh': str(refresh),
+            },
+        })
+
+
+class AdminParticipantInviteView(APIView):
+    permission_classes = [HasAdminPermission]
+    admin_permission = PERM_SUBMISSIONS_MANAGE
+
+    def post(self, request):
+        serializer = ParticipantInviteCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            invite, user = create_participant_invite(
+                serializer.validated_data['email'],
+                serializer.validated_data['invite_type'],
+                request.user,
+            )
+        except ParticipantInviteError as exc:
+            return Response(
+                {'error': {'code': exc.code, 'message': exc.message}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response({
+            'data': UserSerializer(user).data,
+            'meta': {
+                'invite_id': str(invite.id),
+                'invite_type': invite.invite_type,
+                'message': 'Invitation email sent.',
+            },
+        }, status=status.HTTP_201_CREATED)
+
+
+class ParticipantInviteAcceptView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ParticipantInviteAcceptSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            user, invite = accept_participant_invite(
+                serializer.validated_data['invite_id'],
+                serializer.validated_data['token'],
+                serializer.validated_data['password'],
+            )
+        except ParticipantInviteError as exc:
+            return Response(
+                {'error': {'code': exc.code, 'message': exc.message}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'data': UserSerializer(user).data,
+            'tokens': {
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+            },
+            'meta': {
+                'invite_type': invite.invite_type,
+                'next_path': _next_path_for_type(invite.invite_type),
             },
         })

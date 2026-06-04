@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { GATED_STEPS, PASSES, getPass, getPassRegistrationPath } from './passes'
+import {
+  GATED_STEPS,
+  PASS_REGISTRATION_PUBLICLY_OPEN,
+  PASSES,
+  getPass,
+  getPassRegistrationPath,
+} from './passes'
 
 describe('passes config', () => {
   it('marks open and approval passes as wired', () => {
@@ -8,10 +14,12 @@ describe('passes config', () => {
     expect(PASSES.volunteer.flow).toBe('volunteer')
   })
 
-  it('routes open passes through create-account when tickets are on sale', () => {
+  it('keeps volunteer registration available while public passes are closed', () => {
+    expect(PASS_REGISTRATION_PUBLICLY_OPEN).toBe(false)
+    expect(getPassRegistrationPath(PASSES.volunteer)).toBe('/volunteer/apply')
     expect(
       getPassRegistrationPath({ ...PASSES.delegate, is_open_for_registration: true }),
-    ).toBe('/create-account?pass=delegate')
+    ).toBeNull()
     expect(getPassRegistrationPath(PASSES.delegate)).toBeNull()
   })
 

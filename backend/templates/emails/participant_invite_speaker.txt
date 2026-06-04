@@ -1,0 +1,12 @@
+Hello,
+
+You have been invited to speak at {{ site_name }}.
+
+Accept your invitation and set your password:
+{{ invite_url }}
+
+After signing in, you will complete a short onboarding form with your session details and bio.
+
+This link expires in {{ expiry_hours }} hours.
+
+Questions? {{ support_email }}

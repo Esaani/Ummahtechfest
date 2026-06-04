@@ -6,6 +6,7 @@ from apps.cms.models import MediaAsset
 from apps.cms.sponsorship import inquiry_tier_slugs, tier_label_for_slug
 from apps.outreach.models import (
     SpeakerApplication,
+    SpeakerApplicationSource,
     SpeakerApplicationStatus,
     SpeakerSessionFormat,
     SpeakerTrack,
@@ -156,7 +157,19 @@ class SpeakerApplicationCreateSerializer(HoneypotSerializerMixin, serializers.Mo
 
     def validate_email(self, value):
         value = validate_email_field(value)
-        if self.instance is None and SpeakerApplication.objects.filter(email__iexact=value).exists():
+        request = self.context.get('request')
+        user = getattr(request, 'user', None) if request else None
+        if user and user.is_authenticated:
+            if (
+                self.instance is None
+                and SpeakerApplication.objects.filter(user=user).exists()
+            ):
+                raise serializers.ValidationError('You have already submitted a speaker application.')
+            return value.lower()
+        if self.instance is None and SpeakerApplication.objects.filter(
+            email__iexact=value,
+            user__isnull=True,
+        ).exists():
             raise serializers.ValidationError('An application with this email already exists.')
         return value
 
@@ -220,9 +233,30 @@ class SpeakerApplicationCreateSerializer(HoneypotSerializerMixin, serializers.Mo
         cv = validated_data.pop('cv')
         photo_asset = _create_speaker_profile_asset(photo)
         cv_asset = _create_speaker_cv_asset(cv)
+        request = self.context.get('request')
+        user = getattr(request, 'user', None) if request else None
+        extra = {}
+        if user and user.is_authenticated:
+            from apps.accounts.models import ParticipantInvite, ParticipantInviteType
+
+            validated_data.pop('email', None)
+            extra['user'] = user
+            extra['email'] = user.email
+            invited = ParticipantInvite.objects.filter(
+                user=user,
+                invite_type=ParticipantInviteType.SPEAKER,
+                accepted_at__isnull=False,
+            ).exists()
+            extra['source'] = (
+                SpeakerApplicationSource.INVITED if invited else SpeakerApplicationSource.PUBLIC
+            )
+            if not validated_data.get('full_name', '').strip():
+                validated_data['full_name'] = user.full_name
         return SpeakerApplication.objects.create(
             profile_image_asset=photo_asset,
             cv_asset=cv_asset,
+            status=SpeakerApplicationStatus.SUBMITTED,
+            **extra,
             **validated_data,
         )
 

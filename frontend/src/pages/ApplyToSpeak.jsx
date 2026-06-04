@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError, outreachApi } from '../api/client'
+import { useAuth } from '../context/AuthContext'
 import HoneypotField from '../components/HoneypotField'
+import SpeakerApplyGate from '../components/SpeakerApplyGate.jsx'
 import ChoiceCards from '../components/forms/ChoiceCards'
 import { FormField, FormInput, FormTextarea } from '../components/forms/FormField'
 import RoleSelect, { roleToProfessionalTitle } from '../components/forms/RoleSelect'
 import { validateSpeakerStep1, validateSpeakerStep2 } from '../utils/formValidation'
+import {
+  firstSpeakerApiErrorMessage,
+  mapSpeakerApiErrors,
+  speakerErrorStep,
+} from '../utils/speakerApiErrors'
 
 const DEFAULT_TRACKS = [
   { value: 'ethical_ai', label: 'Ethical AI' },
@@ -27,7 +34,9 @@ const STEPS = [
   { id: 3, label: 'Review' },
 ]
 
-export default function ApplyToSpeak() {
+export default function ApplyToSpeak({ variant = 'apply' }) {
+  const { isAuthenticated, loading: authLoading, user } = useAuth()
+  const [eligibilityLoading, setEligibilityLoading] = useState(true)
   const [step, setStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [tracks, setTracks] = useState(DEFAULT_TRACKS)
@@ -78,6 +87,31 @@ export default function ApplyToSpeak() {
       .catch(() => {})
   }, [])
 
+  useEffect(() => {
+    if (!user) return
+    setFormData((prev) => ({
+      ...prev,
+      fullName: prev.fullName || user.full_name || '',
+      email: user.email || prev.email,
+    }))
+  }, [user])
+
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) {
+      setEligibilityLoading(false)
+      return
+    }
+    outreachApi
+      .speakerApplicationMe()
+      .then((res) => {
+        if (res.meta?.has_application) {
+          setIsSubmitted(true)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setEligibilityLoading(false))
+  }, [authLoading, isAuthenticated])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -111,6 +145,17 @@ export default function ApplyToSpeak() {
       setError('Please fix the highlighted fields.')
       return
     }
+    if (!formData.profilePhoto || !formData.cv) {
+      const missing = {
+        ...(!formData.profilePhoto && { profilePhoto: 'Upload a professional headshot on step 1.' }),
+        ...(!formData.cv && { cv: 'Upload your CV on step 1.' }),
+      }
+      setFieldErrors((prev) => ({ ...prev, ...missing }))
+      setError('Your photo and CV are required. Go back to step 1 to upload them.')
+      setStep(1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     setError('')
     setSubmitting(true)
     try {
@@ -138,10 +183,30 @@ export default function ApplyToSpeak() {
       setIsSubmitted(true)
       window.scrollTo(0, 0)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Unable to submit application. Please try again.')
+      if (err instanceof ApiError && err.details) {
+        const mapped = mapSpeakerApiErrors(err.details)
+        setFieldErrors((prev) => ({ ...prev, ...mapped }))
+        setError(firstSpeakerApiErrorMessage(err.details, err.message))
+        setStep(speakerErrorStep(mapped))
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        setError(err instanceof ApiError ? err.message : 'Unable to submit application. Please try again.')
+      }
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (authLoading || eligibilityLoading) {
+    return (
+      <main className="pt-32 pb-20 text-center">
+        <p className="body-lg text-on-surface-variant">Loading…</p>
+      </main>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <SpeakerApplyGate onboarding={variant === 'onboarding'} />
   }
 
   if (isSubmitted) {
@@ -150,8 +215,9 @@ export default function ApplyToSpeak() {
         <span className="material-symbols-outlined text-primary-fixed text-6xl mb-6">check_circle</span>
         <h1 className="headline-lg text-primary mb-4 uppercase">Application received</h1>
         <p className="body-lg text-on-surface-variant max-w-xl mx-auto mb-8">
-          Thank you for applying to speak at Ummah Tech Fest Ghana 2026. We sent a confirmation to your email and will
-          notify you when the program committee has reviewed your submission.
+          Thank you for {variant === 'onboarding' ? 'completing your speaker profile' : 'applying to speak'} at Ummah
+          Tech Fest Ghana 2026. We sent a confirmation to your email and will notify you when the program committee has
+          reviewed your submission.
         </p>
         <Link to="/" className="btn-primary inline-block">Back to home</Link>
       </main>
@@ -166,12 +232,20 @@ export default function ApplyToSpeak() {
   return (
     <main className="pt-24 md:pt-32 pb-20">
       <section className="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop mb-10">
-        <p className="label-md text-secondary uppercase tracking-widest mb-2">Call for speakers</p>
+        <p className="label-md text-secondary uppercase tracking-widest mb-2">
+          {variant === 'onboarding' ? 'Speaker onboarding' : 'Call for speakers'}
+        </p>
         <h1 className="headline-lg text-primary mb-3 uppercase">
-          Apply to <span className="text-primary-fixed">Speak</span>
+          {variant === 'onboarding' ? (
+            <>Complete your <span className="text-primary-fixed">profile</span></>
+          ) : (
+            <>Speaker <span className="text-primary-fixed">application</span></>
+          )}
         </h1>
         <p className="body-md text-on-surface-variant max-w-xl">
-          Three short steps — about you, your talk, then review and submit.
+          {variant === 'onboarding'
+            ? 'You accepted our invitation — add your session details, bio, and materials below.'
+            : 'Three short steps — about you, your talk, then review and submit.'}
         </p>
       </section>
 
@@ -245,6 +319,7 @@ export default function ApplyToSpeak() {
                       autoComplete="email"
                       value={formData.email}
                       onChange={handleChange}
+                      readOnly={!!user?.email}
                       hasError={!!fieldErrors.email}
                     />
                   </FormField>
@@ -488,11 +563,25 @@ export default function ApplyToSpeak() {
                     Optional — links & logistics
                   </summary>
                   <div className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-outline-variant/20">
-                    <FormField label="LinkedIn" htmlFor="linkedin">
-                      <FormInput id="linkedin" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/…" />
+                    <FormField label="LinkedIn" htmlFor="linkedin" error={fieldErrors.linkedin}>
+                      <FormInput
+                        id="linkedin"
+                        name="linkedin"
+                        value={formData.linkedin}
+                        onChange={handleChange}
+                        placeholder="https://linkedin.com/in/…"
+                        hasError={!!fieldErrors.linkedin}
+                      />
                     </FormField>
-                    <FormField label="X (Twitter)" htmlFor="twitter">
-                      <FormInput id="twitter" name="twitter" value={formData.twitter} onChange={handleChange} placeholder="@handle" />
+                    <FormField label="X (Twitter)" htmlFor="twitter" error={fieldErrors.twitter}>
+                      <FormInput
+                        id="twitter"
+                        name="twitter"
+                        value={formData.twitter}
+                        onChange={handleChange}
+                        placeholder="@handle"
+                        hasError={!!fieldErrors.twitter}
+                      />
                     </FormField>
                     <div className="md:col-span-2">
                       <FormField label="Tech requirements" htmlFor="techRequirements" hint="AV, adapters, or room setup needs.">

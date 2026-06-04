@@ -6,7 +6,7 @@ describe('pages config', () => {
     expect(PAGES.home.live).toBe(true)
     expect(PAGES.sponsor.live).toBe(true)
     expect(PAGES.volunteer.live).toBe(true)
-    expect(PAGES.applyToSpeak.live).toBe(true)
+    expect(PAGES.register.live).toBe(true)
   })
 
   it('gates ghana, schedule, and tickets', () => {

@@ -55,6 +55,8 @@ export const authApi = {
   adminUsers: (staffOnly) =>
     apiRequest(`/auth/admin/users/${staffOnly ? '?staff=1' : ''}`),
   inviteAdminUser: (data) => apiRequest('/auth/admin/users/invite/', { method: 'POST', body: data }),
+  inviteParticipant: (data) => apiRequest('/auth/admin/participants/invite/', { method: 'POST', body: data }),
+  acceptParticipantInvite: (data) => apiRequest('/auth/participant-invite/accept/', { method: 'POST', body: data }),
   updateAdminUser: (id, data) => apiRequest(`/auth/admin/users/${id}/`, { method: 'PATCH', body: data }),
 }
 
@@ -72,6 +74,7 @@ export const registrationsApi = {
 export const outreachApi = {
   options: () => apiRequest('/outreach/options/'),
   submitSponsorInquiry: (data) => apiRequest('/outreach/sponsor-inquiries/', { method: 'POST', body: data }),
+  speakerApplicationMe: () => apiRequest('/outreach/speaker-applications/me/'),
   submitSpeakerApplication: (data) => apiRequest('/outreach/speaker-applications/', { method: 'POST', body: data }),
   submitTicketWaitlist: (data) => apiRequest('/outreach/ticket-waitlist/', { method: 'POST', body: data }),
   adminSponsorInquiries: (status) =>

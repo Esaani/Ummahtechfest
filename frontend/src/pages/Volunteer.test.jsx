@@ -30,4 +30,12 @@ describe('Volunteer page', () => {
     expect(screen.getByRole('heading', { name: /volunteer program/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /apply now/i })).toHaveAttribute('href', '/volunteer/apply')
   })
+
+  it('lists technical and training volunteer pathways', () => {
+    renderVolunteer()
+    expect(screen.getByRole('heading', { name: /technical & training/i })).toBeInTheDocument()
+    expect(screen.getByText('Coding Trainer')).toBeInTheDocument()
+    expect(screen.getByText('AI & Emerging Tech Facilitator')).toBeInTheDocument()
+    expect(screen.getByText('Technical Support Volunteer')).toBeInTheDocument()
+  })
 })

@@ -137,3 +137,40 @@ class StaffInvite(BaseModel):
     @property
     def is_usable(self):
         return self.accepted_at is None and timezone.now() < self.expires_at
+
+
+class ParticipantInviteType(models.TextChoices):
+    SPEAKER = 'speaker', 'Speaker'
+    VOLUNTEER = 'volunteer', 'Volunteer'
+
+
+class ParticipantInvite(BaseModel):
+    """Invite a speaker or volunteer to create an account and complete onboarding."""
+
+    email = models.EmailField(db_index=True)
+    invite_type = models.CharField(max_length=16, choices=ParticipantInviteType.choices, db_index=True)
+    invited_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='participant_invites_sent',
+        db_column='invited_by_id',
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='participant_invites',
+        db_column='user_id',
+    )
+    token_hash = models.CharField(max_length=128)
+    expires_at = models.DateTimeField(db_index=True)
+    accepted_at = models.DateTimeField(null=True, blank=True, db_index=True)
+
+    class Meta:
+        db_table = 'participant_invites'
+        ordering = ['-created_at']
+
+    @property
+    def is_usable(self):
+        return self.accepted_at is None and timezone.now() < self.expires_at

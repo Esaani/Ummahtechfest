@@ -6,6 +6,16 @@ import { useAuth } from '../context/AuthContext'
 const PATHWAYS = [
   { title: 'Event & Community Support', items: ['Workshop Assistants', 'Guest Relations & Registration', 'Event Logistics', 'Community Outreach'] },
   { title: 'Creative & Multimedia', items: ['Graphic Design', 'Motion Design', 'Videography', 'Photography', 'Video Editing', 'Social Media Content'] },
+  {
+    title: 'Technical & Training',
+    items: [
+      'Coding Trainer',
+      'AI & Emerging Tech Facilitator',
+      'Tech Mentor',
+      'STEM Education Volunteer',
+      'Technical Support Volunteer',
+    ],
+  },
 ]
 
 export default function Volunteer() {
@@ -39,7 +49,7 @@ export default function Volunteer() {
         </p>
       </header>
 
-      <section className="grid md:grid-cols-2 gap-8 mb-16">
+      <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {PATHWAYS.map((p) => (
           <div key={p.title} className="glass-card p-8 rounded-2xl border border-outline-variant/30" data-aos="fade-up">
             <h2 className="headline-sm text-primary-fixed mb-4">{p.title}</h2>
@@ -69,14 +79,6 @@ export default function Volunteer() {
           >
             {authLoading || checking ? 'Loading...' : ctaLabel}
           </Link>
-          {!hasApplication && !checking && (
-            <Link
-              to="/signup"
-              className="btn-secondary inline-flex px-8 py-4 rounded-full label-md font-black uppercase tracking-widest"
-            >
-              Get event pass
-            </Link>
-          )}
         </div>
         {!isAuthenticated && !authLoading && (
           <p className="body-md text-on-surface-variant mt-6 text-sm">

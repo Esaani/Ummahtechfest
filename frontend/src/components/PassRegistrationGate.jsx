@@ -3,7 +3,12 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { registrationsApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import { useRegistration } from '../context/RegistrationContext'
+import { isPassRegistrationPubliclyOpen } from '../config/passes'
 import { mapPassTypeFromApi } from '../utils/passHelpers'
+
+function passPickerFallback() {
+  return isPassRegistrationPubliclyOpen() ? '/signup' : '/volunteer'
+}
 
 /**
  * Loads pass from API by ?pass= slug, validates flow and open-registration flag.
@@ -22,7 +27,7 @@ export default function PassRegistrationGate({ children, expectedFlow }) {
 
   useEffect(() => {
     if (!passId) {
-      navigate('/signup', { replace: true })
+      navigate(passPickerFallback(), { replace: true })
       return
     }
     let cancelled = false
@@ -33,7 +38,7 @@ export default function PassRegistrationGate({ children, expectedFlow }) {
         if (cancelled) return
         const raw = (res.data || []).find((p) => p.slug === passId)
         if (!raw) {
-          navigate('/signup', { replace: true })
+          navigate(passPickerFallback(), { replace: true })
           return
         }
         const mapped = mapPassTypeFromApi(raw)
@@ -41,7 +46,7 @@ export default function PassRegistrationGate({ children, expectedFlow }) {
         setSelectedPass(mapped.slug)
       })
       .catch(() => {
-        if (!cancelled) navigate('/signup', { replace: true })
+        if (!cancelled) navigate(passPickerFallback(), { replace: true })
       })
       .finally(() => {
         if (!cancelled) setLoadingPass(false)
@@ -55,12 +60,12 @@ export default function PassRegistrationGate({ children, expectedFlow }) {
     if (loadingPass || !pass) return
 
     if (!pass.wired || pass.flow !== expectedFlow) {
-      navigate('/signup', { replace: true })
+      navigate(passPickerFallback(), { replace: true })
       return
     }
 
     if (expectedFlow === 'open' && pass.is_open_for_registration === false) {
-      navigate('/signup', { replace: true })
+      navigate(passPickerFallback(), { replace: true })
       return
     }
 
@@ -123,9 +128,11 @@ export function SelectedPassBanner({ pass }) {
         <p className="label-md text-on-surface-variant uppercase tracking-wider">Selected pass</p>
         <p className="headline-sm text-primary-fixed">{pass.title}</p>
       </div>
-      <Link to="/signup" className="ml-auto label-md text-secondary-fixed hover:underline">
-        Change pass
-      </Link>
+      {isPassRegistrationPubliclyOpen() && (
+        <Link to="/signup" className="ml-auto label-md text-secondary-fixed hover:underline">
+          Change pass
+        </Link>
+      )}
     </div>
   )
 }

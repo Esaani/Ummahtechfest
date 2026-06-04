@@ -64,11 +64,11 @@ const DEFAULT_PARTNERS = {
 }
 
 const DEFAULT_CTA = {
-  badge: 'Limited Spots',
+  badge: 'Open applications',
   headline: 'Ready to build the future?',
-  body: 'Secure your spot at the most anticipated tech event in Africa.',
-  button_text: 'GET YOUR TICKET',
-  button_url: '/signup',
+  body: 'Register for a free account, then apply to speak or volunteer for Ummah Tech Fest Ghana 2026.',
+  button_text: 'APPLY TO VOLUNTEER',
+  button_url: '/volunteer/apply',
 }
 
 export default function Home() {
@@ -136,8 +136,8 @@ export default function Home() {
                 <span className="hidden md:inline">{hero.subtitle}</span>
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link to="/signup" className="btn-primary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest text-sm text-center">
-                  Get Your Pass
+                <Link to="/create-account" className="btn-primary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest text-sm text-center">
+                  Register
                 </Link>
                 <Link to="/volunteer/apply" className="btn-secondary w-full sm:w-auto px-10 py-4 font-bold uppercase tracking-widest flex items-center justify-center gap-2 text-sm">
                   Apply to Volunteer
@@ -327,30 +327,30 @@ function Speakers() {
   const scrollBy = (direction) => {
     const el = scrollRef.current
     if (!el) return
-    el.scrollBy({ left: direction * 280, behavior: 'smooth' })
+    el.scrollBy({ left: direction * 320, behavior: 'smooth' })
   }
 
   return (
-    <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-surface-container-low/30">
-      <div className="mb-10 md:mb-14 text-center" data-aos="fade-up">
+    <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+      <div className="mb-12 md:mb-16 text-center" data-aos="fade-up">
         <h2 className="headline-lg text-primary uppercase mb-4">
           World-class <span className="text-primary-fixed">speakers</span>
         </h2>
         <p className="body-md text-on-surface-variant max-w-2xl mx-auto mb-8 md:mb-10 text-sm md:text-base px-4">
-          This is the firepit of the biggest and most exciting names in the Tech & Entrepreneurship scene.
+          This is the firepit of the biggest and most exciting names in the Tech &amp; Entrepreneurship scene.
         </p>
-        <Link to="/apply-to-speak" className="btn-secondary px-8 py-3 !border-primary-fixed !text-primary-fixed hover:!bg-primary-fixed hover:!text-on-primary-fixed uppercase tracking-widest font-bold text-xs inline-block">
-          Apply to speak
+        <Link to="/speaker/apply" className="btn-secondary px-8 py-3 !border-primary-fixed !text-primary-fixed hover:!bg-primary-fixed hover:!text-on-primary-fixed uppercase tracking-widest font-bold text-xs inline-block">
+          Speaker application
         </Link>
       </div>
 
-      <div className="relative px-4 md:px-0" data-aos="fade-up">
+      <div className="relative" data-aos="fade-up">
         {speakers.length > 3 && (
           <>
             <button
               type="button"
               onClick={() => scrollBy(-1)}
-              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/40 items-center justify-center text-primary-fixed hover:bg-primary-fixed/10"
+              className="hidden md:flex absolute -left-6 top-[45%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant/30 items-center justify-center text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed transition-all duration-300"
               aria-label="Previous speakers"
             >
               <span className="material-symbols-outlined">chevron_left</span>
@@ -358,7 +358,7 @@ function Speakers() {
             <button
               type="button"
               onClick={() => scrollBy(1)}
-              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/40 items-center justify-center text-primary-fixed hover:bg-primary-fixed/10"
+              className="hidden md:flex absolute -right-6 top-[45%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant/30 items-center justify-center text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed transition-all duration-300"
               aria-label="Next speakers"
             >
               <span className="material-symbols-outlined">chevron_right</span>
@@ -368,7 +368,7 @@ function Speakers() {
 
         <div
           ref={scrollRef}
-          className="flex justify-center gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth no-scrollbar"
+          className="flex justify-center gap-6 md:gap-10 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
         >
           {speakers.map((s, i) => {
             const image = s.image || s.img || ''
@@ -377,36 +377,29 @@ function Speakers() {
                 key={s.id || i}
                 type="button"
                 onClick={() => setSelectedSpeaker(s)}
-                className="group relative shrink-0 w-[140px] sm:w-[160px] md:w-[180px] snap-start text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-fixed rounded-xl"
+                className="group shrink-0 w-[240px] md:w-[280px] snap-start text-left cursor-pointer focus:outline-none"
                 aria-label={`View bio for ${s.name}`}
               >
-                <div className="kente-border p-0.5 bg-background rounded-xl overflow-hidden transition-all duration-500 group-hover:shadow-[0_0_24px_rgba(163,250,1,0.15)]">
-                  <div className="relative overflow-hidden aspect-[3/4] rounded-lg">
-                    {image ? (
-                      <img
-                        alt={s.name}
-                        className="w-full h-full object-cover md:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                        src={image.includes('?') ? `${image}&w=400` : `${image}?w=400`}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
-                        <span className="material-symbols-outlined text-on-surface-variant text-3xl">person</span>
-                      </div>
-                    )}
-                    <div className="absolute bottom-3 left-3 right-3 rounded-lg bg-background/55 backdrop-blur-sm border border-outline-variant/20 px-3 py-2">
-                      <h4 className="text-sm font-headline text-primary mb-0.5 leading-tight line-clamp-2">{s.name}</h4>
-                      <p className="text-[9px] md:text-[10px] label-md text-primary-fixed uppercase tracking-widest line-clamp-2">{s.role}</p>
+                <div className="overflow-hidden rounded-2xl aspect-[3/4] w-full mb-5">
+                  {image ? (
+                    <img
+                      alt={s.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      src={image.includes('?') ? `${image}&w=560` : `${image}?w=560`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
+                      <span className="material-symbols-outlined text-on-surface-variant text-5xl">person</span>
                     </div>
-                  </div>
+                  )}
                 </div>
+                <h4 className="text-lg md:text-xl font-headline text-primary mb-1 leading-snug group-hover:text-primary-fixed transition-colors duration-300">{s.name}</h4>
+                <p className="text-xs font-medium text-on-surface-variant/70 uppercase tracking-widest leading-relaxed">{s.role}</p>
               </button>
             )
           })}
         </div>
-        <p className="text-center text-[10px] label-md text-on-surface-variant uppercase tracking-widest mt-4">
-          Tap a speaker to read their bio
-        </p>
       </div>
 
       <SpeakerBioModal
@@ -586,7 +579,7 @@ function FinalCta({ cta, onDonateClick }) {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Link
-                to={cta.button_url || '/signup'}
+                to={cta.button_url || '/volunteer/apply'}
                 className="bg-background text-primary-fixed px-12 md:px-16 py-4 md:py-6 text-base md:headline-sm font-black uppercase tracking-[0.1em] hover:scale-105 transition-all duration-500 shadow-2xl rounded-xl text-center"
               >
                 {cta.button_text}

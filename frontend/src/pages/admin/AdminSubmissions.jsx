@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { ApiError, outreachApi, volunteerApi } from '../../api/client'
+import { ApiError, authApi, outreachApi, volunteerApi } from '../../api/client'
 import {
   SUBMISSION_PARTNER_STATUS,
   SUBMISSION_SPEAKER_STATUS,
@@ -54,6 +54,10 @@ export default function AdminSubmissions() {
   const [volunteerRoles, setVolunteerRoles] = useState([])
   const [stagedStatus, setStagedStatus] = useState({})
   const [stagedNotes, setStagedNotes] = useState({})
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteType, setInviteType] = useState('speaker')
+  const [inviting, setInviting] = useState(false)
+  const [inviteSuccess, setInviteSuccess] = useState('')
 
   useEffect(() => {
     if (tab === 'volunteers') {
@@ -129,6 +133,23 @@ export default function AdminSubmissions() {
     }
   }
 
+  const handleParticipantInvite = async (e) => {
+    e.preventDefault()
+    setInviteSuccess('')
+    setError('')
+    setInviting(true)
+    try {
+      const email = inviteEmail.trim()
+      await authApi.inviteParticipant({ email, invite_type: inviteType })
+      setInviteEmail('')
+      setInviteSuccess(`Invitation sent to ${email}.`)
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Invite failed')
+    } finally {
+      setInviting(false)
+    }
+  }
+
   const patchVolunteer = async (id, payload) => {
     setUpdatingId(id)
     try {
@@ -160,6 +181,51 @@ export default function AdminSubmissions() {
       <p className="body-md text-on-surface-variant mb-8 max-w-2xl">
         Sponsor inquiries, speaker applications, ticket waitlist, and volunteer applications from the public site.
       </p>
+
+      <section className="glass-card p-6 rounded-2xl border border-outline-variant/30 mb-8 max-w-xl">
+        <h2 className="headline-sm text-primary mb-2">Invite speaker or volunteer</h2>
+        <p className="body-md text-on-surface-variant text-sm mb-4">
+          Sends an email link to register. Speakers complete onboarding after accepting; volunteers go to the apply form.
+        </p>
+        <form onSubmit={handleParticipantInvite} className="flex flex-col sm:flex-row gap-3 sm:items-end">
+          <div className="flex-1">
+            <label htmlFor="participant-invite-email" className="label-md text-on-surface-variant block mb-1">
+              Email
+            </label>
+            <input
+              id="participant-invite-email"
+              type="email"
+              required
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              className="form-control w-full rounded-lg border border-outline-variant/40 px-3 py-2 text-sm"
+              placeholder="name@example.com"
+            />
+          </div>
+          <div>
+            <label htmlFor="participant-invite-type" className="label-md text-on-surface-variant block mb-1">
+              Role
+            </label>
+            <select
+              id="participant-invite-type"
+              value={inviteType}
+              onChange={(e) => setInviteType(e.target.value)}
+              className="form-select rounded-lg border border-outline-variant/40 px-3 py-2 text-sm"
+            >
+              <option value="speaker">Speaker</option>
+              <option value="volunteer">Volunteer</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            disabled={inviting}
+            className="btn-primary px-6 py-2 rounded-lg label-md font-bold whitespace-nowrap disabled:opacity-60"
+          >
+            {inviting ? 'Sending…' : 'Send invite'}
+          </button>
+        </form>
+        {inviteSuccess && <p className="mt-3 body-md text-primary-fixed">{inviteSuccess}</p>}
+      </section>
 
       <div className="flex flex-wrap gap-2 mb-8">
         {TABS.map((t) => (

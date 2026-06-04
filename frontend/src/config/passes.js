@@ -2,7 +2,14 @@
  * Pass registration availability.
  * wired: backend + UI flow complete for this step
  * flow: open | approval | volunteer
+ *
+ * Set false while only volunteer + speaker portals are live (no public pass picker).
  */
+export const PASS_REGISTRATION_PUBLICLY_OPEN = false
+
+export function isPassRegistrationPubliclyOpen() {
+  return PASS_REGISTRATION_PUBLICLY_OPEN
+}
 export const PASSES = {
   delegate: {
     id: 'delegate',
@@ -143,9 +150,9 @@ export function getPass(id) {
 
 export function getPassRegistrationPath(pass) {
   if (!pass?.wired) return null
-  if (pass.flow === 'open' && pass.is_open_for_registration === false) return null
   if (pass.flow === 'volunteer') return '/volunteer/apply'
-  // Open and approval passes start with a free account, then continue to details / application
+  if (!PASS_REGISTRATION_PUBLICLY_OPEN) return null
+  if (pass.flow === 'open' && pass.is_open_for_registration === false) return null
   if (pass.flow === 'open' || pass.flow === 'approval') return `/create-account?pass=${pass.id}`
   return null
 }

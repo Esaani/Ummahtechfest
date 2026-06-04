@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from apps.accounts.models import AdminRole, User
+from apps.accounts.models import AdminRole, ParticipantInviteType, User
 from apps.accounts.services import email_verification
 from common.admin_roles import get_admin_permissions
 from common.security import HoneypotSerializerMixin
@@ -119,6 +119,27 @@ class StaffInviteCreateSerializer(serializers.Serializer):
 
 
 class StaffInviteAcceptSerializer(serializers.Serializer):
+    invite_id = serializers.UUIDField()
+    token = serializers.CharField()
+    password = serializers.CharField(write_only=True, min_length=8)
+    password_confirm = serializers.CharField(write_only=True, min_length=8)
+
+    def validate_password(self, value):
+        validate_password(value)
+        return value
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirm']:
+            raise serializers.ValidationError({'password_confirm': ['Passwords do not match.']})
+        return attrs
+
+
+class ParticipantInviteCreateSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    invite_type = serializers.ChoiceField(choices=ParticipantInviteType.choices)
+
+
+class ParticipantInviteAcceptSerializer(serializers.Serializer):
     invite_id = serializers.UUIDField()
     token = serializers.CharField()
     password = serializers.CharField(write_only=True, min_length=8)

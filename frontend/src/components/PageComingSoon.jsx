@@ -5,7 +5,7 @@ export default function PageComingSoon({ page }) {
 
   const links = page.relatedLinks || [
     { to: '/', label: 'Back to home' },
-    { to: '/signup', label: 'Register' },
+    { to: '/volunteer', label: 'Volunteer program' },
   ]
 
   return (
@@ -56,13 +56,8 @@ export default function PageComingSoon({ page }) {
               </Link>
             </li>
             <li>
-              <Link to="/apply-to-speak" className="body-md text-on-surface-variant hover:text-primary-fixed transition-colors">
-                Apply to speak
-              </Link>
-            </li>
-            <li>
-              <Link to="/signup" className="body-md text-on-surface-variant hover:text-primary-fixed transition-colors">
-                Pass registration
+              <Link to="/create-account" className="body-md text-on-surface-variant hover:text-primary-fixed transition-colors">
+                Register
               </Link>
             </li>
           </ul>
