@@ -97,7 +97,7 @@ export default function Payment() {
       <div className="glass-card p-8 md:p-10 rounded-2xl border border-outline-variant/30 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-fixed/15 border border-primary-fixed/30 mb-6">
           <span className="material-symbols-outlined text-primary-fixed text-3xl">payments</span>
-        </div>
+          </div>
         <h1 className="headline-lg text-primary mb-2">Complete payment</h1>
         <p className="label-md text-secondary-fixed uppercase tracking-widest mb-6">{passName}</p>
         {price != null && (
@@ -113,14 +113,14 @@ export default function Payment() {
             {error}
           </p>
         )}
-        <button
+              <button 
           type="button"
           onClick={handlePay}
           disabled={paying}
           className="w-full bg-primary-fixed text-on-primary-fixed px-8 py-4 rounded-lg label-md font-bold uppercase tracking-widest disabled:opacity-60 mb-4"
         >
           {paying ? 'Redirecting…' : 'Secure Payment'}
-        </button>
+              </button>
         <Link to="/registration/status" className="label-md text-on-surface-variant hover:text-primary-fixed">
           View registration status
         </Link>

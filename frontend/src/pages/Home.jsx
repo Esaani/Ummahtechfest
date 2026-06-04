@@ -179,13 +179,12 @@ export default function Home() {
                   return (
                     <img
                       alt={card.title}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-500 md:group-hover:scale-110"
                       src={src.startsWith('http') ? `${src}${src.includes('?') ? '&' : '?'}w=800` : src}
                       loading="lazy"
                     />
                   )
                 })()}
-                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60" />
               </div>
               <div className="p-6 md:p-8">
                 <h4 className="headline-sm text-primary mb-3 text-lg md:text-xl">{card.title}</h4>
