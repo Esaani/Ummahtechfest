@@ -20,6 +20,19 @@ describe('apiRequest', () => {
     })
   })
 
+  it('sanitizes internal payment configuration errors', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({
+        error: { code: 'PAYMENT_INIT_FAILED', message: 'Paystack is not configured.' },
+      }),
+    })
+    await expect(apiRequest('/payments/donations/')).rejects.toMatchObject({
+      code: 'PAYMENT_INIT_FAILED',
+      message: 'We could not process your payment right now. Please try again later.',
+    })
+  })
+
   it('attaches bearer token when present', async () => {
     localStorage.setItem('access_token', 'tok123')
     fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ data: {} }) })

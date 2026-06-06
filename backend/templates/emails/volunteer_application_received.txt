@@ -1,4 +1,4 @@
-Hi {{ first_name }},
+Assalamu Alaikum {{ first_name }},
 
 We received your volunteer application{% if pathway_name %} for {{ pathway_name }}{% endif %}. We will notify you when your application is reviewed.
 

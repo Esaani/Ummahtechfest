@@ -11,7 +11,10 @@ from apps.payments.providers.paystack import PaystackBackend
 from apps.payments.providers.base import PaymentProviderError
 
 
-@override_settings(PAYSTACK_SECRET_KEY='sk_test_secret')
+@override_settings(
+    PAYSTACK_SECRET_KEY='sk_test_secret',
+    PAYSTACK_WEBHOOK_SECRET='sk_test_secret',
+)
 class PaystackBackendTest(TestCase):
     def setUp(self):
         self.backend = PaystackBackend()
@@ -21,6 +24,17 @@ class PaystackBackendTest(TestCase):
             amount=Decimal('50.00'),
             email='donor@example.com',
         )
+
+    @patch('apps.payments.providers.paystack.urlopen')
+    def test_request_includes_user_agent(self, mock_urlopen):
+        mock_urlopen.return_value.__enter__.return_value.read.return_value = json.dumps(
+            {'status': True, 'data': {}},
+        ).encode()
+        self.backend._request('GET', '/transaction/verify/ref')
+        req = mock_urlopen.call_args[0][0]
+        user_agent = req.headers.get('User-agent') or req.headers.get('User-Agent', '')
+        self.assertTrue(user_agent)
+        self.assertNotIn('Python-urllib', user_agent)
 
     @patch.object(PaystackBackend, '_request')
     def test_initialize_returns_authorization_url(self, mock_request):

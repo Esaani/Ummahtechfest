@@ -162,6 +162,12 @@
   @apply font-technical text-[12px] md:text-[14px] font-[500] leading-[1.2];
 }
 
+/* Never hide page content when AOS CSS is missing or animation never runs */
+[data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;

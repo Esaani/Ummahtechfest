@@ -17,13 +17,21 @@ logger = logging.getLogger('ummah_tech_fest')
 PAYSTACK_API_BASE = 'https://api.paystack.co'
 
 
+def _paystack_user_agent() -> str:
+    app_name = getattr(settings, 'APP_NAME', 'UmmahTechFest')
+    return f'{app_name.replace(" ", "")}/1.0 (payments)'
+
+
 class PaystackBackend(PaymentProviderBackend):
     name = 'paystack'
 
     def __init__(self, secret_key: str | None = None):
         self.secret_key = secret_key or getattr(settings, 'PAYSTACK_SECRET_KEY', '')
         if not self.secret_key:
-            raise PaymentProviderError('Paystack is not configured.')
+            raise PaymentProviderError(
+                'Paystack secret key is not set in server environment.',
+                code='PAYMENT_UNAVAILABLE',
+            )
 
     def _request(self, method: str, path: str, payload: dict | None = None) -> dict:
         url = f'{PAYSTACK_API_BASE}{path}'
@@ -35,6 +43,8 @@ class PaystackBackend(PaymentProviderBackend):
             headers={
                 'Authorization': f'Bearer {self.secret_key}',
                 'Content-Type': 'application/json',
+                # Paystack sits behind Cloudflare; urllib without User-Agent gets 403 (error 1010).
+                'User-Agent': _paystack_user_agent(),
             },
         )
         try:
@@ -49,8 +59,12 @@ class PaystackBackend(PaymentProviderBackend):
             raise PaymentProviderError('Payment provider is unavailable.') from exc
 
         if not body.get('status'):
-            message = body.get('message', 'Payment provider error')
-            raise PaymentProviderError(message)
+            provider_message = body.get('message', 'Payment provider error')
+            logger.error('paystack_api_rejected path=%s msg=%s', path, provider_message)
+            raise PaymentProviderError(
+                provider_message,
+                code='PAYMENT_UNAVAILABLE',
+            )
         return body
 
     def _amount_kobo(self, amount_ghs: Decimal) -> int:
@@ -93,7 +107,10 @@ class PaystackBackend(PaymentProviderBackend):
         signature = request.headers.get('x-paystack-signature', '')
         secret = getattr(settings, 'PAYSTACK_WEBHOOK_SECRET', '') or self.secret_key
         if not secret:
-            raise PaymentProviderError('Webhook secret not configured.')
+            raise PaymentProviderError(
+                'Paystack webhook secret is not set in server environment.',
+                code='PAYMENT_UNAVAILABLE',
+            )
 
         body = request.body
         expected = hmac.new(secret.encode('utf-8'), body, hashlib.sha512).hexdigest()

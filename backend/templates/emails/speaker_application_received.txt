@@ -1,4 +1,4 @@
-Hi {{ full_name }},
+Assalamu Alaikum {{ full_name }},
 
 We received your speaker application for "{{ session_title }}". Our program committee will review it and contact you by email.
 

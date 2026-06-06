@@ -9,6 +9,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./backend:/app
+      - ./.env:/app/.env:ro
     ports:
       - "${API_PORT:-8000}:8000"
     depends_on:
@@ -49,18 +50,8 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./backend:/app
+      - ./.env:/app/.env:ro
     depends_on:
       - redis
       - backend
     command: celery -A config worker -l info
-
-  nginx:
-    image: nginx:alpine
-    container_name: utf_nginx
-    ports:
-      - "${NGINX_PORT:-8080}:80"
-    volumes:
-      - ./nginx/nginx.local.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - backend
-      - frontend

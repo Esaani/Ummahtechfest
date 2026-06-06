@@ -53,7 +53,11 @@ export default function DonationWidget({ isModal = false }) {
       }
       window.location.href = url
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Unable to process donation.')
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : 'We could not process your donation right now. Please try again later.',
+      )
     } finally {
       setSubmitting(false)
     }
@@ -76,21 +80,21 @@ export default function DonationWidget({ isModal = false }) {
       )}
 
       {isModal && (
-        <div className="mb-12 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-fixed/10 rounded-full border border-primary-fixed/20 mb-6 mx-auto sm:mx-0">
-            <span className="w-2 h-2 rounded-full bg-primary-fixed animate-pulse shadow-[0_0_10px_#A3FA01]" />
-            <span className="text-[11px] font-black text-primary-fixed uppercase tracking-[0.2em]">Support the cause</span>
+        <div className="mb-6 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-fixed/10 rounded-full border border-primary-fixed/20 mb-3 mx-auto sm:mx-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary-fixed animate-pulse shadow-[0_0_10px_#A3FA01]" />
+            <span className="text-[10px] font-black text-primary-fixed uppercase tracking-[0.2em]">Support the cause</span>
           </div>
-          <h2 id="donation-modal-title" className="text-4xl md:text-5xl font-headline text-primary uppercase leading-[0.9] mb-6">
+          <h2 id="donation-modal-title" className="text-2xl md:text-4xl font-headline text-primary uppercase leading-[0.9] mb-3">
             Empower the <br /> <span className="text-primary-fixed italic font-black">Next Generation</span>
           </h2>
-          <p className="text-on-surface-variant text-base md:text-lg max-w-lg opacity-70 leading-relaxed font-medium">
+          <p className="text-on-surface-variant text-[13px] md:text-base max-w-xs opacity-70 leading-relaxed font-medium">
             Your contribution directly funds Africa's largest gathering of Muslim tech talent. Every GHS builds the future.
           </p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <HoneypotField value={honeypot} onChange={setHoneypot} />
         {error && (
           <div className="p-5 rounded-2xl bg-error/10 border border-error/20 flex items-center gap-4 animate-in slide-in-from-top-4" role="alert">
@@ -104,7 +108,7 @@ export default function DonationWidget({ isModal = false }) {
             <span className="label-md text-on-surface-variant font-black uppercase tracking-[0.15em] text-[11px] opacity-60">Select Amount (GHS)</span>
             {selectedPreset && <span className="text-primary-fixed text-xs font-black animate-in fade-in zoom-in">Excellent choice!</span>}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3">
             {PRESET_AMOUNTS.map((amt) => (
               <button
                 key={amt}
@@ -114,7 +118,7 @@ export default function DonationWidget({ isModal = false }) {
                   setCustomAmount('')
                   setFieldErrors((f) => ({ ...f, amount: '' }))
                 }}
-                className={`group relative px-4 py-5 rounded-2xl label-md font-black transition-all duration-500 border-2 overflow-hidden ${
+                className={`group relative px-4 py-3 md:py-4 rounded-xl label-md font-black transition-all duration-500 border-2 overflow-hidden ${
                   selectedPreset === amt
                     ? 'bg-primary-fixed border-primary-fixed text-on-primary-fixed shadow-[0_15px_30px_rgba(163,250,1,0.25)] scale-105'
                     : 'bg-surface-container-high/30 border-outline-variant/10 text-primary hover:border-primary-fixed/40 hover:bg-primary-fixed/5'
@@ -132,7 +136,7 @@ export default function DonationWidget({ isModal = false }) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <FormField label="Custom amount" htmlFor="donate-custom" error={fieldErrors.amount ? '' : undefined}>
             <FormInput
               id="donate-custom"
@@ -146,7 +150,7 @@ export default function DonationWidget({ isModal = false }) {
                 setSelectedPreset(null)
                 setFieldErrors((f) => ({ ...f, amount: '' }))
               }}
-              className="!bg-surface-container-high/30 !border-outline-variant/10 !rounded-2xl !py-4 focus:!border-primary-fixed focus:!bg-surface-container-high/50 transition-all"
+              className="!bg-surface-container-high/30 !border-outline-variant/10 !rounded-xl !py-2.5 md:!py-3 focus:!border-primary-fixed focus:!bg-surface-container-high/50 transition-all text-xs md:text-sm"
             />
           </FormField>
 
@@ -159,7 +163,7 @@ export default function DonationWidget({ isModal = false }) {
                 setDonorName(e.target.value)
                 setFieldErrors((f) => ({ ...f, donorName: '' }))
               }}
-              className="!bg-surface-container-high/30 !border-outline-variant/10 !rounded-2xl !py-4 focus:!border-primary-fixed focus:!bg-surface-container-high/50 transition-all"
+              className="!bg-surface-container-high/30 !border-outline-variant/10 !rounded-xl !py-2.5 md:!py-3 focus:!border-primary-fixed focus:!bg-surface-container-high/50 transition-all text-xs md:text-sm"
             />
           </FormField>
         </div>
@@ -174,16 +178,16 @@ export default function DonationWidget({ isModal = false }) {
               setDonorEmail(e.target.value)
               setFieldErrors((f) => ({ ...f, donorEmail: '' }))
             }}
-            className="!bg-surface-container-high/30 !border-outline-variant/10 !rounded-2xl !py-4 focus:!border-primary-fixed focus:!bg-surface-container-high/50 transition-all"
+            className="!bg-surface-container-high/30 !border-outline-variant/10 !rounded-xl !py-2.5 md:!py-3 focus:!border-primary-fixed focus:!bg-surface-container-high/50 transition-all text-xs md:text-sm"
           />
         </FormField>
 
-        <div className="space-y-2">
-          <span className="label-md text-on-surface-variant font-black uppercase tracking-[0.15em] text-[11px] opacity-60">Message (optional)</span>
+        <div className="space-y-1.5 md:space-y-2">
+          <span className="label-md text-on-surface-variant font-black uppercase tracking-[0.15em] text-[10px] md:text-[11px] opacity-60">Message (optional)</span>
           <textarea
             id="donate-message"
             placeholder="Share a word of encouragement..."
-            className="w-full bg-surface-container-high/30 border border-outline-variant/10 rounded-2xl py-4 px-5 text-primary outline-none focus:border-primary-fixed focus:bg-surface-container-high/50 transition-all min-h-[120px] text-sm resize-none"
+            className="w-full bg-surface-container-high/30 border border-outline-variant/10 rounded-xl py-3 px-5 text-primary outline-none focus:border-primary-fixed focus:bg-surface-container-high/50 transition-all min-h-[80px] md:min-h-[100px] text-xs md:text-sm resize-none"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             maxLength={500}
@@ -193,7 +197,7 @@ export default function DonationWidget({ isModal = false }) {
         <button
           type="submit"
           disabled={submitting}
-          className="group relative w-full bg-primary-fixed text-on-primary-fixed py-6 rounded-[2rem] headline-sm font-black uppercase tracking-[0.2em] disabled:opacity-60 hover:shadow-[0_20px_40px_rgba(163,250,1,0.3)] hover:-translate-y-1.5 active:translate-y-0 transition-all duration-500 overflow-hidden"
+          className="group relative w-full bg-primary-fixed text-on-primary-fixed py-4 md:py-5 rounded-[1.5rem] md:rounded-[2rem] headline-sm font-black uppercase tracking-[0.2em] disabled:opacity-60 hover:shadow-[0_20px_40px_rgba(163,250,1,0.3)] hover:-translate-y-1.5 active:translate-y-0 transition-all duration-500 overflow-hidden"
         >
           <span className="relative z-10 flex items-center justify-center gap-4">
             {submitting ? (
@@ -203,7 +207,7 @@ export default function DonationWidget({ isModal = false }) {
               </>
             ) : (
               <>
-                Complete Donation
+                Donate
                 <span className="material-symbols-outlined transition-transform group-hover:translate-x-2">arrow_forward</span>
               </>
             )}

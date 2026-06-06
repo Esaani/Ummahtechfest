@@ -11,7 +11,11 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1']),
 )
 
-environ.Env.read_env(BASE_DIR.parent / '.env')
+# Local dev: repo-root .env. Docker: /app/.env mounted from compose (see docker-compose.yml).
+for _env_file in (BASE_DIR / '.env', BASE_DIR.parent / '.env'):
+    if _env_file.is_file():
+        environ.Env.read_env(_env_file)
+        break
 
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='dev-only-change-in-production')
 DEBUG = env.bool('DEBUG', default=True)

@@ -41,9 +41,8 @@ docker compose up --build
 
 | Variable | Default | Service |
 |----------|---------|---------|
-| `VOLUNTEER_APP_PORT` | 5173 | React app (Vite dev server) |
+| `VOLUNTEER_APP_PORT` | 5173 | React app (Vite dev server; proxies `/api` to backend) |
 | `API_PORT` | 8000 | Django API |
-| `NGINX_PORT` | 8080 | Dev gateway (proxies UI + API) |
 | `REDIS_PORT` | 6380 | Redis |
 
 **Production** (`docker compose -f docker-compose.prod.yml`): use `API_PORT`, `FRONTEND_STATIC_PORT` (built site, default 8081), and `REDIS_PORT` only — see `.env.example` production section.
@@ -52,16 +51,15 @@ Example — run volunteer UI on host port **3001**:
 
 ```env
 VOLUNTEER_APP_PORT=3001
-CORS_ALLOWED_ORIGINS=http://localhost:3001,http://localhost:8080
+CORS_ALLOWED_ORIGINS=http://localhost:3001
 ```
 
 For additional portals, see `docker-compose.portals.example.yml` (`REGISTRATION_APP_PORT`, etc.).
 
-- Site (via nginx): http://localhost:${NGINX_PORT:-8080}
-- Volunteer UI (direct): http://localhost:${VOLUNTEER_APP_PORT:-5173}
-- API: http://localhost:${NGINX_PORT:-8080}/api/v1/
-- API docs: http://localhost:8080/api/v1/docs/
-- Django admin: http://localhost:8080/admin/
+- Site: http://localhost:${VOLUNTEER_APP_PORT:-5173} (Vite proxies `/api/v1` to the backend)
+- API (direct): http://localhost:${API_PORT:-8000}/api/v1/
+- API docs: http://localhost:${API_PORT:-8000}/api/v1/docs/
+- Django admin: http://localhost:${API_PORT:-8000}/admin/
 
 ### First-time backend setup
 
@@ -116,7 +114,7 @@ cd backend && .venv/bin/python manage.py test common apps.accounts apps.voluntee
 
 **Not a one-click deploy** — you need host Postgres, a production `.env`, and host nginx.
 
-Docker runs **backend**, **frontend** (built SPA), **redis**, and **celery** only. The dev **nginx container is disabled** in production; use host nginx instead.
+Docker runs **backend**, **frontend** (built SPA), **redis**, and **celery** only. Dev has no nginx container — use Vite on port 5173 (API proxied) or hit the API port directly.
 
 ```bash
 make prod-up          # or: docker compose -f docker-compose.prod.yml up -d --build

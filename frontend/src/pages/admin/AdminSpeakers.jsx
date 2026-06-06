@@ -139,6 +139,19 @@ export default function AdminSpeakers() {
             <input type="checkbox" checked={form.is_published} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} />
             <span className="label-md">Published on homepage</span>
           </label>
+          <label className="block md:col-span-2">
+            <span className="label-md text-on-surface-variant mb-1 block">Bio</span>
+            <span className="text-xs text-on-surface-variant/70 block mb-2">
+              Shown when visitors click the speaker on the homepage.
+            </span>
+            <textarea
+              className="w-full min-h-[140px] px-4 py-3 rounded-lg bg-surface-container-low border border-outline-variant/30 resize-y"
+              value={form.bio}
+              onChange={(e) => setForm({ ...form, bio: e.target.value })}
+              placeholder="Background, expertise, and what they will bring to the stage…"
+              maxLength={2000}
+            />
+          </label>
         </div>
         <div className="flex gap-3">
           <button type="submit" disabled={saving} className="btn-primary px-6 py-3 rounded-lg label-md font-bold uppercase">
@@ -166,6 +179,7 @@ export default function AdminSpeakers() {
                 <p className="label-md text-primary-fixed">{s.role}</p>
                 <p className="label-md text-on-surface-variant mt-1">
                   Order {s.sort_order} · {s.is_published ? 'Published' : 'Draft'}
+                  {s.bio ? ' · Bio set' : ' · No bio'}
                 </p>
               </div>
               <div className="flex gap-2 shrink-0">

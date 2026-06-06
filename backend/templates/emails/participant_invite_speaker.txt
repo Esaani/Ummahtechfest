@@ -1,4 +1,4 @@
-Hello,
+Assalamu Alaikum,
 
 You have been invited to speak at {{ site_name }}.
 

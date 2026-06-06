@@ -507,7 +507,7 @@ export default function VolunteerApply() {
                 required
               />
               <span className="body-md text-on-surface-variant">
-                I agree to uphold Islamic adab and the Ummah Tech Fest code of conduct.
+                I agree to uphold Islamic adab and the Code of Conduct.
               </span>
             </label>
           </div>

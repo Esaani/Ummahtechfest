@@ -1,3 +1,5 @@
+Assalamu Alaikum,
+ 
 You have been invited to the {{ site_name }} admin portal as {{ admin_role_label }}.
 
 Accept your invite and set your password:

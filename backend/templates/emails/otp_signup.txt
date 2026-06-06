@@ -1,5 +1,7 @@
 {{ site_name }} — Verify your email
 
+Assalamu Alaikum,
+ 
 Your verification code: {{ otp_code }}
 
 This code expires in {{ expiry_minutes }} minutes.

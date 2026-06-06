@@ -1,7 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
 
 import Home from './pages/Home.jsx'
 import Schedule from './pages/Schedule.jsx'
@@ -51,10 +48,11 @@ function AppContent() {
   ].includes(location.pathname) || location.pathname.startsWith('/admin')
 
   return (
-    <>
+    <div className="app-shell relative min-h-screen">
       <ParticleBackground />
-      {!hideNav && <Header />}
-      <Routes>
+      <div className="relative z-[1]">
+        {!hideNav && <Header />}
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route
           path="/schedule"
@@ -115,26 +113,14 @@ function AppContent() {
         <Route path="/volunteer/status" element={<VolunteerStatus />} />
         <Route path="/admin/*" element={<AdminPortal />} />
         <Route path="*" element={<NotFound />} />
-      </Routes>
-      {!hideNav && <Footer />}
-    </>
+        </Routes>
+        {!hideNav && <Footer />}
+      </div>
+    </div>
   )
 }
 
 function App() {
-  useEffect(() => {
-    AOS.init({
-      duration: 300, // Reduced from 600 for snappier feel
-      easing: 'ease-out-cubic',
-      once: true,
-      offset: 0,
-      disableMutationObserver: false,
-      debounceDelay: 50,
-      throttleDelay: 99,
-      startEvent: 'DOMContentLoaded',
-    })
-  }, [])
-
   return (
     <Router>
       <AppContent />

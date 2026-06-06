@@ -1,12 +1,8 @@
 from django.core.management.base import BaseCommand
 
-from apps.cms.models import FeaturedSpeaker, FeaturedSponsor, SponsorTier
+from apps.cms.models import FeaturedSponsor, SponsorTier
 
-SPEAKERS = [
-    ('Ibrahim Mansour', 'CTO @ HALAL AI', 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=600&auto=format&fit=crop', 10),
-    ('Amina Asante', 'Lead Dev @ EthioChain', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop', 20),
-    ('Yusuf Osei', 'Founder @ AccraData', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop', 30),
-]
+# Featured speakers are managed in Admin → Speakers (no demo seed).
 
 # Demo sponsor names — only inserted when the table is empty (first seed on a fresh DB).
 GLOBAL_PARTNERS = [
@@ -29,17 +25,6 @@ class Command(BaseCommand):
     help = 'Seed homepage featured speakers and sponsors (also run via: python manage.py seed)'
 
     def handle(self, *args, **options):
-        for name, role, image_url, order in SPEAKERS:
-            FeaturedSpeaker.objects.update_or_create(
-                name=name,
-                defaults={
-                    'role': role,
-                    'image_url': image_url,
-                    'sort_order': order,
-                    'is_published': True,
-                },
-            )
-
         if FeaturedSponsor.objects.exists():
             self.stdout.write('Skipped sponsor logos — entries already exist (manage in Admin → Sponsors → Homepage logos)')
         else:

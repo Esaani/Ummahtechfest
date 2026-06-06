@@ -9,6 +9,19 @@ if TYPE_CHECKING:
 class PaymentProviderError(Exception):
     """Raised when a payment provider API call fails."""
 
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str = 'PAYMENT_UNAVAILABLE',
+        user_message: str | None = None,
+    ):
+        super().__init__(message)
+        self.code = code
+        self.user_message = user_message or (
+            'We could not process your payment right now. Please try again later.'
+        )
+
 
 class PaymentProviderBackend:
     """Base class for payment providers. Subclass for each provider."""

@@ -88,6 +88,25 @@ class PaymentAPITest(TestCase):
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
         self.assertEqual(r.data['data']['authorization_url'], 'https://checkout.paystack.com/donate')
 
+    @override_settings(PAYSTACK_SECRET_KEY='')
+    def test_donation_unconfigured_returns_safe_error(self):
+        client = APIClient()
+        r = client.post(
+            '/api/v1/payments/donations/',
+            {
+                'amount': '100.00',
+                'donor_name': 'Fatima',
+                'donor_email': 'fatima@example.com',
+                'website': '',
+            },
+            format='json',
+        )
+        self.assertEqual(r.status_code, status.HTTP_503_SERVICE_UNAVAILABLE)
+        message = r.data['error']['message'].lower()
+        self.assertNotIn('paystack', message)
+        self.assertNotIn('configured', message)
+        self.assertIn('payment', message)
+
     def test_donation_honeypot(self):
         client = APIClient()
         r = client.post(

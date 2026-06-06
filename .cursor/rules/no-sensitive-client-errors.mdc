@@ -1,0 +1,39 @@
+---
+description: Never expose internal configuration, provider names, or secrets in client-facing errors
+alwaysApply: true
+---
+
+# No sensitive information in client responses
+
+Never return internal implementation details to browsers, mobile clients, or public API consumers.
+
+## Forbidden in client-facing `error.message` (and UI copy)
+
+- Payment provider names (Paystack, Stripe, Flutterwave, etc.)
+- "Not configured" / missing env var / webhook secret messages
+- API keys, tokens, stack traces, raw provider API responses
+- Database, Redis, Celery, R2/S3 bucket names or connection errors
+- Internal hostnames, ports, or file paths
+
+## Required pattern
+
+1. **Log the real error server-side** with `logger.warning` / `logger.error` and context (reference id, user id).
+2. **Return a generic user-safe message** plus a stable `error.code` (e.g. `PAYMENT_UNAVAILABLE`).
+3. **Frontend**: sanitize API errors in `api/client.js`; never render raw 500/503 bodies.
+
+## Example (Django)
+
+```python
+except PaymentProviderError as exc:
+    logger.warning('donation_init_failed ref=%s err=%s', payment.reference, exc)
+    return Response({
+        'error': {
+            'code': exc.code,
+            'message': exc.user_message,  # generic — never str(exc)
+        },
+    }, status=503)
+```
+
+## Tests
+
+API tests must assert client responses do **not** contain provider names or "configured" when simulating misconfiguration.

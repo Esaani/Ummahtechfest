@@ -12,7 +12,7 @@ EMAIL_TEMPLATES = {
         'template': 'emails/otp_signup.html',
     },
     'welcome': {
-        'subject': 'Welcome to Ummah Tech Fest',
+        'subject': 'Assalamu Alaikum — Welcome to Ummah Tech Fest',
         'template': 'emails/welcome.html',
     },
     'sponsor_inquiry_received': {

@@ -603,7 +603,7 @@ export default function ApplyToSpeak({ variant = 'apply' }) {
                     onChange={(e) => setAgreed(e.target.checked)}
                   />
                   <span className="text-sm text-on-surface-variant leading-relaxed">
-                    I confirm this information is accurate and agree to the event code of conduct and privacy policy.
+                    I confirm this information is accurate and agree to the Code of Conduct and Privacy Policy.
                   </span>
                 </label>
               </div>

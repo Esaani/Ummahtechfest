@@ -1,5 +1,31 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
+const PAYMENT_ERROR_CODES = new Set([
+  'PAYMENT_UNAVAILABLE',
+  'PAYMENT_INIT_FAILED',
+  'VERIFY_FAILED',
+])
+
+const INTERNAL_ERROR_PATTERNS = [
+  /not configured/i,
+  /paystack/i,
+  /webhook secret/i,
+  /provider request failed/i,
+  /sk_(live|test)_/i,
+  /pk_(live|test)_/i,
+]
+
+function sanitizeClientErrorMessage(code, message) {
+  const text = message || 'Something went wrong. Please try again.'
+  if (PAYMENT_ERROR_CODES.has(code)) {
+    return 'We could not process your payment right now. Please try again later.'
+  }
+  if (INTERNAL_ERROR_PATTERNS.some((pattern) => pattern.test(text))) {
+    return 'Something went wrong. Please try again later.'
+  }
+  return text
+}
+
 export class ApiError extends Error {
   constructor(code, message, details) {
     super(message)
@@ -15,7 +41,7 @@ async function parseResponse(response) {
     const err = body.error || {}
     throw new ApiError(
       err.code || 'UNKNOWN_ERROR',
-      err.message || 'Something went wrong. Please try again.',
+      sanitizeClientErrorMessage(err.code, err.message),
       err.details,
     )
   }

@@ -1,4 +1,4 @@
-Hello {{ name }},
+Assalamu Alaikum {{ name }},
 
 The status of your {{ submission_type }} has been updated to: {{ status_label }}
 
@@ -9,5 +9,5 @@ Note from our team:
 
 You can view more details on our website or reply to this email if you have any questions.
 
-Best regards,
+Wassalamu Alaikum,
 The {{ site_name }} Team

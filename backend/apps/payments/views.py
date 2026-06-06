@@ -15,6 +15,7 @@ from apps.payments.models import (
     PaymentPurpose,
     PaymentStatus,
 )
+from apps.payments.errors import payment_provider_error_response
 from apps.payments.providers import PaymentProviderError, get_provider
 from apps.payments.serializers import DonationCreateSerializer, PaymentSerializer
 from apps.payments.services import get_pass_price_ghs, mark_payment_failed, mark_payment_success
@@ -86,10 +87,10 @@ class InitializePassPaymentView(APIView):
             provider = get_provider(payment.provider)
             result = provider.initialize(payment, callback_url)
         except PaymentProviderError as exc:
-            logger.warning('pass_payment_init_failed ref=%s err=%s', payment.reference, exc)
-            return Response(
-                {'error': {'code': 'PAYMENT_INIT_FAILED', 'message': str(exc)}},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            return payment_provider_error_response(
+                exc,
+                log_event='pass_payment_init_failed',
+                reference=payment.reference,
             )
 
         return Response(
@@ -139,9 +140,10 @@ class VerifyPaymentView(APIView):
             provider = get_provider(payment.provider)
             result = provider.verify(payment.reference)
         except PaymentProviderError as exc:
-            return Response(
-                {'error': {'code': 'VERIFY_FAILED', 'message': str(exc)}},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            return payment_provider_error_response(
+                exc,
+                log_event='payment_verify_failed',
+                reference=reference,
             )
 
         if result['status'] == 'success':
@@ -186,9 +188,10 @@ class DonationCreateView(APIView):
         except PaymentProviderError as exc:
             payment.status = PaymentStatus.FAILED
             payment.save(update_fields=['status', 'updated_at'])
-            return Response(
-                {'error': {'code': 'PAYMENT_INIT_FAILED', 'message': str(exc)}},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            return payment_provider_error_response(
+                exc,
+                log_event='donation_init_failed',
+                reference=payment.reference,
             )
 
         monitor_event(

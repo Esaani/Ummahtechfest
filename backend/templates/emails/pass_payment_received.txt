@@ -1,6 +1,6 @@
 Payment confirmed — {{ site_name }}
 
-Hi {{ first_name }},
+Assalamu Alaikum {{ first_name }},
 
 Your payment of {{ amount }} {{ currency }} for {{ pass_title }} is confirmed.
 

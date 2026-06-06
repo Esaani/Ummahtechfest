@@ -303,14 +303,20 @@ function AttendeeVoices() {
   )
 }
 
-const FALLBACK_SPEAKERS = [
-  { name: 'Ibrahim Mansour', role: 'CTO @ HALAL AI', image: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop' },
-  { name: 'Amina Asante', role: 'Lead Dev @ EthioChain', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop' },
-  { name: 'Yusuf Osei', role: 'Founder @ AccraData', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop' },
-]
+function SpeakerCardSkeleton() {
+  return (
+    <div className="shrink-0 w-[240px] md:w-[280px] snap-start animate-pulse">
+      <div className="rounded-2xl aspect-[3/4] w-full mb-5 bg-surface-container-high" />
+      <div className="h-5 w-3/4 rounded bg-surface-container-high mb-2" />
+      <div className="h-3 w-1/2 rounded bg-surface-container-high" />
+    </div>
+  )
+}
 
 function Speakers() {
-  const [speakers, setSpeakers] = useState(FALLBACK_SPEAKERS)
+  const [speakers, setSpeakers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [selectedSpeaker, setSelectedSpeaker] = useState(null)
   const scrollRef = useRef(null)
 
@@ -318,9 +324,11 @@ function Speakers() {
     cmsApi
       .publicSpeakers()
       .then((res) => {
-        if (res.data?.length) setSpeakers(res.data)
+        setSpeakers(res.data || [])
+        setLoadError(false)
       })
-      .catch(() => {})
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false))
   }, [])
 
   const scrollBy = (direction) => {
@@ -365,6 +373,31 @@ function Speakers() {
           </>
         )}
 
+        {loading && (
+          <div className="flex justify-center gap-6 md:gap-10 pb-6 pt-2">
+            <SpeakerCardSkeleton />
+            <SpeakerCardSkeleton />
+            <SpeakerCardSkeleton />
+          </div>
+        )}
+
+        {!loading && loadError && (
+          <p className="text-center body-md text-on-surface-variant py-8">
+            Unable to load speakers right now. Please refresh the page.
+          </p>
+        )}
+
+        {!loading && !loadError && speakers.length === 0 && (
+          <p className="text-center body-md text-on-surface-variant py-8 max-w-md mx-auto">
+            Featured speakers will be announced soon.{' '}
+            <Link to="/speaker/apply" className="text-primary-fixed hover:underline">
+              Apply to speak
+            </Link>
+            .
+          </p>
+        )}
+
+        {!loading && !loadError && speakers.length > 0 && (
         <div
           ref={scrollRef}
           className="flex justify-center gap-6 md:gap-10 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
@@ -399,6 +432,7 @@ function Speakers() {
             )
           })}
         </div>
+        )}
       </div>
 
       <SpeakerBioModal

@@ -13,7 +13,10 @@ def get_provider(name: str | None = None) -> PaymentProviderBackend:
     provider_name = name or getattr(settings, 'DEFAULT_PAYMENT_PROVIDER', 'paystack')
     cls = _REGISTRY.get(provider_name)
     if not cls:
-        raise PaymentProviderError(f'Unknown payment provider: {provider_name}')
+        raise PaymentProviderError(
+            f'Unknown payment provider: {provider_name}',
+            code='PAYMENT_UNAVAILABLE',
+        )
     return cls()
 
 
