@@ -25,7 +25,18 @@ export default function Login() {
       const to = location.state?.from || '/'
       navigate(to)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Unable to sign in. Please try again.')
+      if (err instanceof ApiError) {
+        if (err.details?.non_field_errors?.[0]) {
+          setError(err.details.non_field_errors[0])
+        } else if (err.details && typeof err.details === 'object' && Object.keys(err.details).length > 0) {
+          const firstField = Object.keys(err.details)[0]
+          setError(err.details[firstField][0])
+        } else {
+          setError(err.message)
+        }
+      } else {
+        setError('Unable to sign in. Please try again.')
+      }
     } finally {
       setSubmitting(false)
     }

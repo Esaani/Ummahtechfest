@@ -14,14 +14,26 @@ from apps.payments.models import (
     PaymentProvider,
     PaymentPurpose,
     PaymentStatus,
+    WithdrawalRequest,
+    WithdrawalStatus,
 )
 from apps.payments.errors import payment_provider_error_response
 from apps.payments.providers import PaymentProviderError, get_provider
-from apps.payments.serializers import DonationCreateSerializer, PaymentSerializer
+from apps.payments.serializers import (
+    DonationCreateSerializer,
+    PaymentSerializer,
+    WithdrawalRequestSerializer,
+    WithdrawalRequestCreateSerializer,
+    WithdrawalRequestApproveSerializer,
+)
 from apps.payments.services import get_pass_price_ghs, mark_payment_failed, mark_payment_success
 from apps.registrations.models import PassRegistration, PassRegistrationStatus
+from common.permissions import HasAdminPermission
+from common.admin_roles import PERM_FINANCE_MANAGE
+from common.tasks import send_email_task
 from common.telegram_monitor import monitor_event
 from common.throttling import ScopedAnonRateThrottle, ScopedUserRateThrottle
+from apps.accounts.models import User
 
 logger = logging.getLogger('ummah_tech_fest')
 
@@ -247,3 +259,159 @@ class PaystackWebhookView(APIView):
         provider_ref = str(data.get('id', ''))
         mark_payment_success(payment, provider_ref)
         return Response({'data': {'received': True}})
+
+
+class AdminWithdrawalListView(APIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+
+    def get(self, request):
+        qs = WithdrawalRequest.objects.select_related('requested_by', 'approved_by')
+        return Response({'data': WithdrawalRequestSerializer(qs, many=True).data})
+
+    def post(self, request):
+        serializer = WithdrawalRequestCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        req = serializer.save(requested_by=request.user)
+
+        # Notify all superadmins by email
+        method_labels = {'momo': 'Mobile Money', 'bank': 'Bank Transfer'}
+        admin_url = f'{_frontend_url("/admin/finance")}'
+        email_context = {
+            'requested_by_email': request.user.email,
+            'amount': str(req.amount),
+            'method_label': method_labels.get(req.method, req.method),
+            'account_name': req.account_name,
+            'account_number': req.account_number,
+            'bank_or_network': req.bank_or_network,
+            'admin_url': admin_url,
+        }
+        superadmin_emails = User.objects.filter(
+            is_superuser=True, is_active=True,
+        ).values_list('email', flat=True)
+        for email in superadmin_emails:
+            send_email_task.delay('withdrawal_request_pending', email, email_context)
+
+        return Response(
+            {'data': WithdrawalRequestSerializer(req).data},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class AdminWithdrawalApproveView(APIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+
+    def post(self, request, pk):
+        if not request.user.is_superuser:
+            return Response(
+                {'error': {'code': 'FORBIDDEN', 'message': 'Only super admins can approve withdrawals.'}},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        
+        req = WithdrawalRequest.objects.filter(pk=pk).first()
+        if not req:
+            return Response(
+                {'error': {'code': 'NOT_FOUND', 'message': 'Withdrawal request not found.'}},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        
+        if req.status != WithdrawalStatus.PENDING:
+            return Response(
+                {'error': {'code': 'INVALID_STATUS', 'message': 'Only pending requests can be approved/rejected.'}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = WithdrawalRequestApproveSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        req.status = serializer.validated_data['status']
+        req.proof_notes = serializer.validated_data.get('proof_notes', '')
+        req.approved_by = request.user
+        req.save(update_fields=['status', 'proof_notes', 'approved_by', 'updated_at'])
+        
+        return Response({'data': WithdrawalRequestSerializer(req).data})
+
+
+from rest_framework import generics
+from django.db.models import Sum
+from apps.payments.models import FinanceWallet, FinanceBill, FinanceExpense, FinanceGoal
+from apps.payments.serializers import FinanceWalletSerializer, FinanceBillSerializer, FinanceExpenseSerializer, FinanceGoalSerializer
+
+class AdminFinanceOverviewView(APIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+
+    def get(self, request):
+        total_revenue = Payment.objects.filter(status=PaymentStatus.SUCCESS).aggregate(Sum('amount'))['amount__sum'] or 0
+        total_donations = Donation.objects.filter(payment__status=PaymentStatus.SUCCESS).aggregate(Sum('payment__amount'))['payment__amount__sum'] or 0
+        total_passes = Payment.objects.filter(status=PaymentStatus.SUCCESS, purpose=PaymentPurpose.PASS_REGISTRATION).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        total_expenses = FinanceExpense.objects.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_bills_pending = FinanceBill.objects.exclude(status='paid').aggregate(Sum('amount'))['amount__sum'] or 0
+        total_withdrawals = WithdrawalRequest.objects.filter(status=WithdrawalStatus.APPROVED).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        return Response({
+            'data': {
+                'total_revenue': str(total_revenue),
+                'total_donations': str(total_donations),
+                'total_passes': str(total_passes),
+                'total_expenses': str(total_expenses),
+                'total_bills_pending': str(total_bills_pending),
+                'total_withdrawals': str(total_withdrawals),
+                'current_balance': str(total_revenue - total_expenses - total_withdrawals),
+            }
+        })
+
+
+class FinanceWalletListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceWallet.objects.all()
+    serializer_class = FinanceWalletSerializer
+
+class FinanceWalletDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceWallet.objects.all()
+    serializer_class = FinanceWalletSerializer
+
+
+class FinanceBillListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceBill.objects.all()
+    serializer_class = FinanceBillSerializer
+
+class FinanceBillDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceBill.objects.all()
+    serializer_class = FinanceBillSerializer
+
+
+class FinanceExpenseListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceExpense.objects.all().select_related('wallet_used')
+    serializer_class = FinanceExpenseSerializer
+
+class FinanceExpenseDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceExpense.objects.all()
+    serializer_class = FinanceExpenseSerializer
+
+
+class FinanceGoalListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceGoal.objects.all()
+    serializer_class = FinanceGoalSerializer
+
+class FinanceGoalDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, HasAdminPermission]
+    admin_permission = PERM_FINANCE_MANAGE
+    queryset = FinanceGoal.objects.all()
+    serializer_class = FinanceGoalSerializer
+

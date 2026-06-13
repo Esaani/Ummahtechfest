@@ -471,49 +471,96 @@ export default function AdminSubmissions() {
 
                               {tab === 'speakers' && (
                                 <div className="space-y-6">
-                                  <div className="flex gap-4">
-                                    {detail.profile_image_url && (
+                                  <div className="flex flex-col sm:flex-row gap-4">
+                                    {detail.profile_image_url ? (
                                       <img
                                         src={detail.profile_image_url}
                                         alt=""
                                         className="w-24 h-24 rounded-2xl object-cover border-2 border-primary/10"
                                       />
+                                    ) : (
+                                      <div className="w-24 h-24 rounded-2xl bg-surface-container flex items-center justify-center border border-outline-variant/30 text-on-surface-variant">
+                                        <span className="material-symbols-outlined text-3xl">person</span>
+                                      </div>
                                     )}
-                                    <div className="space-y-2">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Social Links</label>
-                                      <div className="flex flex-col gap-2">
-                                        {detail.linkedin_url && (
-                                          <a href={detail.linkedin_url} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
-                                            <span className="material-symbols-outlined text-[14px]">link</span> LinkedIn Profile
-                                          </a>
-                                        )}
-                                        {detail.twitter_handle && (
-                                          <div className="text-on-surface flex items-center gap-1 text-xs">
-                                            <span className="material-symbols-outlined text-[14px]">alternate_email</span> @{detail.twitter_handle}
-                                          </div>
-                                        )}
-                                        {detail.instagram_handle && (
-                                          <div className="text-on-surface flex items-center gap-1 text-xs">
-                                            <span className="material-symbols-outlined text-[14px]">group</span> {detail.instagram_handle} (IG)
-                                          </div>
-                                        )}
-                                        {!detail.linkedin_url && !detail.twitter_handle && !detail.instagram_handle && <span className="text-on-surface-variant italic text-xs">No social links provided</span>}
+                                    <div className="flex-1 space-y-2">
+                                      <div>
+                                        <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Title & Organization</label>
+                                        <p className="text-on-surface text-sm font-semibold">
+                                          {detail.professional_title || '—'} {detail.organization ? `at ${detail.organization}` : ''}
+                                        </p>
+                                      </div>
+                                      {(detail.occupation || detail.role) && (
+                                        <div>
+                                          <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Occupation / Role</label>
+                                          <p className="text-on-surface text-xs">
+                                            {detail.occupation || '—'} {detail.role ? `(${detail.role})` : ''}
+                                          </p>
+                                        </div>
+                                      )}
+                                      <div>
+                                        <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Social Links</label>
+                                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-0.5">
+                                          {detail.linkedin_url && (
+                                            <a href={detail.linkedin_url} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
+                                              <span className="material-symbols-outlined text-[14px]">link</span> LinkedIn Profile
+                                            </a>
+                                          )}
+                                          {detail.twitter_handle && (
+                                            <div className="text-on-surface flex items-center gap-1 text-xs">
+                                              <span className="material-symbols-outlined text-[14px]">alternate_email</span> @{detail.twitter_handle}
+                                            </div>
+                                          )}
+                                          {detail.instagram_handle && (
+                                            <div className="text-on-surface flex items-center gap-1 text-xs">
+                                              <span className="material-symbols-outlined text-[14px]">group</span> {detail.instagram_handle}
+                                            </div>
+                                          )}
+                                          {!detail.linkedin_url && !detail.twitter_handle && !detail.instagram_handle && (
+                                            <span className="text-on-surface-variant italic text-xs">No social links</span>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="grid grid-cols-2 gap-4 pt-2">
-                                    <div className="space-y-1">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Track</label>
-                                      <p className="text-on-surface text-sm">{detail.track_label || detail.track}</p>
+
+                                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-outline-variant/20">
+                                    <div>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Track</label>
+                                      <p className="text-on-surface text-xs font-semibold">{detail.track_label || detail.track}</p>
                                     </div>
-                                    <div className="space-y-1">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Format</label>
-                                      <p className="text-on-surface text-sm">{detail.session_format_label || detail.session_format}</p>
+                                    <div>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Format</label>
+                                      <p className="text-on-surface text-xs font-semibold">{detail.session_format_label || detail.session_format}</p>
+                                    </div>
+                                    <div>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Source</label>
+                                      <p className="text-on-surface text-xs font-semibold">
+                                        {detail.source === 'invited' ? 'Admin Invite' : 'Public App'}
+                                      </p>
                                     </div>
                                   </div>
+
+                                  <div className="pt-2 border-t border-outline-variant/20">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block mb-1">CV / Resume</label>
+                                    {detail.cv_url ? (
+                                      <a
+                                        href={detail.cv_url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary-fixed/10 text-secondary-fixed hover:bg-secondary-fixed/20 transition-all text-xs font-semibold"
+                                      >
+                                        <span className="material-symbols-outlined text-sm">download</span>
+                                        Download CV / Resume
+                                      </a>
+                                    ) : (
+                                      <p className="text-xs text-on-surface-variant italic">No CV uploaded</p>
+                                    )}
+                                  </div>
+
                                   <div className="space-y-1">
-                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Speaker Bio</label>
-                                    <p className="text-on-surface leading-relaxed bg-surface-container/30 p-3 rounded-lg border border-outline-variant/20">{detail.bio}</p>
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Speaker Bio</label>
+                                    <p className="text-on-surface leading-relaxed bg-surface-container/30 p-3 rounded-lg border border-outline-variant/20 text-sm whitespace-pre-wrap">{detail.bio}</p>
                                   </div>
                                 </div>
                               )}
@@ -533,22 +580,99 @@ export default function AdminSubmissions() {
 
                               {tab === 'volunteers' && (
                                 <div className="space-y-6">
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Location</label>
-                                      <p className="text-on-surface flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-sm">location_on</span>
+                                  <div className="flex flex-col sm:flex-row gap-4">
+                                    {detail.profile_image_url ? (
+                                      <img
+                                        src={detail.profile_image_url}
+                                        alt=""
+                                        className="w-24 h-24 rounded-2xl object-cover border-2 border-primary/10"
+                                      />
+                                    ) : (
+                                      <div className="w-24 h-24 rounded-2xl bg-surface-container flex items-center justify-center border border-outline-variant/30 text-on-surface-variant">
+                                        <span className="material-symbols-outlined text-3xl">person</span>
+                                      </div>
+                                    )}
+                                    <div className="flex-1 space-y-2">
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <div>
+                                          <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Occupation</label>
+                                          <p className="text-on-surface text-sm font-semibold">
+                                            {detail.occupation || '—'}
+                                          </p>
+                                        </div>
+                                        <div>
+                                          <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Contact Phone</label>
+                                          <p className="text-on-surface text-sm">
+                                            {detail.phone || '—'}
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                        <div>
+                                          <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Portfolio</label>
+                                          {detail.portfolio_url ? (
+                                            <a href={detail.portfolio_url} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
+                                              <span className="material-symbols-outlined text-[14px]">work</span> View Portfolio
+                                            </a>
+                                          ) : (
+                                            <span className="text-on-surface-variant italic text-xs">No portfolio</span>
+                                          )}
+                                        </div>
+                                        <div>
+                                          <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">LinkedIn</label>
+                                          {detail.linkedin_url ? (
+                                            <a href={detail.linkedin_url} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs">
+                                              <span className="material-symbols-outlined text-[14px]">link</span> LinkedIn Profile
+                                            </a>
+                                          ) : (
+                                            <span className="text-on-surface-variant italic text-xs">No LinkedIn</span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-outline-variant/20">
+                                    <div>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Location</label>
+                                      <p className="text-on-surface flex items-center gap-1 text-xs font-semibold">
+                                        <span className="material-symbols-outlined text-[14px]">location_on</span>
                                         {[detail.city, detail.country].filter(Boolean).join(', ') || 'Remote'}
                                       </p>
                                     </div>
-                                    <div className="space-y-1">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Current Status</label>
-                                      <p className="text-on-surface">{detail.status_label}</p>
+                                    <div>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Experience</label>
+                                      <p className="text-on-surface text-xs font-semibold">{detail.experience_years} years</p>
+                                    </div>
+                                    <div>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Conduct Accepted</label>
+                                      <p className="text-on-surface text-xs font-semibold">
+                                        {detail.code_of_conduct_accepted ? 'Yes' : 'No'}
+                                      </p>
                                     </div>
                                   </div>
+
+                                  <div className="pt-2 border-t border-outline-variant/20">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block mb-1">CV / Resume</label>
+                                    {detail.cv_url ? (
+                                      <a
+                                        href={detail.cv_url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary-fixed/10 text-secondary-fixed hover:bg-secondary-fixed/20 transition-all text-xs font-semibold"
+                                      >
+                                        <span className="material-symbols-outlined text-sm">download</span>
+                                        Download CV / Resume
+                                      </a>
+                                    ) : (
+                                      <p className="text-xs text-on-surface-variant italic">No CV uploaded</p>
+                                    )}
+                                  </div>
+
                                   <div className="space-y-1">
-                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Motivation & Interest</label>
-                                    <p className="text-on-surface leading-relaxed bg-surface-container/30 p-3 rounded-lg border border-outline-variant/20">{detail.motivation}</p>
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Motivation & Interest</label>
+                                    <p className="text-on-surface leading-relaxed bg-surface-container/30 p-3 rounded-lg border border-outline-variant/20 text-sm whitespace-pre-wrap">{detail.motivation}</p>
                                   </div>
                                 </div>
                               )}
@@ -558,24 +682,30 @@ export default function AdminSubmissions() {
                               {tab === 'speakers' && (
                                 <div className="space-y-6">
                                   <div className="space-y-1">
-                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Talk Title & Abstract</label>
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Talk Title & Abstract</label>
                                     <h5 className="text-sm font-bold text-on-surface">{detail.session_title}</h5>
-                                    <p className="text-on-surface leading-relaxed text-sm pt-1">{detail.abstract}</p>
+                                    <p className="text-on-surface leading-relaxed text-sm pt-1 whitespace-pre-wrap">{detail.abstract}</p>
                                   </div>
+                                  {detail.target_audience && (
+                                    <div className="space-y-1">
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Target Audience</label>
+                                      <p className="text-on-surface text-sm">{detail.target_audience}</p>
+                                    </div>
+                                  )}
                                   <div className="space-y-1">
-                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Key Takeaways</label>
-                                    <p className="text-on-surface-variant leading-relaxed text-xs italic">"{detail.key_takeaways}"</p>
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Key Takeaways</label>
+                                    <p className="text-on-surface-variant leading-relaxed text-xs italic bg-surface-container/20 p-2.5 rounded border border-outline-variant/10 whitespace-pre-wrap">"{detail.key_takeaways}"</p>
                                   </div>
                                   {detail.tech_requirements && (
                                     <div className="space-y-1">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Technical Requirements</label>
-                                      <p className="text-on-surface text-xs leading-relaxed">{detail.tech_requirements}</p>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Technical Requirements</label>
+                                      <p className="text-on-surface text-xs leading-relaxed whitespace-pre-wrap">{detail.tech_requirements}</p>
                                     </div>
                                   )}
                                   {detail.co_speakers && (
                                     <div className="space-y-1">
-                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Co-Speakers</label>
-                                      <p className="text-on-surface text-xs leading-relaxed">{detail.co_speakers}</p>
+                                      <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Co-Speakers</label>
+                                      <p className="text-on-surface text-xs leading-relaxed whitespace-pre-wrap">{detail.co_speakers}</p>
                                     </div>
                                   )}
                                 </div>
@@ -584,14 +714,21 @@ export default function AdminSubmissions() {
                               {tab === 'volunteers' && (
                                 <div className="space-y-6">
                                   <div className="space-y-1">
-                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Skills Summary</label>
-                                    <p className="text-on-surface leading-relaxed">{detail.skills_summary}</p>
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Skills Summary</label>
+                                    <p className="text-on-surface leading-relaxed text-sm bg-surface-container/20 p-3 rounded-lg border border-outline-variant/10 whitespace-pre-wrap">{detail.skills_summary}</p>
+                                  </div>
+
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Availability (Days)</label>
+                                    <p className="text-on-surface text-sm font-semibold">
+                                      {(detail.availability?.days || []).join(', ') || 'None specified'}
+                                    </p>
                                   </div>
                                   
                                   <div className="pt-4 border-t border-outline-variant/30 space-y-4">
                                     <div className="flex flex-wrap gap-4">
                                       <label className="flex flex-col gap-1.5 flex-1 max-w-[240px]">
-                                        <span className="text-[10px] uppercase font-bold text-primary tracking-wider">Assignment Decision</span>
+                                        <span className="text-[10px] uppercase font-bold text-primary tracking-wider block">Assignment Decision</span>
                                         <div className="flex items-center gap-2">
                                           <select
                                             className="bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-sm w-full focus:ring-2 focus:ring-primary/20 transition-all"
@@ -616,7 +753,7 @@ export default function AdminSubmissions() {
                                     </div>
 
                                     <label className="block">
-                                      <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">Private Admin Review Notes</span>
+                                      <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider block">Private Admin Review Notes</span>
                                       <textarea
                                         className="mt-2 w-full bg-surface-container border border-outline-variant/40 rounded-xl px-4 py-3 text-sm min-h-[120px] focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/40"
                                         placeholder="Add private notes only visible to staff..."

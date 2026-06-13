@@ -1,8 +1,30 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import NavPageLink from './NavPageLink.jsx'
+import { outreachApi } from '../api/client.js'
 import logo from '../assets/logo.png'
 
 export default function Footer() {
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubscribe(e) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      await outreachApi.subscribeNewsletter({ email })
+      setSuccess(true)
+      setEmail('')
+    } catch (err) {
+      const msg = err?.details?.email?.[0] || err?.message || 'Something went wrong. Please try again.'
+      setError(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <footer className="bg-surface-container-lowest border-t border-outline-variant/20 relative overflow-hidden">
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-fixed/5 blur-[120px] rounded-full"></div>
@@ -93,20 +115,34 @@ export default function Footer() {
           <p className="text-sm text-on-surface-variant mb-6">
             Subscribe to our newsletter to receive the latest updates, speaker announcements, and exclusive early-bird ticket offers.
           </p>
-          <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
-            <input 
-              type="email" 
-              placeholder="Enter your email address" 
-              className="flex-1 bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed transition-all"
-              required
-            />
-            <button 
-              type="submit" 
-              className="bg-primary-fixed text-on-primary-fixed px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(163,250,1,0.2)]"
-            >
-              Subscribe
-            </button>
-          </form>
+          {success ? (
+            <div className="bg-primary-fixed/10 border border-primary-fixed/30 rounded-lg px-4 py-3 text-sm text-primary-fixed flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Thanks for subscribing! We&apos;ll keep you updated.
+            </div>
+          ) : (
+            <form className="flex flex-col sm:flex-row gap-3" onSubmit={handleSubscribe}>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError('') }}
+                className="flex-1 bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed transition-all"
+                required
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-primary-fixed text-on-primary-fixed px-6 py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(163,250,1,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Subscribing...' : 'Subscribe'}
+              </button>
+            </form>
+          )}
+          {error && (
+            <p className="mt-2 text-sm text-error">{error}</p>
+          )}
         </div>
       </div>
       

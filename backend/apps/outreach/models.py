@@ -181,3 +181,32 @@ class TicketWaitlist(BaseModel):
 
     def __str__(self):
         return f'{self.full_name} ({self.email})'
+
+
+class NewsletterSubscriberStatus(models.TextChoices):
+    SUBSCRIBED = 'subscribed', 'Subscribed'
+    UNSUBSCRIBED = 'unsubscribed', 'Unsubscribed'
+
+
+class NewsletterSubscriber(BaseModel):
+    email = models.EmailField(db_index=True)
+    status = models.CharField(
+        max_length=32,
+        choices=NewsletterSubscriberStatus.choices,
+        default=NewsletterSubscriberStatus.SUBSCRIBED,
+        db_index=True,
+    )
+
+    class Meta:
+        db_table = 'newsletter_subscribers'
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['email'],
+                condition=models.Q(deleted_at__isnull=True),
+                name='unique_newsletter_email_alive',
+            ),
+        ]
+
+    def __str__(self):
+        return self.email

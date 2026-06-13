@@ -47,13 +47,20 @@ class LoginSerializer(HoneypotSerializerMixin, serializers.Serializer):
 
     def validate(self, attrs):
         email = attrs.get('email', '').lower()
-        user = authenticate(
-            request=self.context.get('request'),
-            username=email,
-            password=attrs.get('password'),
-        )
-        if user is None:
-            raise serializers.ValidationError({'non_field_errors': ['Invalid credentials.']})
+        try:
+            user_obj = User.objects.get(email=email)
+            if not user_obj.is_active:
+                raise serializers.ValidationError({'non_field_errors': ['This account is deactivated.']})
+            user = authenticate(
+                request=self.context.get('request'),
+                username=email,
+                password=attrs.get('password'),
+            )
+            if user is None:
+                raise serializers.ValidationError({'non_field_errors': ['Incorrect password.']})
+        except User.DoesNotExist:
+            raise serializers.ValidationError({'non_field_errors': ['Email address not registered.']})
+        
         attrs['user'] = user
         return attrs
 

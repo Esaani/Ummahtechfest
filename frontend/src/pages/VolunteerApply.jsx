@@ -5,6 +5,39 @@ import HoneypotField from '../components/HoneypotField'
 import VolunteerApplyGate from '../components/VolunteerApplyGate.jsx'
 import { useAuth } from '../context/AuthContext'
 
+/**
+ * Converts API error.details (field → [ErrorDetail, ...]) into a list of
+ * human-readable strings safe to show directly to the user.
+ * e.g. { profile_photo: ['Profile photo must be 5MB or smaller.'] }
+ *   → ['Profile photo: Profile photo must be 5MB or smaller.']
+ */
+function formatApiErrors(details) {
+  if (!details || typeof details !== 'object') return []
+  const FIELD_LABELS = {
+    profile_photo: 'Profile photo',
+    cv: 'CV / Resume',
+    phone: 'Phone',
+    city: 'City',
+    country: 'Country',
+    occupation: 'Occupation',
+    skills_summary: 'Skills summary',
+    motivation: 'Motivation',
+    preferred_role_ids: 'Pathways',
+    code_of_conduct_accepted: 'Code of conduct',
+    availability: 'Availability',
+    non_field_errors: null,
+  }
+  return Object.entries(details).flatMap(([field, msgs]) => {
+    const label = FIELD_LABELS[field] ?? field.replace(/_/g, ' ')
+    const messages = Array.isArray(msgs) ? msgs : [String(msgs)]
+    return messages.map((m) => {
+      // Strip DRF's ErrorDetail wrapper if serialised as a string
+      const text = String(m).replace(/^ErrorDetail\(string='(.+)',.*\)$/, '$1')
+      return label ? `${label}: ${text}` : text
+    })
+  })
+}
+
 const STEPS = [
   { id: 1, label: 'Pathways' },
   { id: 2, label: 'Contact' },
@@ -48,6 +81,7 @@ export default function VolunteerApply() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [errorDetails, setErrorDetails] = useState([]) // field-level bullets
   const [form, setForm] = useState(INITIAL_FORM)
   const [honeypot, setHoneypot] = useState('')
 
@@ -88,6 +122,7 @@ export default function VolunteerApply() {
   const selectedPathways = pathways.filter((p) => form.preferred_role_ids.includes(p.id))
 
   const validateStep = (currentStep) => {
+    setErrorDetails([])
     switch (currentStep) {
       case 1:
         if (form.preferred_role_ids.length === 0) {
@@ -112,6 +147,15 @@ export default function VolunteerApply() {
         }
         if (!form.profile_photo) {
           setError('Please upload a profile photo.')
+          return false
+        }
+        // Client-side size checks mirror backend limits
+        if (form.cv && form.cv.size > 10 * 1024 * 1024) {
+          setError('CV / Resume: File must be 10 MB or smaller. Please choose a smaller file.')
+          return false
+        }
+        if (form.profile_photo && form.profile_photo.size > 5 * 1024 * 1024) {
+          setError('Profile photo: File must be 5 MB or smaller. Please choose a smaller image.')
           return false
         }
         break
@@ -172,7 +216,19 @@ export default function VolunteerApply() {
       await volunteerApi.submitApplication(body)
       navigate('/volunteer/status')
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Submission failed. Please try again.')
+      if (err instanceof ApiError && err.details) {
+        const bullets = formatApiErrors(err.details)
+        if (bullets.length > 0) {
+          setError('Please fix the following issues:')
+          setErrorDetails(bullets)
+        } else {
+          setError(err.message)
+          setErrorDetails([])
+        }
+      } else {
+        setError(err instanceof ApiError ? err.message : 'Submission failed. Please try again.')
+        setErrorDetails([])
+      }
     } finally {
       setSubmitting(false)
     }
@@ -249,7 +305,14 @@ export default function VolunteerApply() {
 
       {error && (
         <div className="mb-6 p-4 rounded-xl bg-error/10 border border-error/30 text-on-surface" role="alert">
-          {error}
+          <p className="font-semibold">{error}</p>
+          {errorDetails.length > 0 && (
+            <ul className="mt-2 space-y-1 list-disc list-inside text-sm text-on-surface-variant">
+              {errorDetails.map((msg, i) => (
+                <li key={i}>{msg}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

@@ -13,6 +13,7 @@ class AdminRole(models.TextChoices):
     SUBMISSIONS_REVIEWER = 'submissions_reviewer', 'Submissions reviewer'
     USER_MANAGER = 'user_manager', 'User manager'
     OPERATIONS = 'operations', 'Operations (content + submissions)'
+    FINANCE = 'finance', 'Finance manager'
 
 
 class User(BaseModel, AbstractBaseUser, PermissionsMixin):

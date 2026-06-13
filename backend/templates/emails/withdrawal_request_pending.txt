@@ -1,0 +1,14 @@
+Assalamu Alaikum,
+
+A new withdrawal request has been submitted and requires your approval.
+
+Requested by: {{ requested_by_email }}
+Amount: GHS {{ amount }}
+Method: {{ method_label }}
+Account Name: {{ account_name }}
+Account Number: {{ account_number }}
+Bank / Network: {{ bank_or_network }}
+
+Review in Admin Portal: {{ admin_url }}
+
+Please verify the details and approve or reject the request.

@@ -15,6 +15,8 @@ from apps.outreach.models import (
     TicketWaitlist,
     TicketWaitlistStatus,
     TicketWaitlistTier,
+    NewsletterSubscriber,
+    NewsletterSubscriberStatus,
 )
 from common.form_validators import (
     validate_email_field,
@@ -367,3 +369,27 @@ class OutreachOptionsSerializer(serializers.Serializer):
     speaker_tracks = serializers.ListField()
     speaker_formats = serializers.ListField()
     ticket_waitlist_tiers = serializers.ListField()
+
+
+class NewsletterSubscriberCreateSerializer(HoneypotSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = NewsletterSubscriber
+        fields = ['email']
+
+    def validate_email(self, value):
+        value = validate_email_field(value)
+        if NewsletterSubscriber.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError('This email is already subscribed.')
+        return value
+
+
+class NewsletterSubscriberAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsletterSubscriber
+        fields = ['id', 'email', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'email', 'created_at', 'updated_at']
+
+    def validate_status(self, value):
+        if value not in NewsletterSubscriberStatus.values:
+            raise serializers.ValidationError('Invalid status.')
+        return value

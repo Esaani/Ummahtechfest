@@ -63,6 +63,10 @@
     @apply scale-[1.02];
   }
 
+  .btn-cutout {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 20px calc(100% - 20px), 0 calc(100% - 20px));
+  }
+
   .btn-secondary {
     @apply border-2 border-secondary text-secondary px-8 py-4 font-technical font-bold uppercase tracking-widest hover:bg-secondary/10 transition-colors;
   }

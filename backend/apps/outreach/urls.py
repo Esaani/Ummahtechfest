@@ -8,6 +8,7 @@ urlpatterns = [
     path('speaker-applications/me/', views.SpeakerApplicationMeView.as_view(), name='speaker-application-me'),
     path('speaker-applications/', views.SpeakerApplicationCreateView.as_view(), name='speaker-application-create'),
     path('ticket-waitlist/', views.TicketWaitlistCreateView.as_view(), name='ticket-waitlist-create'),
+    path('subscribe/', views.NewsletterSubscribeView.as_view(), name='newsletter-subscribe'),
     path('admin/sponsor-inquiries/', admin_views.AdminSponsorInquiryListView.as_view(), name='admin-sponsor-inquiries'),
     path(
         'admin/sponsor-inquiries/<uuid:inquiry_id>/',

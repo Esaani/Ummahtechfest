@@ -3,12 +3,14 @@
 export const PERM_CMS_MANAGE = 'cms.manage'
 export const PERM_SUBMISSIONS_MANAGE = 'submissions.manage'
 export const PERM_USERS_MANAGE = 'users.manage'
+export const PERM_FINANCE_MANAGE = 'finance.manage'
 
 export const ADMIN_ROLES = [
   { value: 'content_manager', label: 'Content manager' },
   { value: 'submissions_reviewer', label: 'Submissions reviewer' },
   { value: 'user_manager', label: 'User manager' },
   { value: 'operations', label: 'Operations (content + submissions)' },
+  { value: 'finance', label: 'Finance manager' },
 ]
 
 export const ADMIN_NAV = [
@@ -20,6 +22,11 @@ export const ADMIN_NAV = [
   { to: '/admin/schedule', icon: 'calendar_month', label: 'Schedule', permission: PERM_CMS_MANAGE },
   { to: '/admin/submissions', icon: 'inbox', label: 'Submissions', permission: PERM_SUBMISSIONS_MANAGE },
   { to: '/admin/users', icon: 'group', label: 'Team & roles', permission: PERM_USERS_MANAGE },
+  { to: '/admin/finance', icon: 'account_balance', label: 'Finance', permission: PERM_FINANCE_MANAGE, end: true },
+  { to: '/admin/finance/overview', icon: 'monitoring', label: 'Overview', permission: PERM_FINANCE_MANAGE, isSubItem: true },
+  { to: '/admin/finance/wallets', icon: 'account_balance_wallet', label: 'Balances & Wallets', permission: PERM_FINANCE_MANAGE, isSubItem: true },
+  { to: '/admin/finance/transactions', icon: 'receipt_long', label: 'Transactions', permission: PERM_FINANCE_MANAGE, isSubItem: true },
+  { to: '/admin/finance/bills-expenses', icon: 'payments', label: 'Bills & Expenses', permission: PERM_FINANCE_MANAGE, isSubItem: true },
 ]
 
 export const ADMIN_DASHBOARD_CARDS = [
@@ -71,6 +78,13 @@ export const ADMIN_DASHBOARD_CARDS = [
     title: 'Team & roles',
     text: 'Invite staff, assign roles, and control who can access each admin area.',
     permission: PERM_USERS_MANAGE,
+  },
+  {
+    to: '/admin/finance',
+    icon: 'account_balance',
+    title: 'Finance',
+    text: 'Manage and request financial withdrawals and cash outs.',
+    permission: PERM_FINANCE_MANAGE,
   },
 ]
 

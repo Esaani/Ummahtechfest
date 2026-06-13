@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from common.security import HoneypotSerializerMixin
+from common.media_urls import public_media_url
 from apps.cms.models import MediaAsset
 from apps.volunteers.constants import WITHDRAWABLE_STATUSES
 from apps.volunteers.models import (
@@ -122,6 +123,8 @@ class VolunteerApplicationAdminSerializer(serializers.ModelSerializer):
     assigned_role = VolunteerRoleSerializer(read_only=True)
     assigned_role_id = serializers.UUIDField(write_only=True, required=False, allow_null=True)
     user = VolunteerApplicationUserSerializer(read_only=True)
+    profile_image_url = serializers.SerializerMethodField()
+    cv_url = serializers.SerializerMethodField()
 
     class Meta:
         model = VolunteerApplication
@@ -129,9 +132,20 @@ class VolunteerApplicationAdminSerializer(serializers.ModelSerializer):
             'id', 'status', 'user', 'phone', 'city', 'country', 'occupation', 'skills_summary', 'motivation',
             'availability', 'experience_years', 'portfolio_url', 'linkedin_url',
             'preferred_roles', 'assigned_role', 'assigned_role_id', 'admin_notes',
+            'profile_image_url', 'cv_url',
             'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'user', 'preferred_roles', 'created_at', 'updated_at']
+
+    def get_profile_image_url(self, obj):
+        if not obj.profile_image_asset_id or not obj.profile_image_asset:
+            return ''
+        return public_media_url(obj.profile_image_asset.file, self.context.get('request'))
+
+    def get_cv_url(self, obj):
+        if not obj.cv_asset_id or not obj.cv_asset:
+            return ''
+        return public_media_url(obj.cv_asset.file, self.context.get('request'))
 
     def validate_assigned_role_id(self, value):
         if value is None:

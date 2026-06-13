@@ -6,6 +6,7 @@ import {
   PERM_CMS_MANAGE,
   PERM_SUBMISSIONS_MANAGE,
   PERM_USERS_MANAGE,
+  PERM_FINANCE_MANAGE,
 } from '../../config/adminPermissions.js'
 import AdminDashboard from './AdminDashboard.jsx'
 import AdminPasses from './AdminPasses.jsx'
@@ -15,6 +16,7 @@ import AdminSpeakers from './AdminSpeakers.jsx'
 import AdminSponsors from './AdminSponsors.jsx'
 import AdminUsers from './AdminUsers.jsx'
 import AdminHomeContent from './AdminHomeContent.jsx'
+import AdminFinance from './AdminFinance.jsx'
 
 export default function AdminPortal() {
   return (
@@ -76,6 +78,14 @@ export default function AdminPortal() {
               element={
                 <AdminRoute permission={PERM_USERS_MANAGE}>
                   <AdminUsers />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="finance/*"
+              element={
+                <AdminRoute permission={PERM_FINANCE_MANAGE}>
+                  <AdminFinance />
                 </AdminRoute>
               }
             />

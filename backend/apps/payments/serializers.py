@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.conf import settings
 from rest_framework import serializers
 
-from apps.payments.models import Donation, Payment, PaymentPurpose, PaymentStatus
+from apps.payments.models import Donation, Payment, PaymentPurpose, PaymentStatus, WithdrawalRequest, WithdrawalStatus
 from apps.payments.services import DONATION_MAX_GHS, DONATION_MIN_GHS
 from common.security import HoneypotSerializerMixin
 
@@ -45,3 +45,85 @@ class InitializePassPaymentSerializer(serializers.Serializer):
     """Optional body for pass payment init (provider override)."""
 
     provider = serializers.CharField(required=False, allow_blank=True)
+
+
+class WithdrawalRequestSerializer(serializers.ModelSerializer):
+    requested_by_email = serializers.CharField(source='requested_by.email', read_only=True)
+    approved_by_email = serializers.CharField(source='approved_by.email', read_only=True)
+
+    class Meta:
+        model = WithdrawalRequest
+        fields = [
+            'id',
+            'requested_by',
+            'requested_by_email',
+            'amount',
+            'method',
+            'account_name',
+            'account_number',
+            'bank_or_network',
+            'status',
+            'approved_by',
+            'approved_by_email',
+            'proof_notes',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = fields
+
+
+class WithdrawalRequestCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WithdrawalRequest
+        fields = [
+            'amount',
+            'method',
+            'account_name',
+            'account_number',
+            'bank_or_network',
+        ]
+
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError('Amount must be greater than zero.')
+        return value
+
+
+class WithdrawalRequestApproveSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=[WithdrawalStatus.APPROVED, WithdrawalStatus.REJECTED])
+    proof_notes = serializers.CharField(allow_blank=True, required=False)
+
+    def validate(self, attrs):
+        status = attrs.get('status')
+        proof_notes = attrs.get('proof_notes', '')
+        if status == WithdrawalStatus.APPROVED and not proof_notes:
+            raise serializers.ValidationError({'proof_notes': 'Proof notes are required when approving.'})
+        return attrs
+
+
+from apps.payments.models import FinanceWallet, FinanceBill, FinanceExpense, FinanceGoal
+
+class FinanceWalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinanceWallet
+        fields = '__all__'
+
+
+class FinanceBillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinanceBill
+        fields = '__all__'
+
+
+class FinanceExpenseSerializer(serializers.ModelSerializer):
+    wallet_name = serializers.CharField(source='wallet_used.name', read_only=True)
+
+    class Meta:
+        model = FinanceExpense
+        fields = '__all__'
+
+
+class FinanceGoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinanceGoal
+        fields = '__all__'

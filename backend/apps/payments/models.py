@@ -87,3 +87,120 @@ class Donation(BaseModel):
 
     def __str__(self):
         return f'{self.donor_name} — {self.payment.reference}'
+
+
+class WithdrawalMethod(models.TextChoices):
+    MOMO = 'momo', 'Mobile Money'
+    BANK = 'bank', 'Bank Transfer'
+
+
+class WithdrawalStatus(models.TextChoices):
+    PENDING = 'pending', 'Pending'
+    APPROVED = 'approved', 'Approved'
+    REJECTED = 'rejected', 'Rejected'
+
+
+class WithdrawalRequest(BaseModel):
+    requested_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='withdrawal_requests_made',
+        db_column='requested_by_id',
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    method = models.CharField(max_length=32, choices=WithdrawalMethod.choices)
+    account_name = models.CharField(max_length=150)
+    account_number = models.CharField(max_length=100)
+    bank_or_network = models.CharField(max_length=150)
+    status = models.CharField(
+        max_length=32,
+        choices=WithdrawalStatus.choices,
+        default=WithdrawalStatus.PENDING,
+    )
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='withdrawal_requests_approved',
+        db_column='approved_by_id',
+    )
+    proof_notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'withdrawal_requests'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Withdrawal {self.id} - {self.amount} ({self.status})'
+
+
+class FinanceWallet(BaseModel):
+    name = models.CharField(max_length=200)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'finance_wallets'
+
+    def __str__(self):
+        return f'{self.name} - GHS {self.balance}'
+
+
+class BillStatus(models.TextChoices):
+    PENDING = 'pending', 'Pending'
+    OVERDUE = 'overdue', 'Overdue'
+    PAID = 'paid', 'Paid'
+
+
+class FinanceBill(BaseModel):
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    due_date = models.DateField()
+    category = models.CharField(max_length=150, blank=True)
+    status = models.CharField(max_length=32, choices=BillStatus.choices, default=BillStatus.PENDING)
+    paid_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'finance_bills'
+        ordering = ['due_date']
+
+    def __str__(self):
+        return f'{self.name} - {self.amount} ({self.status})'
+
+
+class FinanceExpense(BaseModel):
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    category = models.CharField(max_length=150, blank=True)
+    wallet_used = models.ForeignKey(
+        FinanceWallet,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='expenses'
+    )
+    receipt_notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'finance_expenses'
+        ordering = ['-date']
+
+    def __str__(self):
+        return f'{self.name} - {self.amount}'
+
+
+class FinanceGoal(BaseModel):
+    name = models.CharField(max_length=200)
+    target_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    current_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    deadline = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'finance_goals'
+
+    def __str__(self):
+        return f'{self.name} - {self.current_amount}/{self.target_amount}'
