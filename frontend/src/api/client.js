@@ -163,6 +163,11 @@ export const cmsApi = {
   createScheduleSession: (data) => apiRequest('/cms/admin/schedule/', { method: 'POST', body: data }),
   updateScheduleSession: (id, data) => apiRequest(`/cms/admin/schedule/${id}/`, { method: 'PATCH', body: data }),
   deleteScheduleSession: (id) => apiRequest(`/cms/admin/schedule/${id}/`, { method: 'DELETE' }),
+  publicVoices: () => apiRequest('/cms/voices/'),
+  adminVoices: () => apiRequest('/cms/admin/voices/'),
+  createVoice: (data) => apiRequest('/cms/admin/voices/', { method: 'POST', body: data }),
+  updateVoice: (id, data) => apiRequest(`/cms/admin/voices/${id}/`, { method: 'PATCH', body: data }),
+  deleteVoice: (id) => apiRequest(`/cms/admin/voices/${id}/`, { method: 'DELETE' }),
 }
 
 export const paymentsApi = {

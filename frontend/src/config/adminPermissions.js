@@ -16,6 +16,7 @@ export const ADMIN_ROLES = [
 export const ADMIN_NAV = [
   { to: '/admin', end: true, icon: 'dashboard', label: 'Dashboard', permission: null },
   { to: '/admin/home', icon: 'home', label: 'Homepage', permission: PERM_CMS_MANAGE },
+  { to: '/admin/voices', icon: 'campaign', label: 'Attendee Voices', permission: PERM_CMS_MANAGE },
   { to: '/admin/speakers', icon: 'record_voice_over', label: 'Speakers', permission: PERM_CMS_MANAGE },
   { to: '/admin/sponsors', icon: 'handshake', label: 'Sponsors', permission: PERM_CMS_MANAGE },
   { to: '/admin/passes', icon: 'confirmation_number', label: 'Passes', permission: PERM_CMS_MANAGE },
@@ -35,6 +36,13 @@ export const ADMIN_DASHBOARD_CARDS = [
     icon: 'home',
     title: 'Homepage',
     text: 'Hero video, poster, and Why we build images (stored in media / R2).',
+    permission: PERM_CMS_MANAGE,
+  },
+  {
+    to: '/admin/voices',
+    icon: 'campaign',
+    title: 'Attendee Voices',
+    text: 'Manage testimonials and feedback from past attendees to display on the site.',
     permission: PERM_CMS_MANAGE,
   },
   {

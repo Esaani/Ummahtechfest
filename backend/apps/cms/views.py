@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.cms.models import (
+    AttendeeVoice,
     FeaturedSpeaker,
     FeaturedSponsor,
     MediaAsset,
@@ -18,6 +19,8 @@ from apps.cms.models import (
     SponsorshipPackage,
 )
 from apps.cms.serializers import (
+    AttendeeVoiceAdminSerializer,
+    AttendeeVoicePublicSerializer,
     FeaturedSpeakerAdminSerializer,
     FeaturedSpeakerPublicSerializer,
     FeaturedSponsorAdminSerializer,
@@ -450,4 +453,53 @@ class AdminScheduleDetailView(APIView):
         session = get_object_or_404(ScheduleSession, id=session_id)
         session.delete()
         CmsCacheService.invalidate_schedule()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PublicAttendeeVoiceListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        voices = AttendeeVoice.objects.filter(is_published=True).select_related('image_asset').order_by('sort_order', '-created_at')
+        data = AttendeeVoicePublicSerializer(voices, many=True, context={'request': request}).data
+        return Response({'data': data})
+
+
+class AdminAttendeeVoiceListCreateView(APIView):
+    permission_classes = [HasAdminPermission]
+    admin_permission = PERM_CMS_MANAGE
+
+    def get(self, request):
+        voices = AttendeeVoice.objects.select_related('image_asset').order_by('sort_order', '-created_at')
+        return Response({
+            'data': AttendeeVoiceAdminSerializer(voices, many=True, context={'request': request}).data,
+        })
+
+    def post(self, request):
+        serializer = AttendeeVoiceAdminSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        voice = serializer.save()
+        logger.info('cms_attendee_voice_created id=%s user_id=%s', voice.id, request.user.id)
+        return Response(
+            {'data': AttendeeVoiceAdminSerializer(voice, context={'request': request}).data},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class AdminAttendeeVoiceDetailView(APIView):
+    permission_classes = [HasAdminPermission]
+    admin_permission = PERM_CMS_MANAGE
+
+    def patch(self, request, voice_id):
+        voice = get_object_or_404(AttendeeVoice, id=voice_id)
+        serializer = AttendeeVoiceAdminSerializer(
+            voice, data=request.data, partial=True, context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        voice = serializer.save()
+        return Response({'data': AttendeeVoiceAdminSerializer(voice, context={'request': request}).data})
+
+    def delete(self, request, voice_id):
+        voice = get_object_or_404(AttendeeVoice, id=voice_id)
+        voice.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -254,3 +254,28 @@ class FeaturedSponsor(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class AttendeeVoice(BaseModel):
+    """Testimonials and feedback from past attendees."""
+
+    name = models.CharField(max_length=200)
+    role = models.CharField(max_length=255, blank=True, help_text='Title / Organization')
+    quote = models.TextField()
+    image_url = models.URLField(blank=True, max_length=500)
+    image_asset = models.ForeignKey(
+        MediaAsset,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='attendee_voices',
+    )
+    is_published = models.BooleanField(default=True, db_index=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = 'cms_attendee_voices'
+        ordering = ['sort_order', '-created_at']
+
+    def __str__(self):
+        return f'{self.name} - {self.role}'

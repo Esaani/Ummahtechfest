@@ -17,6 +17,7 @@ import AdminSponsors from './AdminSponsors.jsx'
 import AdminUsers from './AdminUsers.jsx'
 import AdminHomeContent from './AdminHomeContent.jsx'
 import AdminFinance from './AdminFinance.jsx'
+import AdminAttendeeVoices from './AdminAttendeeVoices.jsx'
 
 export default function AdminPortal() {
   return (
@@ -46,6 +47,14 @@ export default function AdminPortal() {
               element={
                 <AdminRoute permission={PERM_CMS_MANAGE}>
                   <AdminSponsors />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="voices"
+              element={
+                <AdminRoute permission={PERM_CMS_MANAGE}>
+                  <AdminAttendeeVoices />
                 </AdminRoute>
               }
             />
