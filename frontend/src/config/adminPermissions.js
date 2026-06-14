@@ -19,6 +19,7 @@ export const ADMIN_NAV = [
   { to: '/admin/passes', icon: 'confirmation_number', label: 'Passes', permission: PERM_CMS_MANAGE },
   { to: '/admin/schedule', icon: 'calendar_month', label: 'Schedule', permission: PERM_CMS_MANAGE },
   { to: '/admin/submissions', icon: 'inbox', label: 'Submissions', permission: PERM_SUBMISSIONS_MANAGE },
+  { to: '/admin/donations', icon: 'payments', label: 'Donations', permission: PERM_SUBMISSIONS_MANAGE },
   { to: '/admin/users', icon: 'group', label: 'Team & roles', permission: PERM_USERS_MANAGE },
 ]
 
@@ -63,6 +64,13 @@ export const ADMIN_DASHBOARD_CARDS = [
     icon: 'inbox',
     title: 'Submissions',
     text: 'Sponsor inquiries, speaker applications, ticket waitlist, and volunteer applications.',
+    permission: PERM_SUBMISSIONS_MANAGE,
+  },
+  {
+    to: '/admin/donations',
+    icon: 'payments',
+    title: 'Donations',
+    text: 'Review donor details, amounts, payment status, and messages.',
     permission: PERM_SUBMISSIONS_MANAGE,
   },
   {

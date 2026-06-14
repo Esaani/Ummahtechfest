@@ -8,6 +8,7 @@ import {
   PERM_USERS_MANAGE,
 } from '../../config/adminPermissions.js'
 import AdminDashboard from './AdminDashboard.jsx'
+import AdminDonations from './AdminDonations.jsx'
 import AdminPasses from './AdminPasses.jsx'
 import AdminSchedule from './AdminSchedule.jsx'
 import AdminSubmissions from './AdminSubmissions.jsx'
@@ -68,6 +69,14 @@ export default function AdminPortal() {
               element={
                 <AdminRoute permission={PERM_SUBMISSIONS_MANAGE}>
                   <AdminSubmissions />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="donations"
+              element={
+                <AdminRoute permission={PERM_SUBMISSIONS_MANAGE}>
+                  <AdminDonations />
                 </AdminRoute>
               }
             />

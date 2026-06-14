@@ -17,9 +17,11 @@ from apps.payments.models import (
 )
 from apps.payments.errors import payment_provider_error_response
 from apps.payments.providers import PaymentProviderError, get_provider
-from apps.payments.serializers import DonationCreateSerializer, PaymentSerializer
+from apps.payments.serializers import DonationAdminSerializer, DonationCreateSerializer, PaymentSerializer
 from apps.payments.services import get_pass_price_ghs, mark_payment_failed, mark_payment_success
 from apps.registrations.models import PassRegistration, PassRegistrationStatus
+from common.admin_roles import PERM_SUBMISSIONS_MANAGE
+from common.permissions import HasAdminPermission
 from common.telegram_monitor import monitor_event
 from common.throttling import ScopedAnonRateThrottle, ScopedUserRateThrottle
 
@@ -212,6 +214,18 @@ class DonationCreateView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class AdminDonationListView(APIView):
+    permission_classes = [HasAdminPermission]
+    admin_permission = PERM_SUBMISSIONS_MANAGE
+
+    def get(self, request):
+        qs = Donation.objects.select_related('payment').order_by('-created_at')
+        status_filter = request.query_params.get('status')
+        if status_filter:
+            qs = qs.filter(payment__status=status_filter)
+        return Response({'data': DonationAdminSerializer(qs, many=True).data})
 
 
 @method_decorator(csrf_exempt, name='dispatch')

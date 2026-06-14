@@ -77,7 +77,7 @@ def _notify_payment_success(payment: Payment):
             reference=payment.reference,
             donor=donor_name,
         )
-        if donation and not donation.is_anonymous:
+        if donation:
             send_email_task.delay(
                 'donation_received',
                 payment.email,

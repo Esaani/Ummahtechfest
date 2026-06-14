@@ -167,6 +167,8 @@ export const paymentsApi = {
   initializePassPayment: () => apiRequest('/payments/initialize/', { method: 'POST', body: {} }),
   verify: (reference) => apiRequest(`/payments/verify/${encodeURIComponent(reference)}/`),
   donate: (data) => apiRequest('/payments/donations/', { method: 'POST', body: data }),
+  adminDonations: (status) =>
+    apiRequest(`/payments/admin/donations/${status ? `?status=${encodeURIComponent(status)}` : ''}`),
 }
 
 export const volunteerApi = {

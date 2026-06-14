@@ -9,7 +9,7 @@ from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.payments.models import Payment, PaymentPurpose, PaymentStatus
+from apps.payments.models import Donation, Payment, PaymentPurpose, PaymentStatus
 from apps.registrations.models import PassFlow, PassRegistration, PassRegistrationStatus, PassType
 
 User = get_user_model()
@@ -120,6 +120,64 @@ class PaymentAPITest(TestCase):
             format='json',
         )
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_admin_donations_requires_admin_permission(self):
+        r = self.client.get('/api/v1/payments/admin/donations/')
+        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admin_donations_list(self):
+        admin = User.objects.create_superuser(email='admin@example.com', password='SecurePass123!')
+        client = APIClient()
+        login = client.post(
+            '/api/v1/auth/login/',
+            {'email': admin.email, 'password': 'SecurePass123!', 'website': ''},
+            format='json',
+        )
+        client.credentials(HTTP_AUTHORIZATION=f'Bearer {login.data["tokens"]["access"]}')
+        payment = Payment.objects.create(
+            provider='paystack',
+            purpose=PaymentPurpose.DONATION,
+            amount=Decimal('75'),
+            email='donor@example.com',
+            reference='utf_admin_donation',
+            status=PaymentStatus.SUCCESS,
+        )
+        Donation.objects.create(
+            payment=payment,
+            donor_name='Aisha',
+            donor_email='donor@example.com',
+            message='Keep going',
+        )
+
+        r = client.get('/api/v1/payments/admin/donations/')
+
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.data['data'][0]['payment_reference'], 'utf_admin_donation')
+        self.assertEqual(r.data['data'][0]['amount'], '75.00')
+
+    @patch('apps.payments.services.send_email_task.delay')
+    def test_successful_anonymous_donation_sends_thank_you_email(self, mock_delay):
+        payment = Payment.objects.create(
+            provider='paystack',
+            purpose=PaymentPurpose.DONATION,
+            amount=Decimal('50'),
+            email='anonymous@example.com',
+            reference='utf_anon_donation',
+        )
+        Donation.objects.create(
+            payment=payment,
+            donor_name='Private Donor',
+            donor_email='anonymous@example.com',
+            is_anonymous=True,
+        )
+
+        from apps.payments.services import mark_payment_success
+
+        mark_payment_success(payment, 'provider-1')
+
+        mock_delay.assert_called_once()
+        self.assertEqual(mock_delay.call_args.args[0], 'donation_received')
+        self.assertEqual(mock_delay.call_args.args[1], 'anonymous@example.com')
 
     @patch('apps.payments.providers.paystack.PaystackBackend.validate_webhook')
     def test_webhook_charge_success(self, mock_validate):
