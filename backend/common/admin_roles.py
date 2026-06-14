@@ -6,11 +6,13 @@ from apps.accounts.models import AdminRole
 PERM_CMS_MANAGE = 'cms.manage'
 PERM_SUBMISSIONS_MANAGE = 'submissions.manage'
 PERM_USERS_MANAGE = 'users.manage'
+PERM_FINANCE_MANAGE = 'finance.manage'
 
 ALL_ADMIN_PERMISSIONS = frozenset({
     PERM_CMS_MANAGE,
     PERM_SUBMISSIONS_MANAGE,
     PERM_USERS_MANAGE,
+    PERM_FINANCE_MANAGE,
 })
 
 ROLE_PERMISSIONS = {
@@ -18,6 +20,7 @@ ROLE_PERMISSIONS = {
     AdminRole.SUBMISSIONS_REVIEWER: frozenset({PERM_SUBMISSIONS_MANAGE}),
     AdminRole.USER_MANAGER: frozenset({PERM_USERS_MANAGE}),
     AdminRole.OPERATIONS: frozenset({PERM_CMS_MANAGE, PERM_SUBMISSIONS_MANAGE}),
+    AdminRole.FINANCE: frozenset({PERM_FINANCE_MANAGE}),
 }
 
 

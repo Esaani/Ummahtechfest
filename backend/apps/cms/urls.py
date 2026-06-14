@@ -23,4 +23,7 @@ urlpatterns = [
     path('schedule/', views.PublicScheduleListView.as_view(), name='cms-schedule-list'),
     path('admin/schedule/', views.AdminScheduleListCreateView.as_view(), name='cms-admin-schedule'),
     path('admin/schedule/<uuid:session_id>/', views.AdminScheduleDetailView.as_view(), name='cms-admin-schedule-detail'),
+    path('voices/', views.PublicAttendeeVoiceListView.as_view(), name='cms-voices-list'),
+    path('admin/voices/', views.AdminAttendeeVoiceListCreateView.as_view(), name='cms-admin-voices'),
+    path('admin/voices/<uuid:voice_id>/', views.AdminAttendeeVoiceDetailView.as_view(), name='cms-admin-voice-detail'),
 ]

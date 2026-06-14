@@ -1,12 +1,16 @@
 import logging
+from datetime import timedelta
 
+from django.db.models import Count, Q, Sum
+from django.db.models.functions import TruncDate
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.registrations.models import PassRegistration, PassType
+from apps.registrations.models import PassRegistration, PassRegistrationStatus, PassType
 from common.tasks import send_email_task
 from apps.registrations.serializers import (
     OpenPassRegistrationSerializer,
@@ -15,7 +19,8 @@ from apps.registrations.serializers import (
     PassTypeSerializer,
     SpecialAccessRegistrationSerializer,
 )
-from common.admin_roles import PERM_CMS_MANAGE
+from common.admin_roles import PERM_CMS_MANAGE, PERM_SUBMISSIONS_MANAGE
+from common.permissions import HasAnyAdminPermission
 from common.permissions import HasAdminPermission
 from common.telegram_monitor import monitor_event
 from common.throttling import ScopedUserRateThrottle
@@ -134,3 +139,103 @@ class SpecialAccessRegistrationCreateView(APIView):
             },
         )
         return Response({'data': PassRegistrationSerializer(reg).data}, status=status.HTTP_201_CREATED)
+
+
+class AdminDashboardStatsView(APIView):
+    """Aggregate stats for the admin dashboard — one request, all panels."""
+
+    permission_classes = [HasAnyAdminPermission]
+
+    def get(self, request):
+        from apps.outreach.models import SpeakerApplication, SpeakerApplicationStatus, SponsorInquiry
+        from apps.volunteers.models import VolunteerApplication, VolunteerApplicationStatus
+        from apps.payments.models import Donation, Payment, PaymentStatus, PaymentPurpose
+
+        now = timezone.now()
+        thirty_days_ago = now - timedelta(days=30)
+
+        # ── Registrations ──────────────────────────────────────────────
+        reg_qs = PassRegistration.objects.filter(deleted_at__isnull=True)
+        reg_total = reg_qs.count()
+        reg_approved = reg_qs.filter(status=PassRegistrationStatus.APPROVED).count()
+        reg_paid = reg_qs.filter(status=PassRegistrationStatus.PAID).count()
+        reg_pending = reg_qs.filter(
+            status__in=[PassRegistrationStatus.SUBMITTED, PassRegistrationStatus.UNDER_REVIEW]
+        ).count()
+
+        # 30-day trend: count registrations grouped by date
+        trend_qs = (
+            reg_qs.filter(created_at__gte=thirty_days_ago)
+            .annotate(date=TruncDate('created_at'))
+            .values('date')
+            .annotate(count=Count('id'))
+            .order_by('date')
+        )
+        registration_trend = [
+            {'date': str(row['date']), 'count': row['count']}
+            for row in trend_qs
+        ]
+
+        # ── Speakers ───────────────────────────────────────────────────
+        speaker_qs = SpeakerApplication.objects.filter(deleted_at__isnull=True)
+        speaker_total = speaker_qs.count()
+        speaker_pending = speaker_qs.filter(status=SpeakerApplicationStatus.SUBMITTED).count()
+        speaker_approved = speaker_qs.filter(status=SpeakerApplicationStatus.ACCEPTED).count()
+        speaker_rejected = speaker_qs.filter(status=SpeakerApplicationStatus.REJECTED).count()
+
+        # ── Volunteers ─────────────────────────────────────────────────
+        vol_qs = VolunteerApplication.objects.filter(deleted_at__isnull=True)
+        vol_total = vol_qs.count()
+        vol_pending = vol_qs.filter(status=VolunteerApplicationStatus.SUBMITTED).count()
+        vol_approved = vol_qs.filter(status=VolunteerApplicationStatus.ACCEPTED).count()
+        vol_rejected = vol_qs.filter(status=VolunteerApplicationStatus.REJECTED).count()
+
+        # ── Donations ──────────────────────────────────────────────────
+        donation_payments = Payment.objects.filter(
+            purpose=PaymentPurpose.DONATION,
+            status=PaymentStatus.SUCCESS,
+            deleted_at__isnull=True,
+        )
+        donation_total_amount = donation_payments.aggregate(total=Sum('amount'))['total'] or 0
+        donation_count = donation_payments.count()
+
+        # ── Sponsors ───────────────────────────────────────────────────
+        sponsor_qs = SponsorInquiry.objects.filter(deleted_at__isnull=True)
+        sponsor_total = sponsor_qs.count()
+
+        # ── CMS schedule quick count ───────────────────────────────────
+        from apps.cms.models import ScheduleSession
+        schedule_count = ScheduleSession.objects.filter(deleted_at__isnull=True).count()
+
+        data = {
+            'registrations': {
+                'total': reg_total,
+                'approved': reg_approved,
+                'paid': reg_paid,
+                'pending': reg_pending,
+                'trend': registration_trend,
+            },
+            'speakers': {
+                'total': speaker_total,
+                'pending': speaker_pending,
+                'approved': speaker_approved,
+                'rejected': speaker_rejected,
+            },
+            'volunteers': {
+                'total': vol_total,
+                'pending': vol_pending,
+                'approved': vol_approved,
+                'rejected': vol_rejected,
+            },
+            'donations': {
+                'total_amount': float(donation_total_amount),
+                'count': donation_count,
+            },
+            'sponsors': {
+                'total': sponsor_total,
+            },
+            'schedule': {
+                'session_count': schedule_count,
+            },
+        }
+        return Response({'data': data})

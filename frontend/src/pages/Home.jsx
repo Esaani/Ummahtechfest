@@ -71,6 +71,31 @@ const DEFAULT_CTA = {
   button_url: '/volunteer/apply',
 }
 
+const DEFAULT_SPEAKERS = [
+  {
+    id: 'default-1',
+    name: 'Ibrahim Mansour',
+    role: 'CTO @ HALAL AI',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqTgN95a6yn9xwWWqeqejPPtdw-cwCHAXciweIRsMwrXpdwuLrSxH_X63I3sQjLM2WM3LsTiW8g61_tHr04QrzFClaJfHp6L79N8eHghjWAgQhWTXRVY2nrjvygQ9919hL_Y5GcTpHsy6xP7AiEVThRW00kC1kAHNvgTxypQrrRuZjv1A1SrrA6v4xEvsmgubWyB0bbSU1u7YZFdrTFHOEBb8g2E4oIsCARNVlDTLtaB7L_xMz-8C1hj5aiqe0AwT5Z3tQFnNQmvo',
+    bio: 'Ibrahim Mansour is the CTO of HALAL AI, pioneering ethical AI models built on Islamic principles and modern machine learning frameworks. He has over a decade of experience in machine learning and data infrastructure.'
+  },
+  {
+    id: 'default-2',
+    name: 'Amina Asante',
+    role: 'Lead Dev @ EthioChain',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPWjqckz1gnKbmGg4e2basC3v_phddOPw1Z4UxVu5nM7aaBN-x1c-JlBQfkIuuhKP079EETqkmK0T5vCAmUEoyd8aGf1HC6taxCVCv2I_EjN6Ll9p2vJICkvnRZzZ3bK8IfoHpQnGqHfJBL237GCTf5ez_1MWB90NO9bEGHWUOy3rLTuSTYiaFIFUNiS6Zaf7LMRi8b756izXB1wGx2EDFXUNgFEssErgKmx4xY-fxe7xY_4xtIJJp5QeqQrLDnsjKcz6HNQ-SF_0',
+    bio: 'Amina Asante is the Lead Developer at EthioChain. She builds scalable, decentralized smart contracts for the future of ethical African fintech, focusing on microfinance and peer-to-peer economic networks.'
+  },
+  {
+    id: 'default-3',
+    name: 'Yusuf Osei',
+    role: 'Founder @ AccraData',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCtvxwpKcSNPZH1odV5tKDI9jOyetIneUw2p9VrdzN6ozc_NFWtMrqTYwbPx8XjyGCx0F6rbsxwSQhGWYF70aCfhaol__XO3W01n_F4i77hvtBwFXz8FZ-UTwmRdobxQpOfGXEaWJx9baDXh7Usco5iLMHuB4ljkNaVTlyt5sn4vEBvEpx0mOkEP0v98UOTbxu07Qw_Wh8o6qKaZnGcJSnetAy0q2q3Ti29F-8uWR1XPwPIgzw9r5d9ZYT4rynz2Tqk7-CeRvBHwQc',
+    bio: 'Yusuf Osei is the Founder of AccraData. He specializes in helping companies scale their operations through modern data analytics pipelines, distributed systems, and highly optimized search engines.'
+  }
+]
+
+
 export default function Home() {
   const { get } = useCmsSections('home')
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false)
@@ -305,10 +330,10 @@ function AttendeeVoices() {
 
 function SpeakerCardSkeleton() {
   return (
-    <div className="shrink-0 w-[240px] md:w-[280px] snap-start animate-pulse">
-      <div className="rounded-2xl aspect-[3/4] w-full mb-5 bg-surface-container-high" />
-      <div className="h-5 w-3/4 rounded bg-surface-container-high mb-2" />
-      <div className="h-3 w-1/2 rounded bg-surface-container-high" />
+    <div className="w-[calc(100vw-64px)] sm:w-[320px] shrink-0 snap-center animate-pulse">
+      <div className="kente-border p-1 bg-background">
+        <div className="aspect-[4/5] w-full bg-surface-container-high" />
+      </div>
     </div>
   )
 }
@@ -331,50 +356,37 @@ function Speakers() {
       .finally(() => setLoading(false))
   }, [])
 
+  const displaySpeakers = speakers.length > 0 ? speakers : DEFAULT_SPEAKERS
+
   const scrollBy = (direction) => {
     const el = scrollRef.current
     if (!el) return
-    el.scrollBy({ left: direction * 320, behavior: 'smooth' })
+    const cardWidth = window.innerWidth < 640 ? window.innerWidth - 64 : 320
+    const gap = 24
+    el.scrollBy({ left: direction * (cardWidth + gap), behavior: 'smooth' })
   }
 
   return (
-    <section className="py-24 md:py-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-      <div className="mb-12 md:mb-16 text-center" data-aos="fade-up">
-        <h2 className="headline-lg text-primary uppercase mb-4">
-          World-class <span className="text-primary-fixed">speakers</span>
-        </h2>
-        <p className="body-md text-on-surface-variant max-w-2xl mx-auto mb-8 md:mb-10 text-sm md:text-base px-4">
-          This is the firepit of the biggest and most exciting names in the Tech &amp; Entrepreneurship scene.
-        </p>
-        <Link to="/speaker/apply" className="btn-secondary px-8 py-3 !border-primary-fixed !text-primary-fixed hover:!bg-primary-fixed hover:!text-on-primary-fixed uppercase tracking-widest font-bold text-xs inline-block">
-          Speaker application
-        </Link>
-      </div>
-
-      <div className="relative" data-aos="fade-up">
-        {speakers.length > 3 && (
-          <>
-            <button
-              type="button"
-              onClick={() => scrollBy(-1)}
-              className="hidden md:flex absolute -left-6 top-[45%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant/30 items-center justify-center text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed transition-all duration-300"
-              aria-label="Previous speakers"
-            >
-              <span className="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollBy(1)}
-              className="hidden md:flex absolute -right-6 top-[45%] -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant/30 items-center justify-center text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed transition-all duration-300"
-              aria-label="Next speakers"
-            >
-              <span className="material-symbols-outlined">chevron_right</span>
-            </button>
-          </>
-        )}
+    <section className="py-24 md:py-32 bg-surface-container-low/30 border-y border-outline-variant/10">
+      <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <div className="mb-12 max-w-[1008px] lg:mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6" data-aos="fade-up">
+          <div className="text-center md:text-left md:max-w-[664px]">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary uppercase mb-4 leading-tight">
+              Inspiring Voices, <span className="text-primary-fixed">Real Impact</span>
+            </h2>
+            <p className="body-md text-on-surface-variant max-w-2xl text-sm md:text-base">
+              Connect with entrepreneurs, creators, engineers, and changemakers who are driving innovation across industries. Our speakers share authentic stories, lessons learned, and actionable knowledge to help you grow, build, and lead with purpose.
+            </p>
+          </div>
+          <div className="shrink-0 flex justify-center md:justify-start md:w-[320px]">
+            <Link to="/speaker/apply" className="bg-primary-fixed text-on-primary-fixed hover:bg-white hover:text-black transition-colors px-8 py-3 uppercase tracking-widest font-bold text-xs w-full text-center btn-cutout md:py-4 md:text-sm">
+              Apply to Speak
+            </Link>
+          </div>
+        </div>
 
         {loading && (
-          <div className="flex justify-center gap-6 md:gap-10 pb-6 pt-2">
+          <div className="flex gap-6 overflow-x-auto pb-8 pt-2 no-scrollbar lg:justify-center">
             <SpeakerCardSkeleton />
             <SpeakerCardSkeleton />
             <SpeakerCardSkeleton />
@@ -387,52 +399,69 @@ function Speakers() {
           </p>
         )}
 
-        {!loading && !loadError && speakers.length === 0 && (
-          <p className="text-center body-md text-on-surface-variant py-8 max-w-md mx-auto">
-            Featured speakers will be announced soon.{' '}
-            <Link to="/speaker/apply" className="text-primary-fixed hover:underline">
-              Apply to speak
-            </Link>
-            .
-          </p>
+        {!loading && !loadError && (
+          <div
+            ref={scrollRef}
+            className={`flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar ${
+              displaySpeakers.length <= 3 ? 'lg:justify-center' : ''
+            }`}
+            data-aos="fade-up"
+          >
+            {displaySpeakers.map((s, i) => {
+              const image = s.image || s.img || ''
+              return (
+                <button
+                  key={s.id || i}
+                  type="button"
+                  onClick={() => setSelectedSpeaker(s)}
+                  className="group relative text-left cursor-pointer focus:outline-none w-[calc(100vw-64px)] sm:w-[320px] shrink-0 snap-center"
+                  aria-label={`View bio for ${s.name}`}
+                >
+                  <div className="kente-border p-1 bg-background">
+                    <div className="relative overflow-hidden aspect-[4/5] w-full">
+                      {image ? (
+                        <img
+                          alt={s.name}
+                          className="w-full h-full object-cover"
+                          src={image}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-container flex items-center justify-center">
+                          <span className="material-symbols-outlined text-on-surface-variant text-5xl">person</span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <h4 className="headline-sm text-primary mb-1 group-hover:text-primary-fixed transition-colors duration-300">{s.name}</h4>
+                        <p className="label-md text-primary-fixed uppercase tracking-tighter">{s.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
         )}
 
-        {!loading && !loadError && speakers.length > 0 && (
-        <div
-          ref={scrollRef}
-          className="flex justify-center gap-6 md:gap-10 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
-        >
-          {speakers.map((s, i) => {
-            const image = s.image || s.img || ''
-            return (
-              <button
-                key={s.id || i}
-                type="button"
-                onClick={() => setSelectedSpeaker(s)}
-                className="group shrink-0 w-[240px] md:w-[280px] snap-start text-left cursor-pointer focus:outline-none"
-                aria-label={`View bio for ${s.name}`}
-              >
-                <div className="overflow-hidden rounded-2xl aspect-[3/4] w-full mb-5">
-                  {image ? (
-                    <img
-                      alt={s.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      src={image.includes('?') ? `${image}&w=560` : `${image}?w=560`}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
-                      <span className="material-symbols-outlined text-on-surface-variant text-5xl">person</span>
-                    </div>
-                  )}
-                </div>
-                <h4 className="text-lg md:text-xl font-headline text-primary mb-1 leading-snug group-hover:text-primary-fixed transition-colors duration-300">{s.name}</h4>
-                <p className="text-xs font-medium text-on-surface-variant/70 uppercase tracking-widest leading-relaxed">{s.role}</p>
-              </button>
-            )
-          })}
+        <div className="mt-8 flex justify-center items-center gap-4" data-aos="fade-up">
+          <button
+            type="button"
+            onClick={() => scrollBy(-1)}
+            className="w-11 h-11 rounded-full bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed transition-all duration-300"
+            aria-label="Previous speakers"
+          >
+            <span className="material-symbols-outlined">chevron_left</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollBy(1)}
+            className="w-11 h-11 rounded-full bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed transition-all duration-300"
+            aria-label="Next speakers"
+          >
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
         </div>
-        )}
       </div>
 
       <SpeakerBioModal

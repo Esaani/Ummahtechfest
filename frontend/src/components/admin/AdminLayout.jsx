@@ -40,14 +40,16 @@ export default function AdminLayout() {
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-lg label-md whitespace-nowrap transition-colors ${
+                  `flex items-center gap-3 py-3 rounded-lg label-md whitespace-nowrap transition-colors ${
+                    item.isSubItem ? 'pl-11 pr-4 text-[13px]' : 'px-4'
+                  } ${
                     isActive
                       ? 'bg-primary-fixed/15 text-primary-fixed border border-primary-fixed/30 font-bold'
                       : 'text-on-surface-variant hover:bg-surface-bright/20'
                   }`
                 }
               >
-                <span className="material-symbols-outlined text-xl">{item.icon}</span>
+                <span className={`material-symbols-outlined ${item.isSubItem ? 'text-[18px]' : 'text-xl'}`}>{item.icon}</span>
                 {item.label}
               </NavLink>
             ))}

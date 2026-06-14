@@ -17,7 +17,7 @@ describe('DonationWidget', () => {
     render(<DonationWidget />)
     expect(screen.getByText('50')).toBeInTheDocument()
     expect(screen.getByText('500')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /complete donation/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /donate/i })).toBeInTheDocument()
   })
 
   it('allows selecting a preset amount', async () => {
@@ -32,7 +32,7 @@ describe('DonationWidget', () => {
   it('shows validation when submitting empty form', async () => {
     const user = userEvent.setup()
     render(<DonationWidget />)
-    await user.click(screen.getByRole('button', { name: /complete donation/i }))
+    await user.click(screen.getByRole('button', { name: /donate/i }))
     expect(await screen.findByText(/enter your name/i)).toBeInTheDocument()
   })
 })

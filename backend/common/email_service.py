@@ -63,6 +63,10 @@ EMAIL_TEMPLATES = {
         'subject': 'Thank you for supporting Ummah Tech Fest',
         'template': 'emails/donation_received.html',
     },
+    'withdrawal_request_pending': {
+        'subject': 'New withdrawal request awaiting approval',
+        'template': 'emails/withdrawal_request_pending.html',
+    },
 }
 
 

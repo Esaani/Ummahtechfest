@@ -25,6 +25,7 @@ from apps.outreach.serializers import (
     SponsorInquirySerializer,
     TicketWaitlistCreateSerializer,
     TicketWaitlistSerializer,
+    NewsletterSubscriberCreateSerializer,
 )
 
 logger = logging.getLogger('ummah_tech_fest')
@@ -166,5 +167,25 @@ class TicketWaitlistCreateView(APIView):
         )
         return Response(
             {'data': TicketWaitlistSerializer(entry).data},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class NewsletterSubscribeView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedAnonRateThrottle]
+    throttle_scope = 'public_form'
+
+    def post(self, request):
+        serializer = NewsletterSubscriberCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        subscriber = serializer.save()
+        logger.info('newsletter_subscribed id=%s email=%s', subscriber.id, subscriber.email)
+        monitor_event(
+            'newsletter_subscribed',
+            email=subscriber.email,
+        )
+        return Response(
+            {'data': {'email': subscriber.email, 'status': subscriber.status}},
             status=status.HTTP_201_CREATED,
         )

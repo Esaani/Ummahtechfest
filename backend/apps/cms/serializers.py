@@ -3,6 +3,7 @@ import mimetypes
 from rest_framework import serializers
 
 from apps.cms.models import (
+    AttendeeVoice,
     CmsPage,
     FeaturedSpeaker,
     FeaturedSponsor,
@@ -301,3 +302,42 @@ class ScheduleSessionAdminSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['slug'] = unique_slug_for_model(ScheduleSession, validated_data['title'])
         return super().create(validated_data)
+
+
+def _voice_image(voice, request):
+    if voice.image_asset_id:
+        url = _asset_url(voice.image_asset, request)
+        if url:
+            return url
+    return voice.image_url or ''
+
+
+class AttendeeVoicePublicSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AttendeeVoice
+        fields = ['id', 'name', 'role', 'quote', 'image', 'sort_order']
+
+    def get_image(self, obj):
+        return _voice_image(obj, self.context.get('request'))
+
+
+class AttendeeVoiceAdminSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    image_asset = serializers.PrimaryKeyRelatedField(
+        queryset=MediaAsset.objects.all(),
+        allow_null=True,
+        required=False,
+    )
+
+    class Meta:
+        model = AttendeeVoice
+        fields = [
+            'id', 'name', 'role', 'quote', 'image_url', 'image_asset', 'image',
+            'is_published', 'sort_order', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['id', 'image', 'created_at', 'updated_at']
+
+    def get_image(self, obj):
+        return _voice_image(obj, self.context.get('request'))

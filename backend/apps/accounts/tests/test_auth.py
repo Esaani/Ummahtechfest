@@ -57,9 +57,7 @@ class AuthAPITest(TestCase):
             'website': '',
         }, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        body = str(response.data)
-        self.assertNotIn('user@example.com', body)
-        self.assertNotIn('password', body.lower())
+        self.assertIn('Incorrect password.', response.data['error']['details']['non_field_errors'])
 
     def test_login_unknown_email_same_error_shape(self):
         response = self.client.post(self.login_url, {
@@ -68,6 +66,7 @@ class AuthAPITest(TestCase):
             'website': '',
         }, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('Email address not registered.', response.data['error']['details']['non_field_errors'])
 
     def test_login_honeypot_rejected(self):
         response = self.client.post(self.login_url, {

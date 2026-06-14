@@ -1,0 +1,85 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: utf_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-ummah_tech_fest}
+      POSTGRES_USER: ${DB_USER:-ummah_tech_fest}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ummah_local_dev}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ummah_tech_fest} -d ${DB_NAME:-ummah_tech_fest}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.saani
+    container_name: utf_backend
+    env_file: .env
+    environment:
+      DB_HOST: db
+    volumes:
+      - ./backend:/app
+      - ./.env:/app/.env:ro
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VOLUNTEER_APP_CONTAINER_PORT: ${VOLUNTEER_APP_CONTAINER_PORT:-5173}
+    container_name: utf_frontend
+    env_file: .env
+    ports:
+      - "${VOLUNTEER_APP_PORT:-5173}:${VOLUNTEER_APP_CONTAINER_PORT:-5173}"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      VITE_API_BASE_URL: /api/v1
+      VITE_DEV_SERVER_PORT: ${VOLUNTEER_APP_CONTAINER_PORT:-5173}
+      VITE_PROXY_TARGET: http://backend:8000
+
+  redis:
+    image: redis:7-alpine
+    container_name: utf_redis
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.saani
+    container_name: utf_celery
+    env_file: .env
+    environment:
+      DB_HOST: db
+    volumes:
+      - ./backend:/app
+      - ./.env:/app/.env:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      backend:
+        condition: service_started
+    command: celery -A config worker -l info
+
+volumes:
+  postgres_data:

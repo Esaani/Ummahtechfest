@@ -1,0 +1,15 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<p>Assalamu Alaikum,</p>
+<p>A new withdrawal request has been submitted and requires your approval.</p>
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+  <tr><td style="padding:6px 12px;font-weight:bold;">Requested by</td><td style="padding:6px 12px;">{{ requested_by_email }}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold;">Amount</td><td style="padding:6px 12px;">GHS {{ amount }}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold;">Method</td><td style="padding:6px 12px;">{{ method_label }}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold;">Account Name</td><td style="padding:6px 12px;">{{ account_name }}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold;">Account Number</td><td style="padding:6px 12px;">{{ account_number }}</td></tr>
+  <tr><td style="padding:6px 12px;font-weight:bold;">Bank / Network</td><td style="padding:6px 12px;">{{ bank_or_network }}</td></tr>
+</table>
+<p><a href="{{ admin_url }}">Review in Admin Portal</a></p>
+<p>Please verify the details and approve or reject the request.</p>
+{% endblock %}

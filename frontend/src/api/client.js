@@ -95,6 +95,7 @@ export const registrationsApi = {
   me: () => apiRequest('/registrations/me/'),
   submitOpen: (data) => apiRequest('/registrations/open/', { method: 'POST', body: data }),
   submitSpecialAccess: (data) => apiRequest('/registrations/special-access/', { method: 'POST', body: data }),
+  adminDashboardStats: () => apiRequest('/registrations/admin/dashboard/stats/'),
 }
 
 export const outreachApi = {
@@ -116,6 +117,7 @@ export const outreachApi = {
     apiRequest(`/outreach/admin/ticket-waitlist/${status ? `?status=${encodeURIComponent(status)}` : ''}`),
   updateTicketWaitlist: (id, data) =>
     apiRequest(`/outreach/admin/ticket-waitlist/${id}/`, { method: 'PATCH', body: data }),
+  subscribeNewsletter: (data) => apiRequest('/outreach/subscribe/', { method: 'POST', body: data }),
 }
 
 export const cmsApi = {
@@ -161,6 +163,11 @@ export const cmsApi = {
   createScheduleSession: (data) => apiRequest('/cms/admin/schedule/', { method: 'POST', body: data }),
   updateScheduleSession: (id, data) => apiRequest(`/cms/admin/schedule/${id}/`, { method: 'PATCH', body: data }),
   deleteScheduleSession: (id) => apiRequest(`/cms/admin/schedule/${id}/`, { method: 'DELETE' }),
+  publicVoices: () => apiRequest('/cms/voices/'),
+  adminVoices: () => apiRequest('/cms/admin/voices/'),
+  createVoice: (data) => apiRequest('/cms/admin/voices/', { method: 'POST', body: data }),
+  updateVoice: (id, data) => apiRequest(`/cms/admin/voices/${id}/`, { method: 'PATCH', body: data }),
+  deleteVoice: (id) => apiRequest(`/cms/admin/voices/${id}/`, { method: 'DELETE' }),
 }
 
 export const paymentsApi = {
@@ -169,6 +176,32 @@ export const paymentsApi = {
   donate: (data) => apiRequest('/payments/donations/', { method: 'POST', body: data }),
   adminDonations: (status) =>
     apiRequest(`/payments/admin/donations/${status ? `?status=${encodeURIComponent(status)}` : ''}`),
+  adminWithdrawals: () => apiRequest('/payments/admin/withdrawals/'),
+  createWithdrawal: (data) => apiRequest('/payments/admin/withdrawals/', { method: 'POST', body: data }),
+  approveWithdrawal: (id, data) => apiRequest(`/payments/admin/withdrawals/${id}/approve/`, { method: 'POST', body: data }),
+  
+  // Finance Manager Endpoints
+  financeOverview: () => apiRequest('/payments/admin/finance/overview/'),
+  
+  financeWallets: () => apiRequest('/payments/admin/finance/wallets/'),
+  createWallet: (data) => apiRequest('/payments/admin/finance/wallets/', { method: 'POST', body: data }),
+  updateWallet: (id, data) => apiRequest(`/payments/admin/finance/wallets/${id}/`, { method: 'PATCH', body: data }),
+  deleteWallet: (id) => apiRequest(`/payments/admin/finance/wallets/${id}/`, { method: 'DELETE' }),
+
+  financeBills: () => apiRequest('/payments/admin/finance/bills/'),
+  createBill: (data) => apiRequest('/payments/admin/finance/bills/', { method: 'POST', body: data }),
+  updateBill: (id, data) => apiRequest(`/payments/admin/finance/bills/${id}/`, { method: 'PATCH', body: data }),
+  deleteBill: (id) => apiRequest(`/payments/admin/finance/bills/${id}/`, { method: 'DELETE' }),
+
+  financeExpenses: () => apiRequest('/payments/admin/finance/expenses/'),
+  createExpense: (data) => apiRequest('/payments/admin/finance/expenses/', { method: 'POST', body: data }),
+  updateExpense: (id, data) => apiRequest(`/payments/admin/finance/expenses/${id}/`, { method: 'PATCH', body: data }),
+  deleteExpense: (id) => apiRequest(`/payments/admin/finance/expenses/${id}/`, { method: 'DELETE' }),
+
+  financeGoals: () => apiRequest('/payments/admin/finance/goals/'),
+  createGoal: (data) => apiRequest('/payments/admin/finance/goals/', { method: 'POST', body: data }),
+  updateGoal: (id, data) => apiRequest(`/payments/admin/finance/goals/${id}/`, { method: 'PATCH', body: data }),
+  deleteGoal: (id) => apiRequest(`/payments/admin/finance/goals/${id}/`, { method: 'DELETE' }),
 }
 
 export const volunteerApi = {

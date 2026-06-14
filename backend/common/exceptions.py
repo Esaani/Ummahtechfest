@@ -65,6 +65,13 @@ def custom_exception_handler(exc, context):
     if isinstance(exc, ValidationError):
         from rest_framework.response import Response
         details = _sanitize_validation_details(exc.detail)
+        logger.debug(
+            'validation_error request_id=%s view=%s details=%s',
+            request_id,
+            context.get('view').__class__.__name__ if context.get('view') else '-',
+            details,
+            extra={'request_id': request_id, 'user_id': '-'},
+        )
         return Response(
             _build_error('VALIDATION_ERROR', GENERIC_MESSAGES['VALIDATION_ERROR'], details),
             status=status.HTTP_400_BAD_REQUEST,
@@ -109,6 +116,14 @@ def custom_exception_handler(exc, context):
         }
         code = code_map.get(response.status_code, 'INTERNAL_ERROR')
         message = GENERIC_MESSAGES.get(code, GENERIC_MESSAGES['INTERNAL_ERROR'])
+        logger.debug(
+            'drf_error request_id=%s status=%s exc=%s original_detail=%s',
+            request_id,
+            response.status_code,
+            type(exc).__name__,
+            getattr(exc, 'detail', None),
+            extra={'request_id': request_id, 'user_id': '-'},
+        )
         response.data = _build_error(code, message)
         return response
 

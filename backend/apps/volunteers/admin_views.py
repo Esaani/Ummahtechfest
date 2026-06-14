@@ -19,7 +19,9 @@ class AdminVolunteerApplicationListView(APIView):
 
     def get(self, request):
         qs = (
-            VolunteerApplication.objects.select_related('user', 'assigned_role')
+            VolunteerApplication.objects.select_related(
+                'user', 'assigned_role', 'profile_image_asset', 'cv_asset'
+            )
             .prefetch_related('preferred_roles')
             .order_by('-created_at')
         )
@@ -27,7 +29,9 @@ class AdminVolunteerApplicationListView(APIView):
         if status_filter:
             qs = qs.filter(status=status_filter)
         return Response({
-            'data': VolunteerApplicationAdminSerializer(qs, many=True).data,
+            'data': VolunteerApplicationAdminSerializer(
+                qs, many=True, context={'request': request}
+            ).data,
         })
 
 
@@ -37,12 +41,18 @@ class AdminVolunteerApplicationDetailView(APIView):
 
     def get(self, request, application_id):
         application = get_object_or_404(
-            VolunteerApplication.objects.select_related('user', 'assigned_role').prefetch_related(
+            VolunteerApplication.objects.select_related(
+                'user', 'assigned_role', 'profile_image_asset', 'cv_asset'
+            ).prefetch_related(
                 'preferred_roles', 'status_history',
             ),
             id=application_id,
         )
-        return Response({'data': VolunteerApplicationAdminSerializer(application).data})
+        return Response({
+            'data': VolunteerApplicationAdminSerializer(
+                application, context={'request': request}
+            ).data
+        })
 
     def patch(self, request, application_id):
         application = get_object_or_404(
@@ -78,11 +88,17 @@ class AdminVolunteerApplicationDetailView(APIView):
                 },
             )
         application = (
-            VolunteerApplication.objects.select_related('user', 'assigned_role')
+            VolunteerApplication.objects.select_related(
+                'user', 'assigned_role', 'profile_image_asset', 'cv_asset'
+            )
             .prefetch_related('preferred_roles', 'status_history')
             .get(id=application.id)
         )
-        return Response({'data': VolunteerApplicationAdminSerializer(application).data})
+        return Response({
+            'data': VolunteerApplicationAdminSerializer(
+                application, context={'request': request}
+            ).data
+        })
 
 
 class AdminVolunteerRoleListView(APIView):
