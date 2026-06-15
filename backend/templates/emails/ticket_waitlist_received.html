@@ -1,11 +1,22 @@
 {% extends "emails/base.html" %}
-{% block title %}Ticket waitlist — {{ site_name }}{% endblock %}
+
+{% block title %}You're on the waitlist — {{ site_name }}{% endblock %}
+
+{% block preheader %}You have successfully joined the ticket waitlist for Ummah Tech Fest.{% endblock %}
+
 {% block content %}
-<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">You're on the list</h1>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Assalamu Alaikum {{ full_name }},
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  You have successfully joined the ticket waitlist for <strong>{{ site_name }}</strong>.
 </p>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Thanks for joining the ticket waitlist for {{ site_name }}. We'll email you as soon as sales open.
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  We will notify you immediately as soon as more tickets become available or if we open up new registration phases. Thank you for your patience and for your interest in joining us.
+</p>
+<div style="margin: 32px 0; text-align: center;">
+  <a href="{{ site_url }}" class="button">Visit our Website</a>
+</div>
+<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair,<br>
+  <strong>The {{ site_name }} Team</strong>
 </p>
 {% endblock %}

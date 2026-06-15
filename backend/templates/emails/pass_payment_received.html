@@ -1,14 +1,28 @@
 {% extends "emails/base.html" %}
-{% block title %}Payment confirmed — {{ site_name }}{% endblock %}
+
+{% block title %}Pass payment confirmed — {{ site_name }}{% endblock %}
+
+{% block preheader %}Your payment for {{ pass_name }} has been confirmed.{% endblock %}
+
 {% block content %}
-<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Payment confirmed</h1>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Assalamu Alaikum {{ first_name }},
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Alhamdulillah! Your payment for the <strong>{{ pass_name }}</strong> has been confirmed. Your registration for <strong>{{ site_name }}</strong> is now complete.
 </p>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Your payment of <strong>{{ amount }} {{ currency }}</strong> for <strong>{{ pass_title }}</strong> is confirmed. Your pass status is now <strong>Paid</strong>.
+<div style="background-color: #f8fafc; border-radius: 8px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
+  <p style="margin: 0 0 8px; font-size: 14px; color: #64748b;">Transaction Details</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Full Name: {{ first_name }} {{ last_name }}</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Pass Type: {{ pass_name }}</p>
+  <p style="margin: 0; font-weight: 600;">Reference: {{ reference }}</p>
+</div>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  We look forward to seeing you at the event! You can view your ticket and other details in your dashboard.
 </p>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  <a href="{{ site_url }}/registration/status" style="color: #65a30d; font-weight: 600;">View your registration</a>
+<div style="margin: 32px 0; text-align: center;">
+  <a href="{{ site_url }}/dashboard" class="button">View Ticket</a>
+</div>
+<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair,<br>
+  <strong>The {{ site_name }} Team</strong>
 </p>
 {% endblock %}

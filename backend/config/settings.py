@@ -165,7 +165,7 @@ APP_ENV = env('APP_ENV', default='development')
 SITE_URL = env('SITE_URL', default='http://localhost:8080')
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 PASSWORD_RESET_EXPIRY_HOURS = env.int('PASSWORD_RESET_EXPIRY_HOURS', default=1)
-SUPPORT_EMAIL = env('SUPPORT_EMAIL', default='hello@ummahtechfest.com')
+SUPPORT_EMAIL = env('SUPPORT_EMAIL', default='support@ummahtechfest.com')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@ummahtechfest.com')
 
 EMAIL_BACKEND = env(
@@ -251,6 +251,8 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Ummah Tech Fest API',
     'VERSION': '1.0.0',
 }
+
+ENABLE_API_DOCS = env.bool('ENABLE_API_DOCS', default=DEBUG)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 if not DEBUG:

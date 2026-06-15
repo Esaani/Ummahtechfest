@@ -1,12 +1,9 @@
-Assalamu Alaikum,
+Assalamu Alaikum {{ recipient_name }},
 
-You have been invited to join the {{ site_name }} volunteer team.
+We would like to invite you to join our team of volunteers for {{ site_name }}.
 
-Accept your invitation and set your password:
+Please follow this link to accept the invitation and provide your details:
 {{ invite_url }}
 
-After signing in, you can complete your volunteer application.
-
-This link expires in {{ expiry_hours }} hours.
-
-Questions? {{ support_email }}
+JazakAllah khair,
+The {{ site_name }} Team

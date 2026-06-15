@@ -1,26 +1,22 @@
 {% extends "emails/base.html" %}
 
-{% block title %}Application Status Update - {{ site_name }}{% endblock %}
+{% block title %}Application Status Update — {{ site_name }}{% endblock %}
+
+{% block preheader %}There is an update regarding your application for Ummah Tech Fest.{% endblock %}
 
 {% block content %}
-<p>Assalamu Alaikum {{ name }},</p>
-
-<p>The status of your <strong>{{ submission_type }}</strong> has been updated to:</p>
-
-<div style="background-color: #f1f5f9; padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
-  <span style="font-size: 18px; font-weight: 700; color: #c9a227; text-transform: uppercase; letter-spacing: 0.05em;">
-    {{ status_label }}
-  </span>
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  There has been an update regarding your application status for <strong>{{ site_name }}</strong>.
+</p>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Please sign in to your dashboard to view the latest status and any feedback from our team.
+</p>
+<div style="margin: 32px 0; text-align: center;">
+  <a href="{{ site_url }}/dashboard" class="button">View Dashboard</a>
 </div>
-
-{% if message %}
-<p>Note from our team:</p>
-<blockquote style="border-left: 4px solid #e2e8f0; padding-left: 16px; color: #475569; font-style: italic;">
-  {{ message }}
-</blockquote>
-{% endif %}
-
-<p>You can view more details on our website or reply to this email if you have any questions.</p>
-
-<p>Wassalamu Alaikum,<br>The {{ site_name }} Team</p>
+<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair,<br>
+  <strong>The {{ site_name }} Team</strong>
+</p>
 {% endblock %}

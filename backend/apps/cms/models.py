@@ -59,6 +59,10 @@ class MediaAsset(BaseModel):
         blank=True,
         related_name='cms_uploads',
     )
+    is_private = models.BooleanField(
+        default=False,
+        help_text='When true, the file is only accessible via the secure proxy view.',
+    )
 
     class Meta:
         db_table = 'cms_media_assets'

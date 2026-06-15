@@ -40,8 +40,11 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     def delete(self, using=None, keep_parents=False):
         if not self.is_deleted:
+            self.is_active = False
             local, domain = self.email.split('@', 1) if '@' in self.email else (self.email, '')
             if domain:
+                self.email = f'{local}+deleted.{self.id}@example.com'[:254]  # Standardize deleted domain or keep original
+                # Actually, better to keep the original domain but add suffix to local part
                 self.email = f'{local}+deleted.{self.id}@{domain}'[:254]
         super().delete(using=using, keep_parents=keep_parents)
 

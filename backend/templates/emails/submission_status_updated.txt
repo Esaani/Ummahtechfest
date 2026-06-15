@@ -1,13 +1,8 @@
-Assalamu Alaikum {{ name }},
+Assalamu Alaikum {{ first_name|default:"there" }},
 
-The status of your {{ submission_type }} has been updated to: {{ status_label }}
+There has been an update regarding your application status for {{ site_name }}.
 
-{% if message %}
-Note from our team:
-{{ message }}
-{% endif %}
+Please sign in to your dashboard to view the details: {{ site_url }}/dashboard
 
-You can view more details on our website or reply to this email if you have any questions.
-
-Wassalamu Alaikum,
+JazakAllah khair,
 The {{ site_name }} Team

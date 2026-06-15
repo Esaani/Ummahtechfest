@@ -11,6 +11,7 @@
       padding: 0;
       -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
+      background-color: #f4f4f5;
     }
     table, td {
       border-collapse: collapse;
@@ -27,52 +28,91 @@
     }
     p {
       display: block;
-      margin: 13px 0;
+      margin: 16px 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .header {
+      padding: 32px 48px;
+      text-align: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+    .content {
+      padding: 48px;
+      color: #334155;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .footer {
+      padding: 32px 48px;
+      background-color: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .button {
+      display: inline-block;
+      padding: 14px 32px;
+      background-color: #c9a227;
+      color: #ffffff !important;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+    .preheader {
+      display: none;
+      max-height: 0px;
+      overflow: hidden;
+      mso-hide: all;
     }
   </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 0;">
+<body>
+  <div class="preheader">
+    {% block preheader %}{% endblock %}
+  </div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f5; padding: 20px 0;">
     <tr>
       <td align="center">
-        <!--[if mso]>
-        <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-        <tr>
-        <td align="center" valign="top" width="600">
-        <![endif]-->
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
-          <!-- Header -->
-          <tr>
-            <td style="padding: 40px 40px 20px; text-align: left;">
-              <p style="margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #c9a227;">
-                {{ site_name }}
-              </p>
-            </td>
-          </tr>
-          <!-- Body -->
-          <tr>
-            <td style="padding: 0 40px 40px; color: #0f172a; font-size: 16px; line-height: 1.6;">
-              {% block content %}{% endblock %}
-            </td>
-          </tr>
+        <div class="email-container">
+          <!-- Header with Logo -->
+          <div class="header">
+            <a href="{{ site_url }}" target="_blank">
+              <img src="{{ site_url }}/assets/images/Ummah-tech-Fest-logo.png" alt="{{ site_name }}" width="180" style="display: block; margin: 0 auto;">
+            </a>
+          </div>
+
+          <!-- Body Content -->
+          <div class="content">
+            {% block content %}{% endblock %}
+          </div>
+
           <!-- Footer -->
-          <tr>
-            <td style="padding: 32px 40px; background-color: #f1f5f9; border-top: 1px solid #e2e8f0; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-size: 14px; line-height: 1.5; color: #64748b; text-align: center;">
-              <p style="margin: 0 0 8px;">
-                Questions? Reply to this email or contact us at 
-                <a href="mailto:{{ support_email }}" style="color: #c9a227; text-decoration: none; font-weight: 500;">{{ support_email }}</a>
-              </p>
-              <p style="margin: 0;">
-                <a href="{{ site_url }}" style="color: #64748b; text-decoration: none;">{{ site_url|safe }}</a>
-              </p>
-            </td>
-          </tr>
-        </table>
-        <!--[if mso]>
-        </td>
-        </tr>
-        </table>
-        <![endif]-->
+          <div class="footer">
+            <p style="margin: 0 0 12px; font-weight: 600; color: #475569;">{{ site_name }}</p>
+            <p style="margin: 0 0 20px;">The Premier Tech Conference for the Global Ummah</p>
+            
+            <div style="margin-bottom: 24px;">
+              <a href="{{ site_url }}" style="color: #c9a227; text-decoration: none; margin: 0 10px;">Website</a>
+              <span style="color: #cbd5e1;">&bull;</span>
+              <a href="mailto:{{ support_email }}" style="color: #c9a227; text-decoration: none; margin: 0 10px;">Support</a>
+            </div>
+
+            <p style="margin: 0; font-size: 12px; color: #94a3b8;">
+              &copy; 2026 Ummah Tech Fest. All rights reserved.<br>
+              You received this email because you registered on our platform.
+            </p>
+          </div>
+        </div>
       </td>
     </tr>
   </table>

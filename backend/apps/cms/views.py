@@ -1,10 +1,11 @@
 import logging
 
 from django.core.cache import cache
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -164,6 +165,51 @@ class AdminMediaDetailView(APIView):
         asset.delete()
         logger.info('cms_media_soft_deleted id=%s user_id=%s', asset_id, request.user.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PrivateMediaServeView(APIView):
+    """
+    Securely serves private media assets after checking authorization.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, asset_id):
+        asset = get_object_or_404(MediaAsset, id=asset_id)
+
+        if not asset.is_private:
+            # If it's not private, we could redirect to public URL or just serve it.
+            # Serving it here is fine as a fallback.
+            pass
+        else:
+            # Check authorization
+            can_access = (
+                request.user.is_superuser or
+                request.user.has_perm(PERM_CMS_MANAGE) or
+                asset.uploaded_by_id == request.user.id
+            )
+            if not can_access:
+                return Response(
+                    {'error': {'code': 'FORBIDDEN', 'message': 'You do not have permission to access this file.'}},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+        if not asset.file:
+            return Response(
+                {'error': {'code': 'NOT_FOUND', 'message': 'File content not found.'}},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        try:
+            return FileResponse(
+                asset.file.open('rb'),
+                content_type=asset.mime_type or 'application/octet-stream'
+            )
+        except Exception as e:
+            logger.error('private_media_serve_error asset_id=%s err=%s', asset_id, e)
+            return Response(
+                {'error': {'code': 'SERVER_ERROR', 'message': 'Could not serve file.'}},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 def _published_speakers():
@@ -460,9 +506,15 @@ class PublicAttendeeVoiceListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        cache_key = CmsCacheService.voices_key()
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return Response({'data': cached, 'meta': {'cached': True}})
+        
         voices = AttendeeVoice.objects.filter(is_published=True).select_related('image_asset').order_by('sort_order', '-created_at')
         data = AttendeeVoicePublicSerializer(voices, many=True, context={'request': request}).data
-        return Response({'data': data})
+        cache.set(cache_key, data, timeout=300)
+        return Response({'data': data, 'meta': {'cached': False}})
 
 
 class AdminAttendeeVoiceListCreateView(APIView):
@@ -479,6 +531,7 @@ class AdminAttendeeVoiceListCreateView(APIView):
         serializer = AttendeeVoiceAdminSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         voice = serializer.save()
+        CmsCacheService.invalidate_voices()
         logger.info('cms_attendee_voice_created id=%s user_id=%s', voice.id, request.user.id)
         return Response(
             {'data': AttendeeVoiceAdminSerializer(voice, context={'request': request}).data},
@@ -497,9 +550,11 @@ class AdminAttendeeVoiceDetailView(APIView):
         )
         serializer.is_valid(raise_exception=True)
         voice = serializer.save()
+        CmsCacheService.invalidate_voices()
         return Response({'data': AttendeeVoiceAdminSerializer(voice, context={'request': request}).data})
 
     def delete(self, request, voice_id):
         voice = get_object_or_404(AttendeeVoice, id=voice_id)
         voice.delete()
+        CmsCacheService.invalidate_voices()
         return Response(status=status.HTTP_204_NO_CONTENT)

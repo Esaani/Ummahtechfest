@@ -9,7 +9,24 @@ from apps.registrations.models import PassRegistrationStatus
 from common.tasks import send_email_task
 from common.telegram_monitor import monitor_event
 
+from django.core.cache import cache
+
 logger = logging.getLogger('ummah_tech_fest')
+
+PAYMENT_CACHE_VERSION = 'v1'
+FINANCE_OVERVIEW_TIMEOUT = 3600  # 1 hour
+
+
+class PaymentCacheService:
+    @classmethod
+    def finance_overview_key(cls):
+        return f'payments:finance:overview:{PAYMENT_CACHE_VERSION}'
+
+    @classmethod
+    def invalidate_finance_overview(cls):
+        cache.delete(cls.finance_overview_key())
+        logger.info('payment_cache_invalidated resource=finance_overview')
+
 
 DONATION_MIN_GHS = Decimal('1')
 DONATION_MAX_GHS = Decimal('50000')

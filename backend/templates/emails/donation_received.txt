@@ -1,5 +1,8 @@
-Thank you — {{ site_name }}
-
 Assalamu Alaikum {{ donor_name }},
 
-We received your donation of {{ amount }} {{ currency }}. JazakAllah khair for supporting Ummah Tech Fest.
+Thank you for your donation of {{ amount }} {{ currency }} to {{ site_name }}.
+
+Your support helps us build the future of tech for the Ummah. May Allah reward you for your generosity.
+
+JazakAllah khair,
+The {{ site_name }} Team

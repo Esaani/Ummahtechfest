@@ -1,15 +1,31 @@
 {% extends "emails/base.html" %}
+
+{% block title %}Withdrawal request pending — {{ site_name }}{% endblock %}
+
+{% block preheader %}A new withdrawal request for {{ amount }} GHS is awaiting approval.{% endblock %}
+
 {% block content %}
-<p>Assalamu Alaikum,</p>
-<p>A new withdrawal request has been submitted and requires your approval.</p>
-<table style="width:100%;border-collapse:collapse;margin:16px 0;">
-  <tr><td style="padding:6px 12px;font-weight:bold;">Requested by</td><td style="padding:6px 12px;">{{ requested_by_email }}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold;">Amount</td><td style="padding:6px 12px;">GHS {{ amount }}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold;">Method</td><td style="padding:6px 12px;">{{ method_label }}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold;">Account Name</td><td style="padding:6px 12px;">{{ account_name }}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold;">Account Number</td><td style="padding:6px 12px;">{{ account_number }}</td></tr>
-  <tr><td style="padding:6px 12px;font-weight:bold;">Bank / Network</td><td style="padding:6px 12px;">{{ bank_or_network }}</td></tr>
-</table>
-<p><a href="{{ admin_url }}">Review in Admin Portal</a></p>
-<p>Please verify the details and approve or reject the request.</p>
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Withdrawal request pending</h1>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Assalamu Alaikum,
+</p>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  A new withdrawal request has been submitted and is awaiting your review and approval in the admin portal.
+</p>
+<div style="background-color: #f8fafc; border-radius: 8px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
+  <p style="margin: 0 0 8px; font-size: 14px; color: #64748b;">Request Details</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Requested By: {{ requested_by_email }}</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Amount: {{ amount }} GHS</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Method: {{ method_label }}</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Account Name: {{ account_name }}</p>
+  <p style="margin: 0 0 4px; font-weight: 600;">Account Number: {{ account_number }}</p>
+  <p style="margin: 0;">Bank/Network: {{ bank_or_network }}</p>
+</div>
+<div style="margin: 32px 0; text-align: center;">
+  <a href="{{ admin_url }}" class="button">Review Request</a>
+</div>
+<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair,<br>
+  <strong>The {{ site_name }} System</strong>
+</p>
 {% endblock %}

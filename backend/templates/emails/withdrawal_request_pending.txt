@@ -1,14 +1,16 @@
 Assalamu Alaikum,
 
-A new withdrawal request has been submitted and requires your approval.
+A new withdrawal request is awaiting approval.
 
-Requested by: {{ requested_by_email }}
-Amount: GHS {{ amount }}
+Request Details:
+Requested By: {{ requested_by_email }}
+Amount: {{ amount }} GHS
 Method: {{ method_label }}
 Account Name: {{ account_name }}
 Account Number: {{ account_number }}
-Bank / Network: {{ bank_or_network }}
+Bank/Network: {{ bank_or_network }}
 
-Review in Admin Portal: {{ admin_url }}
+Review it here: {{ admin_url }}
 
-Please verify the details and approve or reject the request.
+JazakAllah khair,
+The {{ site_name }} System

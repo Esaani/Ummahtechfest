@@ -1,11 +1,22 @@
 {% extends "emails/base.html" %}
+
 {% block title %}Speaker application received — {{ site_name }}{% endblock %}
+
+{% block preheader %}We received your speaker application for Ummah Tech Fest.{% endblock %}
+
 {% block content %}
-<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Application received</h1>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Assalamu Alaikum {{ full_name }},
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Thank you for applying to speak at <strong>{{ site_name }}</strong>. We have successfully received your application.
 </p>
-<p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #334155;">
-  We received your speaker application for &ldquo;{{ session_title }}&rdquo;. Our program committee will review it and contact you by email.
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Our selection committee is currently reviewing all submissions. We will reach out to you once a decision has been made regarding your proposal.
+</p>
+<div style="margin: 32px 0; text-align: center;">
+  <a href="{{ site_url }}/dashboard" class="button">View Application Status</a>
+</div>
+<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair for your interest in sharing your knowledge with the Ummah.<br><br>
+  <strong>The {{ site_name }} Team</strong>
 </p>
 {% endblock %}

@@ -1,10 +1,9 @@
 Assalamu Alaikum,
- 
-You have been invited to the {{ site_name }} admin portal as {{ admin_role_label }}.
 
-Accept your invite and set your password:
+You have been invited to join the staff team for {{ site_name }}.
+
+Please use the following link to accept your invitation and set up your account:
 {{ invite_url }}
 
-This link expires in {{ expiry_hours }} hours.
-
-Questions? {{ support_email }}
+JazakAllah khair,
+The {{ site_name }} Team

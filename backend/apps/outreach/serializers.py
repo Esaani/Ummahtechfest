@@ -35,6 +35,7 @@ def _create_speaker_profile_asset(uploaded):
         file=uploaded,
         mime_type=mime or getattr(uploaded, 'content_type', '') or '',
         file_size=uploaded.size,
+        is_private=True,
     )
 
 
@@ -46,6 +47,7 @@ def _create_speaker_cv_asset(uploaded):
         file=uploaded,
         mime_type=mime or getattr(uploaded, 'content_type', '') or '',
         file_size=uploaded.size,
+        is_private=True,
     )
 
 

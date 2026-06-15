@@ -24,6 +24,7 @@ from common.permissions import HasAnyAdminPermission
 from common.permissions import HasAdminPermission
 from common.telegram_monitor import monitor_event
 from common.throttling import ScopedUserRateThrottle
+from apps.registrations.services import DashboardCacheService
 
 logger = logging.getLogger('ummah_tech_fest')
 
@@ -147,6 +148,10 @@ class AdminDashboardStatsView(APIView):
     permission_classes = [HasAnyAdminPermission]
 
     def get(self, request):
+        cached_data = DashboardCacheService.get_stats()
+        if cached_data:
+            return Response({'data': cached_data, 'meta': {'cached': True}})
+
         from apps.outreach.models import SpeakerApplication, SpeakerApplicationStatus, SponsorInquiry
         from apps.volunteers.models import VolunteerApplication, VolunteerApplicationStatus
         from apps.payments.models import Donation, Payment, PaymentStatus, PaymentPurpose
@@ -238,4 +243,5 @@ class AdminDashboardStatsView(APIView):
                 'session_count': schedule_count,
             },
         }
-        return Response({'data': data})
+        DashboardCacheService.set_stats(data)
+        return Response({'data': data, 'meta': {'cached': False}})

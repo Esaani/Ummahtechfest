@@ -21,6 +21,7 @@ def _create_volunteer_asset(uploaded, folder):
         file=uploaded,
         mime_type=mime or getattr(uploaded, 'content_type', '') or '',
         file_size=uploaded.size,
+        is_private=True,
     )
 
 

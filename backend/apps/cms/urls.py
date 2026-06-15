@@ -26,4 +26,5 @@ urlpatterns = [
     path('voices/', views.PublicAttendeeVoiceListView.as_view(), name='cms-voices-list'),
     path('admin/voices/', views.AdminAttendeeVoiceListCreateView.as_view(), name='cms-admin-voices'),
     path('admin/voices/<uuid:voice_id>/', views.AdminAttendeeVoiceDetailView.as_view(), name='cms-admin-voice-detail'),
+    path('media/private/<uuid:asset_id>/', views.PrivateMediaServeView.as_view(), name='cms-private-media-serve'),
 ]

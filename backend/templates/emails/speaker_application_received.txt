@@ -1,6 +1,8 @@
-Assalamu Alaikum {{ full_name }},
+Assalamu Alaikum {{ first_name|default:"there" }},
 
-We received your speaker application for "{{ session_title }}". Our program committee will review it and contact you by email.
+Thank you for applying to speak at {{ site_name }}. We have received your application.
 
-{{ site_name }}
-{{ support_email }}
+Our team will review your proposal and get back to you soon. You can check your application status on the dashboard: {{ site_url }}/dashboard
+
+JazakAllah khair,
+The {{ site_name }} Team

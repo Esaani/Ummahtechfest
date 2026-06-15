@@ -28,6 +28,10 @@ class CmsCacheService:
         return f'cms:schedule:{"home" if home_only else "all"}:{CACHE_VERSION}'
 
     @classmethod
+    def voices_key(cls):
+        return f'cms:voices:{CACHE_VERSION}'
+
+    @classmethod
     def sponsorship_key(cls):
         return f'cms:sponsorship:{CACHE_VERSION}'
 
@@ -55,6 +59,11 @@ class CmsCacheService:
         cache.delete(cls.schedule_key(home_only=False))
         cache.delete(cls.schedule_key(home_only=True))
         logger.info('cms_cache_invalidated resource=schedule')
+
+    @classmethod
+    def invalidate_voices(cls):
+        cache.delete(cls.voices_key())
+        logger.info('cms_cache_invalidated resource=voices')
 
     @classmethod
     def invalidate_sponsorship(cls):

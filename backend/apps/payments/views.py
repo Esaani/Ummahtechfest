@@ -1,6 +1,8 @@
 import logging
 
 from django.conf import settings
+from django.db import transaction
+from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
@@ -27,7 +29,13 @@ from apps.payments.serializers import (
     WithdrawalRequestCreateSerializer,
     WithdrawalRequestApproveSerializer,
 )
-from apps.payments.services import get_pass_price_ghs, mark_payment_failed, mark_payment_success
+from apps.payments.services import (
+    get_pass_price_ghs,
+    mark_payment_failed,
+    mark_payment_success,
+    PaymentCacheService,
+    FINANCE_OVERVIEW_TIMEOUT,
+)
 from apps.registrations.models import PassRegistration, PassRegistrationStatus
 from common.permissions import HasAdminPermission
 from common.admin_roles import PERM_SUBMISSIONS_MANAGE, PERM_FINANCE_MANAGE
@@ -122,17 +130,18 @@ class VerifyPaymentView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, reference):
-        payment = Payment.objects.filter(reference=reference).select_related(
-            'pass_registration',
-            'pass_registration__pass_type',
-            'donation',
-            'user',
-        ).first()
-        if not payment:
-            return Response(
-                {'error': {'code': 'NOT_FOUND', 'message': 'Payment not found.'}},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        with transaction.atomic():
+            payment = Payment.objects.select_for_update().filter(reference=reference).select_related(
+                'pass_registration',
+                'pass_registration__pass_type',
+                'donation',
+                'user',
+            ).first()
+            if not payment:
+                return Response(
+                    {'error': {'code': 'NOT_FOUND', 'message': 'Payment not found.'}},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
         if payment.purpose == PaymentPurpose.PASS_REGISTRATION:
             if not request.user.is_authenticated:
@@ -178,21 +187,22 @@ class DonationCreateView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        payment = Payment.objects.create(
-            provider=_default_provider_name(),
-            purpose=PaymentPurpose.DONATION,
-            amount=data['amount'],
-            currency='GHS',
-            email=data['donor_email'],
-            metadata={'donor_name': data['donor_name']},
-        )
-        Donation.objects.create(
-            payment=payment,
-            donor_name=data['donor_name'],
-            donor_email=data['donor_email'],
-            message=data.get('message', ''),
-            is_anonymous=data.get('is_anonymous', False),
-        )
+        with transaction.atomic():
+            payment = Payment.objects.create(
+                provider=_default_provider_name(),
+                purpose=PaymentPurpose.DONATION,
+                amount=data['amount'],
+                currency='GHS',
+                email=data['donor_email'],
+                metadata={'donor_name': data['donor_name']},
+            )
+            Donation.objects.create(
+                payment=payment,
+                donor_name=data['donor_name'],
+                donor_email=data['donor_email'],
+                message=data.get('message', ''),
+                is_anonymous=data.get('is_anonymous', False),
+            )
 
         callback_url = _frontend_url(f'/donate/verify?reference={payment.reference}')
         try:
@@ -264,14 +274,15 @@ class PaystackWebhookView(APIView):
         if not reference:
             return Response({'data': {'received': True}})
 
-        payment = Payment.objects.filter(reference=reference).first()
-        if not payment:
-            logger.warning('paystack_webhook_unknown_ref reference=%s', reference)
-            return Response({'data': {'received': True}})
+        with transaction.atomic():
+            payment = Payment.objects.select_for_update().filter(reference=reference).first()
+            if not payment:
+                logger.warning('paystack_webhook_unknown_ref reference=%s', reference)
+                return Response({'data': {'received': True}})
 
-        provider_ref = str(data.get('id', ''))
-        mark_payment_success(payment, provider_ref)
-        return Response({'data': {'received': True}})
+            provider_ref = str(data.get('id', ''))
+            mark_payment_success(payment, provider_ref)
+            return Response({'data': {'received': True}})
 
 
 class AdminWithdrawalListView(APIView):
@@ -356,6 +367,11 @@ class AdminFinanceOverviewView(APIView):
     admin_permission = PERM_FINANCE_MANAGE
 
     def get(self, request):
+        cache_key = PaymentCacheService.finance_overview_key()
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return Response({'data': cached, 'meta': {'cached': True}})
+
         total_revenue = Payment.objects.filter(status=PaymentStatus.SUCCESS).aggregate(Sum('amount'))['amount__sum'] or 0
         total_donations = Donation.objects.filter(payment__status=PaymentStatus.SUCCESS).aggregate(Sum('payment__amount'))['payment__amount__sum'] or 0
         total_passes = Payment.objects.filter(status=PaymentStatus.SUCCESS, purpose=PaymentPurpose.PASS_REGISTRATION).aggregate(Sum('amount'))['amount__sum'] or 0
@@ -364,17 +380,17 @@ class AdminFinanceOverviewView(APIView):
         total_bills_pending = FinanceBill.objects.exclude(status='paid').aggregate(Sum('amount'))['amount__sum'] or 0
         total_withdrawals = WithdrawalRequest.objects.filter(status=WithdrawalStatus.APPROVED).aggregate(Sum('amount'))['amount__sum'] or 0
         
-        return Response({
-            'data': {
-                'total_revenue': str(total_revenue),
-                'total_donations': str(total_donations),
-                'total_passes': str(total_passes),
-                'total_expenses': str(total_expenses),
-                'total_bills_pending': str(total_bills_pending),
-                'total_withdrawals': str(total_withdrawals),
-                'current_balance': str(total_revenue - total_expenses - total_withdrawals),
-            }
-        })
+        data = {
+            'total_revenue': str(total_revenue),
+            'total_donations': str(total_donations),
+            'total_passes': str(total_passes),
+            'total_expenses': str(total_expenses),
+            'total_bills_pending': str(total_bills_pending),
+            'total_withdrawals': str(total_withdrawals),
+            'current_balance': str(total_revenue - total_expenses - total_withdrawals),
+        }
+        cache.set(cache_key, data, timeout=FINANCE_OVERVIEW_TIMEOUT)
+        return Response({'data': data, 'meta': {'cached': False}})
 
 
 class FinanceWalletListCreateView(generics.ListCreateAPIView):

@@ -1,7 +1,12 @@
-Payment confirmed — {{ site_name }}
+Assalamu Alaikum {{ first_name|default:"there" }},
 
-Assalamu Alaikum {{ first_name }},
+Alhamdulillah! Your payment for the {{ pass_name }} has been confirmed. Your registration for {{ site_name }} is now complete.
 
-Your payment of {{ amount }} {{ currency }} for {{ pass_title }} is confirmed.
+Transaction Details:
+Pass Type: {{ pass_name }}
+Reference: {{ reference }}
 
-View your registration: {{ site_url }}/registration/status
+We look forward to seeing you at the event! View your ticket on the dashboard: {{ site_url }}/dashboard
+
+JazakAllah khair,
+The {{ site_name }} Team

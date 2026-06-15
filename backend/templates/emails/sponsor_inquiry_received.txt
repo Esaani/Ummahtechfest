@@ -1,6 +1,8 @@
 Assalamu Alaikum {{ full_name }},
 
-We received your sponsorship inquiry for {{ company_name }}. Our team will follow up soon.
+Thank you for your interest in sponsoring {{ site_name }}. We have received your inquiry for {{ company_name }}.
 
-{{ site_name }}
-{{ support_email }}
+Our partnerships team will review your message and follow up shortly.
+
+JazakAllah khair,
+The {{ site_name }} Partnerships Team

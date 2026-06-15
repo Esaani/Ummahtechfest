@@ -1,12 +1,9 @@
-Assalamu Alaikum,
+Assalamu Alaikum {{ recipient_name }},
 
-You have been invited to speak at {{ site_name }}.
+It is our honor to invite you to join us as a speaker at {{ site_name }}.
 
-Accept your invitation and set your password:
+Your expertise would be incredibly valuable to our community. Please follow this link to accept the invitation and provide your details:
 {{ invite_url }}
 
-After signing in, you will complete a short onboarding form with your session details and bio.
-
-This link expires in {{ expiry_hours }} hours.
-
-Questions? {{ support_email }}
+JazakAllah khair,
+The {{ site_name }} Team

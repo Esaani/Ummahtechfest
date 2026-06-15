@@ -1,6 +1,8 @@
-Assalamu Alaikum {{ first_name }},
+Assalamu Alaikum {{ first_name|default:"there" }},
 
-We received your volunteer application{% if pathway_name %} for {{ pathway_name }}{% endif %}. We will notify you when your application is reviewed.
+Thank you for your interest in volunteering for {{ site_name }}. We have received your application.
 
-{{ site_name }}
-{{ support_email }}
+Our team will review your application and get back to you soon. You can check your application status on the dashboard: {{ site_url }}/dashboard
+
+JazakAllah khair,
+The {{ site_name }} Team

@@ -14,10 +14,14 @@ urlpatterns = [
     path('api/v1/cms/', include('apps.cms.urls')),
     path('api/v1/outreach/', include('apps.outreach.urls')),
     path('api/v1/payments/', include('apps.payments.urls')),
-    path('api/v1/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/v1/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
     re_path(r'^media/(?P<path>.*)$', PublicMediaView.as_view(), name='public-media'),
 ]
+
+if settings.ENABLE_API_DOCS:
+    urlpatterns += [
+        path('api/v1/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('api/v1/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+    ]
 
 if settings.ENABLE_DJANGO_ADMIN:
     admin_path = settings.DJANGO_ADMIN_URL_PATH.strip('/') + '/'

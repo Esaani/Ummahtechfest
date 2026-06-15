@@ -1,6 +1,8 @@
-Assalamu Alaikum {{ first_name }},
+Assalamu Alaikum {{ first_name|default:"there" }},
 
-Your {{ pass_title }} registration is on file. We will share next steps as they become available.
+Thank you for registering for {{ site_name }}. We have received your registration for the {{ pass_name }}.
 
-{{ site_name }}
-{{ support_email }}
+Your registration is pending payment. Please complete the payment on your dashboard to secure your spot: {{ site_url }}/dashboard
+
+JazakAllah khair,
+The {{ site_name }} Team

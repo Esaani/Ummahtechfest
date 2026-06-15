@@ -1,8 +1,22 @@
 {% extends "emails/base.html" %}
+
+{% block title %}You are invited to the Admin Portal — {{ site_name }}{% endblock %}
+
+{% block preheader %}You have been invited to join the staff team at Ummah Tech Fest.{% endblock %}
+
 {% block content %}
-<p>Assalamu Alaikum,</p>
-<p>You have been invited to the <strong>{{ site_name }}</strong> admin portal as <strong>{{ admin_role_label }}</strong>.</p>
-<p><a href="{{ invite_url }}">Accept invite and set your password</a></p>
-<p>This link expires in {{ expiry_hours }} hours. If you did not expect this email, you can ignore it.</p>
-<p>Questions? Contact <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>
+<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum,</h1>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  You have been invited to join the staff and administration team for <strong>{{ site_name }}</strong>.
+</p>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
+  As a staff member, you will have access to the admin portal to help manage submissions, registrations, and other event operations. Please click the button below to accept your invitation and set up your account.
+</p>
+<div style="margin: 32px 0; text-align: center;">
+  <a href="{{ invite_url }}" class="button">Accept Invitation</a>
+</div>
+<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair,<br>
+  <strong>The {{ site_name }} Team</strong>
+</p>
 {% endblock %}

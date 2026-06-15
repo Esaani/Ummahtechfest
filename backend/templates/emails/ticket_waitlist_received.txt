@@ -1,5 +1,8 @@
-Assalamu Alaikum {{ full_name }},
+Assalamu Alaikum {{ first_name|default:"there" }},
 
-Thanks for joining the ticket waitlist for {{ site_name }}. We'll email you as soon as sales open.
+You have successfully joined the ticket waitlist for {{ site_name }}.
 
-— {{ site_name }}
+We will notify you as soon as more tickets become available.
+
+JazakAllah khair,
+The {{ site_name }} Team

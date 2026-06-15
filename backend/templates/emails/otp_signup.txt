@@ -1,12 +1,10 @@
-{{ site_name }} — Verify your email
-
 Assalamu Alaikum,
- 
-Your verification code: {{ otp_code }}
 
-This code expires in {{ expiry_minutes }} minutes.
+Thank you for signing up for {{ site_name }}.
 
-If you did not request this code, ignore this email.
+Your verification code is: {{ otp_code }}
 
-Questions? {{ support_email }}
-{{ site_url }}
+This code expires in 10 minutes.
+
+JazakAllah khair,
+The {{ site_name }} Team
