@@ -48,10 +48,10 @@ export function validateSpeakerStep1(data) {
 
 export function validateSpeakerStep2(data) {
   const errors = {}
-  if ((data.sessionTitle || '').trim().length < 5) errors.sessionTitle = 'Session title is required.'
+  if ((data.sessionTitle || '').trim().length < 5) errors.sessionTitle = 'Session title must be at least 5 characters.'
   if (!data.track) errors.track = 'Select a track.'
   if (!data.format) errors.format = 'Select a session format.'
   if ((data.abstract || '').trim().length < 80) errors.abstract = 'Abstract must be at least 80 characters.'
-  if ((data.keyTakeaways || '').trim().length < 20) errors.keyTakeaways = 'List key takeaways for attendees.'
+  if ((data.keyTakeaways || '').trim().length < 20) errors.keyTakeaways = 'Key takeaways must be at least 20 characters.'
   return errors
 }

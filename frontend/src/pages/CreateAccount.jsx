@@ -32,6 +32,7 @@ export default function CreateAccount() {
   const [form, setForm] = useState({ first_name: '', last_name: '', password: '' })
   const [honeypot, setHoneypot] = useState('')
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
   const [info, setInfo] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
@@ -159,7 +160,26 @@ export default function CreateAccount() {
       })
       navigate(redirectTo)
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Unable to create account. Please try again.')
+      if (err instanceof ApiError && err.details) {
+        const errs = {}
+        if (err.details.password) {
+          errs.password = Array.isArray(err.details.password)
+            ? err.details.password[0]
+            : String(err.details.password)
+        }
+        if (err.details.first_name) {
+          errs.first_name = Array.isArray(err.details.first_name)
+            ? err.details.first_name[0]
+            : String(err.details.first_name)
+        }
+        if (Object.keys(errs).length > 0) {
+          setFieldErrors(errs)
+        } else {
+          setError(err.message)
+        }
+      } else {
+        setError(err instanceof ApiError ? err.message : 'Unable to create account. Please try again.')
+      }
     } finally {
       setSubmitting(false)
     }
@@ -286,7 +306,7 @@ export default function CreateAccount() {
               <button
                 type="button"
                 className="w-full body-sm text-on-surface-variant hover:text-on-surface"
-                onClick={() => { setStep('email'); setOtp(''); setError(''); setInfo('') }}
+                onClick={() => { setStep('email'); setOtp(''); setError(''); setInfo(''); setFieldErrors({}) }}
               >
                 Use a different email
               </button>
@@ -320,14 +340,20 @@ export default function CreateAccount() {
               <div className="group">
                 <label className="block label-md text-on-surface-variant mb-2">Password</label>
                 <input
-                  className="w-full h-14 bg-surface-container-low border border-outline-variant/30 rounded-lg px-4 text-on-surface outline-none focus:ring-2 focus:ring-primary-fixed/50"
+                  className={`w-full h-14 bg-surface-container-low border rounded-lg px-4 text-on-surface outline-none focus:ring-2 focus:ring-primary-fixed/50 ${fieldErrors.password ? 'border-error/50' : 'border-outline-variant/30'}`}
                   placeholder="••••••••"
                   type="password"
                   value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  onChange={(e) => { setForm({ ...form, password: e.target.value }); setFieldErrors((p) => ({ ...p, password: '' })) }}
                   required
                   minLength={8}
                 />
+                {fieldErrors.password && (
+                  <p className="text-xs text-error flex items-center gap-1 mt-1" role="alert">
+                    <span className="material-symbols-outlined text-sm">error</span>
+                    {fieldErrors.password}
+                  </p>
+                )}
               </div>
               <button
                 className="w-full h-14 bg-primary-fixed text-on-primary-fixed label-md font-bold rounded-lg uppercase tracking-widest disabled:opacity-60"

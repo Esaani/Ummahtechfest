@@ -74,6 +74,11 @@ def _site_context():
     return {
         'site_name': getattr(settings, 'SITE_NAME', 'Ummah Tech Fest'),
         'site_url': getattr(settings, 'SITE_URL', 'https://ummahtechfest.com'),
+        'logo_url': getattr(
+            settings,
+            'EMAIL_LOGO_URL',
+            'https://ummahtechfest.com/assets/images/Ummah-tech-Fest-logo.png',
+        ),
         'support_email': getattr(settings, 'SUPPORT_EMAIL', settings.DEFAULT_FROM_EMAIL),
     }
 

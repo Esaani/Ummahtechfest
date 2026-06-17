@@ -210,17 +210,17 @@ class SpeakerApplicationCreateSerializer(HoneypotSerializerMixin, serializers.Mo
     def validate_key_takeaways(self, value):
         value = (value or '').strip()
         if len(value) < 20:
-            raise serializers.ValidationError('Key takeaways are required.')
+            raise serializers.ValidationError('Key takeaways must be at least 20 characters. List what attendees will learn.')
         return value
 
     def validate_track(self, value):
         if value not in SpeakerTrack.values:
-            raise serializers.ValidationError('Invalid track selection.')
+            raise serializers.ValidationError('Please select a valid conference track.')
         return value
 
     def validate_session_format(self, value):
         if value not in SpeakerSessionFormat.values:
-            raise serializers.ValidationError('Invalid session format.')
+            raise serializers.ValidationError('Please select a valid session format (keynote, workshop, or panel).')
         return value
 
     def validate_linkedin_url(self, value):

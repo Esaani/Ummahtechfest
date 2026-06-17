@@ -105,7 +105,7 @@ export default function Home() {
   const partners = { ...DEFAULT_PARTNERS, ...get('home-partners') }
   const finalCta = { ...DEFAULT_CTA, ...get('home-final-cta') }
   const whyCards = whyBuild.cards?.length ? whyBuild.cards : DEFAULT_WHY_BUILD.cards
-  const statItems = stats.items
+  const statItems = stats.items?.length ? stats.items : DEFAULT_STATS.items
   const [partnerNames, setPartnerNames] = useState([])
 
   // Homepage marquee uses global_partner tier only (Admin → Sponsors → Homepage logos → Global partners).

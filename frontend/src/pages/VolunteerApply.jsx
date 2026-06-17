@@ -81,7 +81,8 @@ export default function VolunteerApply() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [errorDetails, setErrorDetails] = useState([]) // field-level bullets
+  const [errorDetails, setErrorDetails] = useState([])
+  const [fieldErrors, setFieldErrors] = useState({})
   const [form, setForm] = useState(INITIAL_FORM)
   const [honeypot, setHoneypot] = useState('')
 
@@ -101,6 +102,7 @@ export default function VolunteerApply() {
   }, [authLoading, isAuthenticated, navigate])
 
   const updateForm = (patch) => setForm((f) => ({ ...f, ...patch }))
+  const clearFieldError = (field) => setFieldErrors((prev) => ({ ...prev, [field]: '' }))
 
   const togglePathway = (id) => {
     setForm((f) => ({
@@ -123,57 +125,54 @@ export default function VolunteerApply() {
 
   const validateStep = (currentStep) => {
     setErrorDetails([])
+    const errs = {}
+
     switch (currentStep) {
       case 1:
         if (form.preferred_role_ids.length === 0) {
           setError('Select at least one pathway you are interested in.')
+          setFieldErrors({})
           return false
         }
         break
       case 2:
-        if (!form.city.trim() || !form.country.trim() || !form.occupation.trim()) {
-          setError('City, country, and occupation are required.')
-          return false
-        }
+        if (!form.city.trim()) errs.city = 'City is required.'
+        if (!form.country.trim()) errs.country = 'Country is required.'
+        if (!form.occupation.trim()) errs.occupation = 'Occupation is required.'
         break
       case 3:
-        if (!form.skills_summary.trim() || !form.motivation.trim()) {
-          setError('Please share your skills and motivation.')
-          return false
-        }
-        if (!form.cv) {
-          setError('Please upload your CV/Resume.')
-          return false
-        }
-        if (!form.profile_photo) {
-          setError('Please upload a profile photo.')
-          return false
-        }
-        // Client-side size checks mirror backend limits
-        if (form.cv && form.cv.size > 10 * 1024 * 1024) {
-          setError('CV / Resume: File must be 10 MB or smaller. Please choose a smaller file.')
-          return false
-        }
-        if (form.profile_photo && form.profile_photo.size > 5 * 1024 * 1024) {
-          setError('Profile photo: File must be 5 MB or smaller. Please choose a smaller image.')
-          return false
-        }
+        if (!form.skills_summary.trim()) errs.skills_summary = 'Please describe your skills and experience.'
+        if (!form.motivation.trim()) errs.motivation = 'Please share your motivation to volunteer.'
+        if (!form.cv) errs.cv = 'Please upload your CV or Resume (PDF or Word).'
+        else if (form.cv.size > 10 * 1024 * 1024) errs.cv = 'CV must be 10 MB or smaller. Please choose a smaller file.'
+        if (!form.profile_photo) errs.profile_photo = 'Please upload a profile photo.'
+        else if (form.profile_photo.size > 5 * 1024 * 1024) errs.profile_photo = 'Profile photo must be 5 MB or smaller. Please choose a smaller image.'
         break
       case 4:
         if (!(form.availability?.days?.length > 0)) {
           setError('Select at least one day you are available.')
+          setFieldErrors({})
           return false
         }
         break
       case 5:
         if (!form.code_of_conduct_accepted) {
           setError('You must accept the code of conduct to submit.')
+          setFieldErrors({})
           return false
         }
         break
       default:
         break
     }
+
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs)
+      setError('Please fix the highlighted fields below.')
+      return false
+    }
+
+    setFieldErrors({})
     setError('')
     return true
   }
@@ -186,6 +185,7 @@ export default function VolunteerApply() {
 
   const goBack = () => {
     setError('')
+    setFieldErrors({})
     setStep((s) => Math.max(1, s - 1))
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -217,16 +217,36 @@ export default function VolunteerApply() {
       navigate('/volunteer/status')
     } catch (err) {
       if (err instanceof ApiError && err.details) {
-        const bullets = formatApiErrors(err.details)
-        if (bullets.length > 0) {
-          setError('Please fix the following issues:')
-          setErrorDetails(bullets)
-        } else {
-          setError(err.message)
+        const FIELD_MAP = {
+          phone: 'phone',
+          city: 'city',
+          country: 'country',
+          occupation: 'occupation',
+          skills_summary: 'skills_summary',
+          motivation: 'motivation',
+          cv: 'cv',
+          profile_photo: 'profile_photo',
+          preferred_role_ids: 'preferred_role_ids',
+          code_of_conduct_accepted: 'code_of_conduct_accepted',
+        }
+        const mapped = {}
+        for (const [key, msgs] of Object.entries(err.details)) {
+          const formKey = FIELD_MAP[key] || key
+          mapped[formKey] = Array.isArray(msgs) ? msgs[0] : String(msgs)
+        }
+        if (Object.keys(mapped).length > 0) {
+          setFieldErrors(mapped)
+          setError('Please fix the highlighted fields below.')
           setErrorDetails([])
+        } else {
+          const bullets = formatApiErrors(err.details)
+          setError(bullets.length > 0 ? 'Please fix the following issues:' : err.message)
+          setErrorDetails(bullets.length > 0 ? bullets : [])
+          setFieldErrors({})
         }
       } else {
         setError(err instanceof ApiError ? err.message : 'Submission failed. Please try again.')
+        setFieldErrors({})
         setErrorDetails([])
       }
     } finally {
@@ -376,30 +396,48 @@ export default function VolunteerApply() {
               <div>
                 <label className="label-md uppercase tracking-widest text-secondary block mb-2">City</label>
                 <input
-                  className="w-full h-14 bg-surface-container-low border border-outline-variant/30 rounded-lg px-4 text-on-surface"
+                  className={`w-full h-14 bg-surface-container-low border rounded-lg px-4 text-on-surface ${fieldErrors.city ? 'border-error/50' : 'border-outline-variant/30'}`}
                   value={form.city}
-                  onChange={(e) => updateForm({ city: e.target.value })}
+                  onChange={(e) => { updateForm({ city: e.target.value }); clearFieldError('city') }}
                   required
                 />
+                {fieldErrors.city && (
+                  <p className="text-xs text-error flex items-center gap-1 mt-1" role="alert">
+                    <span className="material-symbols-outlined text-sm">error</span>
+                    {fieldErrors.city}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="label-md uppercase tracking-widest text-secondary block mb-2">Country</label>
                 <input
-                  className="w-full h-14 bg-surface-container-low border border-outline-variant/30 rounded-lg px-4 text-on-surface"
+                  className={`w-full h-14 bg-surface-container-low border rounded-lg px-4 text-on-surface ${fieldErrors.country ? 'border-error/50' : 'border-outline-variant/30'}`}
                   value={form.country}
-                  onChange={(e) => updateForm({ country: e.target.value })}
+                  onChange={(e) => { updateForm({ country: e.target.value }); clearFieldError('country') }}
                   required
                 />
+                {fieldErrors.country && (
+                  <p className="text-xs text-error flex items-center gap-1 mt-1" role="alert">
+                    <span className="material-symbols-outlined text-sm">error</span>
+                    {fieldErrors.country}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="label-md uppercase tracking-widest text-secondary block mb-2">Occupation</label>
                 <input
-                  className="w-full h-14 bg-surface-container-low border border-outline-variant/30 rounded-lg px-4 text-on-surface"
+                  className={`w-full h-14 bg-surface-container-low border rounded-lg px-4 text-on-surface ${fieldErrors.occupation ? 'border-error/50' : 'border-outline-variant/30'}`}
                   value={form.occupation}
-                  onChange={(e) => updateForm({ occupation: e.target.value })}
+                  onChange={(e) => { updateForm({ occupation: e.target.value }); clearFieldError('occupation') }}
                   placeholder="e.g. Software Engineer, Student"
                   required
                 />
+                {fieldErrors.occupation && (
+                  <p className="text-xs text-error flex items-center gap-1 mt-1" role="alert">
+                    <span className="material-symbols-outlined text-sm">error</span>
+                    {fieldErrors.occupation}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -421,23 +459,39 @@ export default function VolunteerApply() {
               />
             </div>
             <div>
-              <label className="label-md uppercase tracking-widest text-secondary block mb-2">Skills summary</label>
+              <label className="label-md uppercase tracking-widest text-secondary block mb-2">
+                Skills summary <span className="text-primary-fixed ml-0.5" aria-hidden="true">*</span>
+              </label>
               <textarea
-                className="w-full min-h-28 bg-surface-container-low border border-outline-variant/30 rounded-lg p-4 text-on-surface"
+                className={`w-full min-h-28 bg-surface-container-low border rounded-lg p-4 text-on-surface ${fieldErrors.skills_summary ? 'border-error/50' : 'border-outline-variant/30'}`}
                 value={form.skills_summary}
-                onChange={(e) => updateForm({ skills_summary: e.target.value })}
+                onChange={(e) => { updateForm({ skills_summary: e.target.value }); clearFieldError('skills_summary') }}
                 placeholder="Design, event coordination, video editing..."
                 required
               />
+              {fieldErrors.skills_summary && (
+                <p className="text-xs text-error flex items-center gap-1 mt-1" role="alert">
+                  <span className="material-symbols-outlined text-sm">error</span>
+                  {fieldErrors.skills_summary}
+                </p>
+              )}
             </div>
             <div>
-              <label className="label-md uppercase tracking-widest text-secondary block mb-2">Why do you want to volunteer?</label>
+              <label className="label-md uppercase tracking-widest text-secondary block mb-2">
+                Why do you want to volunteer? <span className="text-primary-fixed ml-0.5" aria-hidden="true">*</span>
+              </label>
               <textarea
-                className="w-full min-h-28 bg-surface-container-low border border-outline-variant/30 rounded-lg p-4 text-on-surface"
+                className={`w-full min-h-28 bg-surface-container-low border rounded-lg p-4 text-on-surface ${fieldErrors.motivation ? 'border-error/50' : 'border-outline-variant/30'}`}
                 value={form.motivation}
-                onChange={(e) => updateForm({ motivation: e.target.value })}
+                onChange={(e) => { updateForm({ motivation: e.target.value }); clearFieldError('motivation') }}
                 required
               />
+              {fieldErrors.motivation && (
+                <p className="text-xs text-error flex items-center gap-1 mt-1" role="alert">
+                  <span className="material-symbols-outlined text-sm">error</span>
+                  {fieldErrors.motivation}
+                </p>
+              )}
             </div>
             <div>
               <label className="label-md uppercase tracking-widest text-secondary block mb-2">Portfolio URL (optional)</label>
@@ -461,7 +515,10 @@ export default function VolunteerApply() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4">
               <div>
-                <label className="label-md uppercase tracking-widest text-secondary block mb-2">Profile Photo</label>
+                <label className="label-md uppercase tracking-widest text-secondary block mb-2">
+                  Profile Photo <span className="text-primary-fixed ml-0.5" aria-hidden="true">*</span>
+                </label>
+                <p className="text-xs text-on-surface-variant mb-2">JPEG or PNG · max 5 MB</p>
                 <div className="flex flex-col gap-3">
                   <input
                     type="file"
@@ -469,10 +526,8 @@ export default function VolunteerApply() {
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       if (file) {
-                        updateForm({
-                          profile_photo: file,
-                          profilePhotoPreview: URL.createObjectURL(file)
-                        })
+                        updateForm({ profile_photo: file, profilePhotoPreview: URL.createObjectURL(file) })
+                        clearFieldError('profile_photo')
                       }
                     }}
                     className="block w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-fixed/15 file:text-primary-fixed file:font-bold file:uppercase file:text-[10px]"
@@ -480,10 +535,19 @@ export default function VolunteerApply() {
                   {form.profilePhotoPreview && (
                     <img src={form.profilePhotoPreview} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-outline-variant/30" />
                   )}
+                  {fieldErrors.profile_photo && (
+                    <p className="text-xs text-error flex items-center gap-1" role="alert">
+                      <span className="material-symbols-outlined text-sm">error</span>
+                      {fieldErrors.profile_photo}
+                    </p>
+                  )}
                 </div>
               </div>
               <div>
-                <label className="label-md uppercase tracking-widest text-secondary block mb-2">CV / Resume</label>
+                <label className="label-md uppercase tracking-widest text-secondary block mb-2">
+                  CV / Resume <span className="text-primary-fixed ml-0.5" aria-hidden="true">*</span>
+                </label>
+                <p className="text-xs text-on-surface-variant mb-2">PDF or Word · max 10 MB</p>
                 <div className="flex flex-col gap-3">
                   <input
                     type="file"
@@ -491,16 +555,20 @@ export default function VolunteerApply() {
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       if (file) {
-                        updateForm({
-                          cv: file,
-                          cvName: file.name
-                        })
+                        updateForm({ cv: file, cvName: file.name })
+                        clearFieldError('cv')
                       }
                     }}
                     className="block w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-fixed/15 file:text-primary-fixed file:font-bold file:uppercase file:text-[10px]"
                   />
                   {form.cvName && (
                     <span className="text-[10px] text-primary-fixed font-medium italic">Selected: {form.cvName}</span>
+                  )}
+                  {fieldErrors.cv && (
+                    <p className="text-xs text-error flex items-center gap-1" role="alert">
+                      <span className="material-symbols-outlined text-sm">error</span>
+                      {fieldErrors.cv}
+                    </p>
                   )}
                 </div>
               </div>
