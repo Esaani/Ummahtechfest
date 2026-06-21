@@ -162,11 +162,11 @@ import sys
 SITE_NAME = env('SITE_NAME', default='Ummah Tech Fest')
 APP_NAME = env('APP_NAME', default=SITE_NAME)
 APP_ENV = env('APP_ENV', default='development')
-SITE_URL = env('SITE_URL', default='http://localhost:8080')
+SITE_URL = env('SITE_URL', default='')
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 EMAIL_LOGO_URL = env(
     'EMAIL_LOGO_URL',
-    default='https://ummahtechfest.com/assets/images/Ummah-tech-Fest-logo.png',
+    default='https://ummahtechfest.com/assets/logo-DvdjQMZa.png',
 )
 PASSWORD_RESET_EXPIRY_HOURS = env.int('PASSWORD_RESET_EXPIRY_HOURS', default=1)
 SUPPORT_EMAIL = env('SUPPORT_EMAIL', default='support@ummahtechfest.com')
