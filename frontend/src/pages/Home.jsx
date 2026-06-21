@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ApiError, cmsApi, outreachApi } from '../api/client'
 import DonationWidget from '../components/DonationWidget.jsx'
 import DonationModal from '../components/DonationModal.jsx'
+import SkeletonImage from '../components/SkeletonImage'
 import SpeakerBioModal from '../components/SpeakerBioModal'
 import HoneypotField from '../components/HoneypotField'
 import { FormField, FormInput } from '../components/forms/FormField'
@@ -191,26 +192,21 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-delay={i * 100}
             >
-              <div className="aspect-video relative overflow-hidden">
-                {(() => {
-                  const src = cmsMediaUrl(card.image_url, '')
-                  if (!src) {
-                    return (
-                      <div className="w-full h-full bg-surface-container-high flex items-center justify-center">
-                        <span className="material-symbols-outlined text-on-surface-variant text-4xl">image</span>
-                      </div>
-                    )
-                  }
-                  return (
-                    <img
-                      alt={card.title}
-                      className="w-full h-full object-cover transition-transform duration-500 md:group-hover:scale-110"
-                      src={src.startsWith('http') ? `${src}${src.includes('?') ? '&' : '?'}w=800` : src}
-                      loading="lazy"
-                    />
-                  )
-                })()}
-              </div>
+              {(() => {
+                const src = cmsMediaUrl(card.image_url, '')
+                const imgSrc = src
+                  ? src.startsWith('http') ? `${src}${src.includes('?') ? '&' : '?'}w=800` : src
+                  : undefined
+                return (
+                  <SkeletonImage
+                    src={imgSrc}
+                    alt={card.title}
+                    className="aspect-video"
+                    imgClassName="object-cover transition-transform duration-500 md:group-hover:scale-110"
+                    loading="lazy"
+                  />
+                )
+              })()}
               <div className="p-6 md:p-8">
                 <h4 className="headline-sm text-primary mb-3 text-lg md:text-xl">{card.title}</h4>
                 <p className="body-md text-on-surface-variant text-sm md:text-base">{card.text}</p>
@@ -419,18 +415,12 @@ function Speakers() {
                 >
                   <div className="kente-border p-1 bg-background">
                     <div className="relative overflow-hidden aspect-[4/5] w-full">
-                      {image ? (
-                        <img
-                          alt={s.name}
-                          className="w-full h-full object-cover"
-                          src={image}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-container flex items-center justify-center">
-                          <span className="material-symbols-outlined text-on-surface-variant text-5xl">person</span>
-                        </div>
-                      )}
+                      <SkeletonImage
+                        src={image || undefined}
+                        alt={s.name}
+                        className="w-full h-full"
+                        loading="lazy"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
                       <div className="absolute bottom-6 left-6 right-6">
                         <h4 className="headline-sm text-primary mb-1 group-hover:text-primary-fixed transition-colors duration-300">{s.name}</h4>

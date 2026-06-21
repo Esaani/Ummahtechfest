@@ -154,3 +154,88 @@ class VolunteerApplicationStatusHistory(BaseModel):
     class Meta:
         db_table = 'volunteer_application_status_history'
         ordering = ['-created_at']
+
+
+class VolunteerTaskStatus(models.TextChoices):
+    PENDING = 'pending', 'Pending'
+    IN_PROGRESS = 'in_progress', 'In Progress'
+    DONE = 'done', 'Done'
+
+
+class VolunteerTask(BaseModel):
+    """Task assigned to an individual volunteer or all volunteers in a role."""
+
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
+    due_label = models.CharField(max_length=100, blank=True, help_text='e.g. "Day 1, 08:00 AM"')
+    status = models.CharField(
+        max_length=16,
+        choices=VolunteerTaskStatus.choices,
+        default=VolunteerTaskStatus.PENDING,
+        db_index=True,
+    )
+    # Exactly one of application or target_role must be set.
+    # application=set → individual task; target_role=set, application=null → role-wide task.
+    application = models.ForeignKey(
+        VolunteerApplication,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='tasks',
+        db_column='application_id',
+    )
+    target_role = models.ForeignKey(
+        VolunteerRole,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tasks',
+        db_column='target_role_id',
+    )
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='volunteer_tasks_assigned',
+        db_column='assigned_by_id',
+    )
+
+    class Meta:
+        db_table = 'volunteer_tasks'
+        ordering = ['status', 'created_at']
+
+    def __str__(self):
+        return self.title
+
+
+class VolunteerAnnouncement(BaseModel):
+    """Broadcast message posted by admins to accepted volunteers."""
+
+    title = models.CharField(max_length=300)
+    body = models.TextField()
+    target_role = models.ForeignKey(
+        VolunteerRole,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='announcements',
+        db_column='target_role_id',
+        help_text='Null = visible to all accepted volunteers.',
+    )
+    posted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='volunteer_announcements',
+        db_column='posted_by_id',
+    )
+    is_published = models.BooleanField(default=True, db_index=True)
+
+    class Meta:
+        db_table = 'volunteer_announcements'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title

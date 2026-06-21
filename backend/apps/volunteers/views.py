@@ -1,15 +1,23 @@
 import logging
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.volunteers.models import VolunteerApplication, VolunteerApplicationStatus
+from apps.volunteers.models import (
+    VolunteerAnnouncement,
+    VolunteerApplication,
+    VolunteerApplicationStatus,
+    VolunteerTask,
+)
 from apps.volunteers.serializers import (
+    VolunteerAnnouncementSerializer,
     VolunteerApplicationSerializer,
     VolunteerApplicationWithdrawSerializer,
+    VolunteerTaskSerializer,
 )
 from apps.volunteers.services import VolunteerRoleCacheService
 from common.tasks import send_email_task
@@ -132,3 +140,113 @@ class VolunteerApplicationMeView(APIView):
                 'can_withdraw': False,
             },
         })
+
+
+# ── Volunteer Portal ──────────────────────────────────────────────────────────
+
+def _get_accepted_application(user):
+    """Return the accepted VolunteerApplication for the user, or None."""
+    return (
+        VolunteerApplication.objects.filter(
+            user=user,
+            status=VolunteerApplicationStatus.ACCEPTED,
+        )
+        .select_related('assigned_role')
+        .prefetch_related('preferred_roles')
+        .first()
+    )
+
+
+def _tasks_for_application(application):
+    """Tasks visible to this volunteer: individual tasks + role-wide tasks for their role."""
+    q = Q(application=application)
+    if application.assigned_role_id:
+        q |= Q(target_role=application.assigned_role, application__isnull=True)
+    return VolunteerTask.objects.filter(q)
+
+
+def _announcements_for_application(application):
+    """Announcements for all volunteers + role-specific ones for this volunteer."""
+    q = Q(target_role__isnull=True)
+    if application.assigned_role_id:
+        q |= Q(target_role=application.assigned_role)
+    return VolunteerAnnouncement.objects.filter(q, is_published=True)
+
+
+class VolunteerPortalSummaryView(APIView):
+    """Dashboard summary: application info, task counts, and latest announcements."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        application = _get_accepted_application(request.user)
+        if application is None:
+            return Response(
+                {'error': {'code': 'NOT_ACCEPTED', 'message': 'Volunteer portal is only available to accepted volunteers.'}},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        tasks = _tasks_for_application(application)
+        task_summary = {
+            'pending': tasks.filter(status='pending').count(),
+            'in_progress': tasks.filter(status='in_progress').count(),
+            'done': tasks.filter(status='done').count(),
+        }
+        recent_announcements = _announcements_for_application(application).select_related('target_role')[:5]
+        return Response({
+            'data': {
+                'application': VolunteerApplicationSerializer(application).data,
+                'task_summary': task_summary,
+                'recent_announcements': VolunteerAnnouncementSerializer(recent_announcements, many=True).data,
+            }
+        })
+
+
+class VolunteerPortalTaskListView(APIView):
+    """List all tasks for the authenticated accepted volunteer."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        application = _get_accepted_application(request.user)
+        if application is None:
+            return Response(
+                {'error': {'code': 'NOT_ACCEPTED', 'message': 'Volunteer portal is only available to accepted volunteers.'}},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        tasks = _tasks_for_application(application)
+        return Response({'data': VolunteerTaskSerializer(tasks, many=True).data})
+
+
+class VolunteerPortalTaskUpdateView(APIView):
+    """Volunteer marks their own task as pending or done."""
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, task_id):
+        application = _get_accepted_application(request.user)
+        if application is None:
+            return Response(
+                {'error': {'code': 'NOT_ACCEPTED', 'message': 'Volunteer portal is only available to accepted volunteers.'}},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        task = get_object_or_404(_tasks_for_application(application), id=task_id)
+        serializer = VolunteerTaskSerializer(task, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'data': serializer.data})
+
+
+class VolunteerPortalAnnouncementListView(APIView):
+    """List published announcements visible to the authenticated accepted volunteer."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        application = _get_accepted_application(request.user)
+        if application is None:
+            return Response(
+                {'error': {'code': 'NOT_ACCEPTED', 'message': 'Volunteer portal is only available to accepted volunteers.'}},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        announcements = _announcements_for_application(application).select_related('target_role')
+        return Response({'data': VolunteerAnnouncementSerializer(announcements, many=True).data})

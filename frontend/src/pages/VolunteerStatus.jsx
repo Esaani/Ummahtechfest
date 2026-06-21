@@ -103,6 +103,18 @@ export default function VolunteerStatus() {
           </p>
         )}
 
+        {app.status === 'accepted' && (
+          <div className="mt-2">
+            <Link
+              to="/volunteer/portal"
+              className="inline-flex items-center gap-2 btn-primary px-6 py-3 rounded-full label-md font-bold"
+            >
+              <span className="material-symbols-outlined text-lg">open_in_new</span>
+              Go to volunteer portal
+            </Link>
+          </div>
+        )}
+
         {app.status === 'submitted' && (
           <p className="body-md text-on-surface-variant text-sm">
             You may withdraw while your application is awaiting review. Once our team begins review, withdrawal is no longer available.

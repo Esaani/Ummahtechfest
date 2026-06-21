@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import SkeletonImage from './SkeletonImage'
 
 export default function SpeakerBioModal({ isOpen, onClose, speaker }) {
   useEffect(() => {
@@ -38,9 +39,11 @@ export default function SpeakerBioModal({ isOpen, onClose, speaker }) {
         <div className="p-6 md:p-8">
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
             {image && (
-              <div className="w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden border-2 border-primary-fixed/30">
-                <img src={image} alt="" className="w-full h-full object-cover" />
-              </div>
+              <SkeletonImage
+                src={image}
+                alt=""
+                className="w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-xl border-2 border-primary-fixed/30"
+              />
             )}
             <div className="text-center sm:text-left min-w-0">
               <h2 id="speaker-modal-name" className="headline-sm text-primary uppercase">{speaker.name}</h2>

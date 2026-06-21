@@ -19,6 +19,7 @@ import AdminUsers from './AdminUsers.jsx'
 import AdminHomeContent from './AdminHomeContent.jsx'
 import AdminFinance from './AdminFinance.jsx'
 import AdminAttendeeVoices from './AdminAttendeeVoices.jsx'
+import AdminVolunteerPortal from './AdminVolunteerPortal.jsx'
 
 export default function AdminPortal() {
   return (
@@ -80,6 +81,14 @@ export default function AdminPortal() {
               element={
                 <AdminRoute permission={PERM_SUBMISSIONS_MANAGE}>
                   <AdminSubmissions />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="volunteer-portal"
+              element={
+                <AdminRoute permission={PERM_SUBMISSIONS_MANAGE}>
+                  <AdminVolunteerPortal />
                 </AdminRoute>
               }
             />

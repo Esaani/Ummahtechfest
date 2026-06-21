@@ -28,6 +28,7 @@ import RegistrationConfirmation from './pages/RegistrationConfirmation.jsx'
 import RegistrationStatus from './pages/RegistrationStatus.jsx'
 import Volunteer from './pages/Volunteer.jsx'
 import VolunteerApply from './pages/VolunteerApply.jsx'
+import VolunteerPortal from './pages/VolunteerPortal.jsx'
 import VolunteerStatus from './pages/VolunteerStatus.jsx'
 import AdminPortal from './pages/admin/AdminPortal.jsx'
 import GatedPage from './components/GatedPage.jsx'
@@ -45,7 +46,7 @@ function AppContent() {
     '/create-account', '/special-access',
     '/professional-details', '/verification', '/payment', '/payment/verify', '/donate/verify', '/success',
     '/registration/confirmation', '/registration/status',
-  ].includes(location.pathname) || location.pathname.startsWith('/admin')
+  ].includes(location.pathname) || location.pathname.startsWith('/admin') || location.pathname.startsWith('/volunteer/portal')
 
   return (
     <div className="app-shell relative min-h-screen">
@@ -111,6 +112,7 @@ function AppContent() {
         <Route path="/volunteer" element={<Volunteer />} />
         <Route path="/volunteer/apply" element={<VolunteerApply />} />
         <Route path="/volunteer/status" element={<VolunteerStatus />} />
+        <Route path="/volunteer/portal" element={<VolunteerPortal />} />
         <Route path="/admin/*" element={<AdminPortal />} />
         <Route path="*" element={<NotFound />} />
         </Routes>

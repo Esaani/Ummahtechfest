@@ -6,9 +6,12 @@ from common.media_urls import public_media_url
 from apps.cms.models import MediaAsset
 from apps.volunteers.constants import WITHDRAWABLE_STATUSES
 from apps.volunteers.models import (
+    VolunteerAnnouncement,
     VolunteerApplication,
     VolunteerApplicationStatus,
     VolunteerRole,
+    VolunteerTask,
+    VolunteerTaskStatus,
 )
 
 
@@ -173,3 +176,138 @@ class VolunteerApplicationWithdrawSerializer(serializers.Serializer):
                 'This application can no longer be withdrawn because review has already started.'
             )
         return attrs
+
+
+# ── Volunteer Portal ──────────────────────────────────────────────────────────
+
+class VolunteerTaskSerializer(serializers.ModelSerializer):
+    """Volunteer-facing task view. Only status is writable."""
+
+    class Meta:
+        model = VolunteerTask
+        fields = ['id', 'title', 'description', 'due_label', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'title', 'description', 'due_label', 'created_at', 'updated_at']
+
+    def validate_status(self, value):
+        allowed = {VolunteerTaskStatus.PENDING, VolunteerTaskStatus.DONE}
+        if value not in allowed:
+            raise serializers.ValidationError('You may only mark a task as pending or done.')
+        return value
+
+
+class VolunteerAnnouncementSerializer(serializers.ModelSerializer):
+    target_role_name = serializers.CharField(source='target_role.name', read_only=True, default=None)
+
+    class Meta:
+        model = VolunteerAnnouncement
+        fields = ['id', 'title', 'body', 'target_role_name', 'created_at']
+        read_only_fields = fields
+
+
+# ── Admin Portal ──────────────────────────────────────────────────────────────
+
+class VolunteerTaskAdminSerializer(serializers.ModelSerializer):
+    application_id = serializers.UUIDField(write_only=True, required=False, allow_null=True)
+    target_role_id = serializers.UUIDField(write_only=True, required=False, allow_null=True)
+    volunteer_name = serializers.SerializerMethodField()
+    target_role_name = serializers.CharField(source='target_role.name', read_only=True, default=None)
+
+    class Meta:
+        model = VolunteerTask
+        fields = [
+            'id', 'title', 'description', 'due_label', 'status',
+            'application_id', 'target_role_id',
+            'volunteer_name', 'target_role_name',
+            'created_at', 'updated_at',
+        ]
+        read_only_fields = ['id', 'volunteer_name', 'target_role_name', 'created_at', 'updated_at']
+
+    def get_volunteer_name(self, obj):
+        if obj.application_id and obj.application:
+            user = obj.application.user
+            return user.full_name or user.email
+        return None
+
+    def validate(self, attrs):
+        app_id = attrs.get('application_id', serializers.empty)
+        role_id = attrs.get('target_role_id', serializers.empty)
+        # On create both must not be simultaneously set or both null
+        if self.instance is None:
+            has_app = app_id not in (serializers.empty, None)
+            has_role = role_id not in (serializers.empty, None)
+            if has_app and has_role:
+                raise serializers.ValidationError('Set either application_id or target_role_id, not both.')
+            if not has_app and not has_role:
+                raise serializers.ValidationError('Set one of application_id or target_role_id.')
+        return attrs
+
+    def validate_application_id(self, value):
+        if value is None:
+            return value
+        if not VolunteerApplication.objects.filter(id=value).exists():
+            raise serializers.ValidationError('Volunteer application not found.')
+        return value
+
+    def validate_target_role_id(self, value):
+        if value is None:
+            return value
+        if not VolunteerRole.objects.filter(id=value, is_active=True).exists():
+            raise serializers.ValidationError('Volunteer role not found.')
+        return value
+
+    def create(self, validated_data):
+        app_id = validated_data.pop('application_id', None)
+        role_id = validated_data.pop('target_role_id', None)
+        if app_id:
+            validated_data['application'] = VolunteerApplication.objects.get(id=app_id)
+        if role_id:
+            validated_data['target_role'] = VolunteerRole.objects.get(id=role_id)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        app_id = validated_data.pop('application_id', serializers.empty)
+        role_id = validated_data.pop('target_role_id', serializers.empty)
+        if app_id is not serializers.empty:
+            instance.application = VolunteerApplication.objects.get(id=app_id) if app_id else None
+        if role_id is not serializers.empty:
+            instance.target_role = VolunteerRole.objects.get(id=role_id) if role_id else None
+        return super().update(instance, validated_data)
+
+
+class VolunteerAnnouncementAdminSerializer(serializers.ModelSerializer):
+    target_role_id = serializers.UUIDField(write_only=True, required=False, allow_null=True)
+    target_role_name = serializers.CharField(source='target_role.name', read_only=True, default=None)
+    posted_by_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = VolunteerAnnouncement
+        fields = [
+            'id', 'title', 'body', 'is_published',
+            'target_role_id', 'target_role_name',
+            'posted_by_name', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['id', 'target_role_name', 'posted_by_name', 'created_at', 'updated_at']
+
+    def get_posted_by_name(self, obj):
+        if obj.posted_by_id and obj.posted_by:
+            return obj.posted_by.full_name or obj.posted_by.email
+        return None
+
+    def validate_target_role_id(self, value):
+        if value is None:
+            return value
+        if not VolunteerRole.objects.filter(id=value, is_active=True).exists():
+            raise serializers.ValidationError('Volunteer role not found.')
+        return value
+
+    def create(self, validated_data):
+        role_id = validated_data.pop('target_role_id', None)
+        if role_id:
+            validated_data['target_role'] = VolunteerRole.objects.get(id=role_id)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        role_id = validated_data.pop('target_role_id', serializers.empty)
+        if role_id is not serializers.empty:
+            instance.target_role = VolunteerRole.objects.get(id=role_id) if role_id else None
+        return super().update(instance, validated_data)

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import SkeletonImage from './SkeletonImage'
 
 export default function SessionModal({ isOpen, onClose, session }) {
   // Close on Escape key
@@ -96,13 +97,12 @@ export default function SessionModal({ isOpen, onClose, session }) {
                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                   <span className="material-symbols-outlined text-6xl">school</span>
                 </div>
-                <div className="relative aspect-square rounded-xl overflow-hidden mb-6 border-2 border-primary-fixed/20">
-                  <img 
-                    alt={session.speaker?.name} 
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100" 
-                    src={session.speaker?.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop"}
-                  />
-                </div>
+                <SkeletonImage
+                  src={session.speaker?.image || undefined}
+                  alt={session.speaker?.name}
+                  className="aspect-square rounded-xl mb-6 border-2 border-primary-fixed/20"
+                  imgClassName="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
+                />
                 <h4 className="headline-sm text-primary-fixed mb-1 uppercase tracking-tighter">{session.speaker?.name || "Dr. Omar Al-Faruqi"}</h4>
                 <p className="label-md text-secondary uppercase tracking-widest mb-4 text-xs">{session.speaker?.role || "Lead Ethicist, Tech Council"}</p>
                 <p className="body-md text-on-surface-variant mb-6 italic leading-relaxed">

@@ -211,10 +211,31 @@ export const volunteerApi = {
   submitApplication: (data) => apiRequest('/volunteers/applications/', { method: 'POST', body: data }),
   myApplication: () => apiRequest('/volunteers/applications/me/'),
   withdraw: () => apiRequest('/volunteers/applications/me/', { method: 'PATCH', body: {} }),
+
+  // Volunteer portal (accepted volunteers)
+  portalSummary: () => apiRequest('/volunteers/portal/'),
+  portalTasks: () => apiRequest('/volunteers/portal/tasks/'),
+  updatePortalTask: (id, data) => apiRequest(`/volunteers/portal/tasks/${id}/`, { method: 'PATCH', body: data }),
+  portalAnnouncements: () => apiRequest('/volunteers/portal/announcements/'),
+
+  // Admin
   adminApplications: (status) =>
     apiRequest(`/volunteers/admin/applications/${status ? `?status=${encodeURIComponent(status)}` : ''}`),
   getAdminApplication: (id) => apiRequest(`/volunteers/admin/applications/${id}/`),
   updateAdminApplication: (id, data) =>
     apiRequest(`/volunteers/admin/applications/${id}/`, { method: 'PATCH', body: data }),
   adminRoles: () => apiRequest('/volunteers/admin/roles/'),
+  adminAcceptedVolunteers: () => apiRequest('/volunteers/admin/volunteers/'),
+  adminTasks: (params = {}) => {
+    const q = new URLSearchParams(params).toString()
+    return apiRequest(`/volunteers/admin/tasks/${q ? `?${q}` : ''}`)
+  },
+  createAdminTask: (data) => apiRequest('/volunteers/admin/tasks/', { method: 'POST', body: data }),
+  updateAdminTask: (id, data) => apiRequest(`/volunteers/admin/tasks/${id}/`, { method: 'PATCH', body: data }),
+  deleteAdminTask: (id) => apiRequest(`/volunteers/admin/tasks/${id}/`, { method: 'DELETE' }),
+  adminAnnouncements: () => apiRequest('/volunteers/admin/announcements/'),
+  createAdminAnnouncement: (data) => apiRequest('/volunteers/admin/announcements/', { method: 'POST', body: data }),
+  updateAdminAnnouncement: (id, data) =>
+    apiRequest(`/volunteers/admin/announcements/${id}/`, { method: 'PATCH', body: data }),
+  deleteAdminAnnouncement: (id) => apiRequest(`/volunteers/admin/announcements/${id}/`, { method: 'DELETE' }),
 }

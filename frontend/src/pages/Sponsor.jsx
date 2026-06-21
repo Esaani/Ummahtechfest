@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ApiError, cmsApi, outreachApi } from '../api/client'
 import HoneypotField from '../components/HoneypotField'
+import SkeletonImage from '../components/SkeletonImage'
 import ChoiceCards from '../components/forms/ChoiceCards'
 import { FormField, FormInput, FormTextarea } from '../components/forms/FormField'
 import { validateSponsorInquiry } from '../utils/formValidation'
 import { cmsMediaUrl } from '../utils/mediaUrl'
-
-const FALLBACK_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'
 
 const FALLBACK_TIERS = [
   { value: 'diamond', label: 'Diamond Sponsor', description: 'Premier visibility · main stage & branding' },
@@ -47,7 +45,6 @@ export default function Sponsor() {
   const [columns, setColumns] = useState(FALLBACK_COLUMNS)
   const [tableRows, setTableRows] = useState(FALLBACK_ROWS)
   const [heroImage, setHeroImage] = useState(null)
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false)
   const [heroStat, setHeroStat] = useState({ value: '5,000+', label: 'Targeted Tech Professionals' })
   const [cmsLoading, setCmsLoading] = useState(true)
   const [form, setForm] = useState({
@@ -83,7 +80,6 @@ export default function Sponsor() {
         if (data.comparison_columns?.length) setColumns(data.comparison_columns)
         if (data.comparison_rows?.length) setTableRows(data.comparison_rows)
         if (data.hero) {
-          setHeroImageLoaded(false)
           setHeroImage(cmsMediaUrl(data.hero.hero_image_url, ''))
           setHeroStat({
             value: data.hero.stat_value || '5,000+',
@@ -108,8 +104,6 @@ export default function Sponsor() {
       })
       .finally(() => setCmsLoading(false))
   }, [])
-
-  const heroSrc = heroImage || FALLBACK_HERO_IMAGE
 
   const selectedTier = useMemo(
     () => tiers.find((t) => t.value === form.tier_interest) || tiers[0],
@@ -156,17 +150,12 @@ export default function Sponsor() {
           </div>
           <div className="relative hidden lg:block" data-aos="fade-left">
             <div className="aspect-square rounded-2xl overflow-hidden kente-border">
-              {cmsLoading ? (
-                <div className="w-full h-full bg-surface-container-high animate-pulse" />
-              ) : (
-                <img
-                  className={`w-full h-full object-cover transition-opacity duration-300 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                  src={heroSrc}
-                  alt=""
-                  loading="eager"
-                  onLoad={() => setHeroImageLoaded(true)}
-                />
-              )}
+              <SkeletonImage
+                src={heroImage || undefined}
+                alt=""
+                className="w-full h-full"
+                loading="eager"
+              />
             </div>
             <div className="absolute -bottom-6 -left-6 glass-panel p-6 rounded-xl border-l-4 border-primary-fixed max-w-xs shadow-2xl">
               <p className="headline-sm text-primary-fixed mb-1">{heroStat.value}</p>

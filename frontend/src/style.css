@@ -1,6 +1,17 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@layer utilities {
+  .animate-skeleton-shimmer {
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+}
+
 @layer base {
   :root {
     --primary-neon: #a3fa01;
