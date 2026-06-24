@@ -11,7 +11,7 @@
       padding: 0;
       -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
-      background-color: #f4f4f5;
+      background-color: #131313;
     }
     table, td {
       border-collapse: collapse;
@@ -32,40 +32,43 @@
     }
     .email-container {
       max-width: 600px;
-      margin: 40px auto;
+      margin: 32px auto;
       background-color: #ffffff;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
     .header {
-      padding: 32px 48px;
+      padding: 36px 48px;
       text-align: center;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background-color: #131313;
+      border-bottom: 2px solid #a3fa01;
     }
     .content {
       padding: 48px;
-      color: #334155;
+      color: #1e293b;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 1.6;
     }
     .footer {
-      padding: 32px 48px;
-      background-color: #f8fafc;
-      border-top: 1px solid #e2e8f0;
+      padding: 28px 48px;
+      background-color: #131313;
       text-align: center;
       color: #64748b;
-      font-size: 14px;
+      font-size: 13px;
     }
     .button {
       display: inline-block;
-      padding: 14px 32px;
-      background-color: #c9a227;
-      color: #ffffff !important;
-      font-weight: 600;
+      padding: 14px 36px;
+      background-color: #a3fa01;
+      color: #131313 !important;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 999px;
       margin-top: 8px;
     }
     .preheader {
@@ -80,36 +83,31 @@
   <div class="preheader">
     {% block preheader %}{% endblock %}
   </div>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f5; padding: 20px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #131313; padding: 20px 0;">
     <tr>
       <td align="center">
         <div class="email-container">
-          <!-- Header with Logo -->
           <div class="header">
             <a href="{{ site_url }}" target="_blank">
-              <img src="{{ logo_url }}" alt="{{ site_name }}" width="180" style="display: block; margin: 0 auto;">
+              <img src="{{ logo_url }}" alt="{{ site_name }}" width="160" style="display: block; margin: 0 auto;">
             </a>
           </div>
 
-          <!-- Body Content -->
           <div class="content">
             {% block content %}{% endblock %}
           </div>
 
-          <!-- Footer -->
           <div class="footer">
-            <p style="margin: 0 0 12px; font-weight: 600; color: #475569;">{{ site_name }}</p>
-            <p style="margin: 0 0 20px;">The Premier Tech Conference for the Global Ummah</p>
-            
-            <div style="margin-bottom: 24px;">
-              <a href="{{ site_url }}" style="color: #c9a227; text-decoration: none; margin: 0 10px;">Website</a>
-              <span style="color: #cbd5e1;">&bull;</span>
-              <a href="mailto:{{ support_email }}" style="color: #c9a227; text-decoration: none; margin: 0 10px;">Support</a>
+            <p style="margin: 0 0 6px; font-weight: 700; color: #a3fa01; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">{{ site_name }}</p>
+            <p style="margin: 0 0 16px; color: #94a3b8; font-size: 12px;">The Premier Tech Conference for the Global Ummah</p>
+            <div style="margin-bottom: 16px;">
+              <a href="{{ site_url }}" style="color: #a3fa01; text-decoration: none; margin: 0 8px; font-size: 12px;">Website</a>
+              <span style="color: #334155;">&bull;</span>
+              <a href="mailto:{{ support_email }}" style="color: #a3fa01; text-decoration: none; margin: 0 8px; font-size: 12px;">Contact us</a>
             </div>
-
-            <p style="margin: 0; font-size: 12px; color: #94a3b8;">
+            <p style="margin: 0; font-size: 11px; color: #475569;">
               &copy; 2026 Ummah Tech Fest. All rights reserved.<br>
-              You received this email because you registered on our platform.
+              You received this email because you have an account on our platform.
             </p>
           </div>
         </div>

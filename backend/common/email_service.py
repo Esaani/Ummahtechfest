@@ -52,7 +52,7 @@ EMAIL_TEMPLATES = {
         'template': 'emails/participant_invite_volunteer.html',
     },
     'submission_status_updated': {
-        'subject': 'Update regarding your application',
+        'subject': 'An update on your application',
         'template': 'emails/submission_status_updated.html',
     },
     'pass_payment_received': {
@@ -73,7 +73,7 @@ EMAIL_TEMPLATES = {
 def _site_context():
     return {
         'site_name': getattr(settings, 'SITE_NAME', 'Ummah Tech Fest'),
-        'site_url': getattr(settings, 'SITE_URL', 'https://ummahtechfest.com'),
+        'site_url': getattr(settings, 'SITE_URL', '') or 'https://ummahtechfest.com',
         'logo_url': getattr(
             settings,
             'EMAIL_LOGO_URL',

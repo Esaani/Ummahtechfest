@@ -1,5 +1,32 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
 
+// Single in-flight refresh promise shared across all concurrent 401s
+let _refreshPromise = null
+
+async function _doRefresh() {
+  const refresh = localStorage.getItem('refresh_token')
+  if (!refresh) throw new Error('no refresh token')
+
+  const res = await fetch(`${API_BASE}/auth/refresh/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh }),
+  })
+  if (!res.ok) throw new Error('refresh failed')
+
+  const body = await res.json()
+  localStorage.setItem('access_token', body.access)
+  if (body.refresh) localStorage.setItem('refresh_token', body.refresh)
+  return body.access
+}
+
+function _refreshOnce() {
+  if (!_refreshPromise) {
+    _refreshPromise = _doRefresh().finally(() => { _refreshPromise = null })
+  }
+  return _refreshPromise
+}
+
 const PAYMENT_ERROR_CODES = new Set([
   'PAYMENT_UNAVAILABLE',
   'PAYMENT_INIT_FAILED',
@@ -48,22 +75,38 @@ async function parseResponse(response) {
   return body
 }
 
-export async function apiRequest(path, options = {}) {
+function _buildFetchArgs(path, options, token) {
   const isFormData = options.body instanceof FormData
   const headers = { ...(options.headers || {}) }
-  if (!isFormData && !headers['Content-Type']) {
-    headers['Content-Type'] = 'application/json'
-  }
-  const token = localStorage.getItem('access_token')
+  if (!isFormData && !headers['Content-Type']) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
+  return {
+    url: `${API_BASE}${path}`,
+    init: {
+      ...options,
+      headers,
+      body: options.body ? (isFormData ? options.body : JSON.stringify(options.body)) : undefined,
+    },
+  }
+}
 
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-    body: options.body
-      ? (isFormData ? options.body : JSON.stringify(options.body))
-      : undefined,
-  })
+export async function apiRequest(path, options = {}) {
+  const { url, init } = _buildFetchArgs(path, options, localStorage.getItem('access_token'))
+  const response = await fetch(url, init)
+
+  if (response.status === 401) {
+    try {
+      const newToken = await _refreshOnce()
+      const { url: retryUrl, init: retryInit } = _buildFetchArgs(path, options, newToken)
+      return parseResponse(await fetch(retryUrl, retryInit))
+    } catch {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      window.dispatchEvent(new Event('auth:session-expired'))
+      return parseResponse(response)
+    }
+  }
+
   return parseResponse(response)
 }
 

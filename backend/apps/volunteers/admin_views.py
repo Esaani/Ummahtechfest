@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -85,14 +86,20 @@ class AdminVolunteerApplicationDetailView(APIView):
                 note=request.data.get('status_note', ''),
             )
             # Send notification
+            _site = getattr(settings, 'SITE_URL', '') or 'https://ummahtechfest.com'
+            _accepted = application.status == 'accepted'
             send_templated_email(
                 'submission_status_updated',
                 application.user.email,
                 {
                     'name': application.user.full_name or application.user.email,
+                    'first_name': application.user.first_name or application.user.full_name or application.user.email.split('@')[0],
                     'submission_type': 'Volunteer Application',
                     'status_label': application.get_status_display(),
                     'message': request.data.get('status_note'),
+                    'is_accepted': _accepted,
+                    'action_url': f'{_site}/volunteer/portal' if _accepted else f'{_site}/volunteer/status',
+                    'action_label': 'Access Volunteer Portal' if _accepted else 'View Application Status',
                 },
             )
         application = (

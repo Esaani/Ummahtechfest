@@ -1,22 +1,53 @@
 {% extends "emails/base.html" %}
 
-{% block title %}Application Status Update — {{ site_name }}{% endblock %}
+{% block title %}Your application — {{ site_name }}{% endblock %}
 
-{% block preheader %}There is an update regarding your application for Ummah Tech Fest.{% endblock %}
+{% block preheader %}{% if is_accepted %}You're on the team — log in to access your volunteer portal.{% elif status_label == 'Interview' %}We'd like to take your application a step further.{% elif status_label == 'Under Review' %}Your application is with us — we'll be in touch soon.{% else %}An update on your {{ site_name }} application.{% endif %}{% endblock %}
 
 {% block content %}
-<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
-<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
-  There has been an update regarding your application status for <strong>{{ site_name }}</strong>.
+<h1 style="margin: 0 0 24px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
+
+{% if is_accepted %}
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Your application came through — you're on the volunteer team for <strong>{{ site_name }} Ghana 2026</strong>. JazakAllah khair for putting your hand up.
 </p>
-<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Please sign in to your dashboard to view the latest status and any feedback from our team.
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Your volunteer portal is now open. Log in to see your assigned role, tasks, and team announcements. We'll keep you posted as we get closer to the event.
 </p>
+
+{% elif status_label == 'Interview' %}
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  We've gone through your application and we'd like to take it a step further. Before we finalise things, we want to learn a bit more about you.
+</p>
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Details are in the note below. If you have any questions before then, just reply to this email.
+</p>
+
+{% elif status_label == 'Under Review' %}
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Your application is with us and we're working through it. We'll reach out as soon as a decision is made — nothing you need to do right now.
+</p>
+
+{% else %}
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  We've reviewed your application and unfortunately we aren't able to move forward with it at this time. We had a high number of applications this year and couldn't take everyone forward.
+</p>
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair for putting your hand up — we genuinely appreciate it and hope to see you at the event.
+</p>
+{% endif %}
+
+{% if message %}
+<p style="margin: 0 0 8px; font-size: 16px; line-height: 1.6; color: #334155;">A note from our team:</p>
+<p style="margin: 0 0 28px; font-size: 15px; line-height: 1.65; color: #334155;">{{ message }}</p>
+{% endif %}
+
 <div style="margin: 32px 0; text-align: center;">
-  <a href="{{ site_url }}/dashboard" class="button">View Dashboard</a>
+  <a href="{{ action_url|default:site_url }}" class="button">{{ action_label|default:"View Application" }}</a>
 </div>
-<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
-  JazakAllah khair,<br>
+
+<p style="margin: 32px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  Baarakallahu feekum,<br>
   <strong>The {{ site_name }} Team</strong>
 </p>
 {% endblock %}

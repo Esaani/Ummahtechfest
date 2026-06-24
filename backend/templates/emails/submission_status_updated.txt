@@ -1,8 +1,40 @@
 Assalamu Alaikum {{ first_name|default:"there" }},
 
-There has been an update regarding your application status for {{ site_name }}.
+{% if is_accepted %}
+Your application came through — you're on the volunteer team for {{ site_name }} Ghana 2026. JazakAllah khair for putting your hand up.
 
-Please sign in to your dashboard to view the details: {{ site_url }}/dashboard
+Status: {{ status_label }}
 
-JazakAllah khair,
+Your volunteer portal is now open. Log in to see your assigned role, tasks, and team announcements. We'll keep you posted as we get closer to the event.
+
+{% elif status_label == 'Interview' %}
+We've gone through your application and we'd like to take it a step further. Before we finalise things, we want to learn a bit more about you.
+
+Status: {{ status_label }}
+
+Details are in the note below. If you have any questions before then, just reply to this email.
+
+{% elif status_label == 'Under Review' %}
+Your application is with us and we're working through it. We'll reach out as soon as a decision is made.
+
+Status: {{ status_label }}
+
+Nothing you need to do right now — JazakAllah khair for your patience.
+
+{% else %}
+We've reviewed your application and wanted to let you know where things stand.
+
+Status: {{ status_label }}
+
+We had a high number of applications this year and couldn't take everyone forward. JazakAllah khair for putting your hand up — we appreciate it.
+
+{% endif %}
+{% if message %}
+---
+From our team: {{ message }}
+---
+{% endif %}
+{{ action_label|default:"View your application" }}: {{ action_url|default:site_url }}
+
+Baarakallahu feekum,
 The {{ site_name }} Team

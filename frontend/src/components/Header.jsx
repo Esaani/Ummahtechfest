@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { registrationsApi, volunteerApi } from '../api/client'
 import NavPageLink from './NavPageLink.jsx'
 import logo from '../assets/logo.png'
 
@@ -15,7 +16,7 @@ function initialsForUser(user) {
   return 'U'
 }
 
-function ProfileMenu({ onNavigate }) {
+function ProfileMenu({ onNavigate, hasRegistration, hasVolunteerPortal }) {
   const { isAuthenticated, user, logout, isAdminUser } = useAuth()
   const [open, setOpen] = useState(false)
   const btnRef = useRef(null)
@@ -79,24 +80,38 @@ function ProfileMenu({ onNavigate }) {
             {user?.email && <p className="text-xs text-on-surface-variant truncate mt-1">{user.email}</p>}
           </div>
           <div className="p-2">
-            <Link
-              role="menuitem"
-              to="/registration/status"
-              onClick={() => { setOpen(false); onNavigate?.() }}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
-            >
-              <span className="material-symbols-outlined text-lg text-primary-fixed">confirmation_number</span>
-              Registration status
-            </Link>
-            <Link
-              role="menuitem"
-              to="/volunteer/status"
-              onClick={() => { setOpen(false); onNavigate?.() }}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
-            >
-              <span className="material-symbols-outlined text-lg text-primary-fixed">volunteer_activism</span>
-              Volunteer status
-            </Link>
+            {hasRegistration && (
+              <Link
+                role="menuitem"
+                to="/registration/status"
+                onClick={() => { setOpen(false); onNavigate?.() }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
+              >
+                <span className="material-symbols-outlined text-lg text-primary-fixed">confirmation_number</span>
+                Registration status
+              </Link>
+            )}
+            {hasVolunteerPortal ? (
+              <Link
+                role="menuitem"
+                to="/volunteer/portal"
+                onClick={() => { setOpen(false); onNavigate?.() }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
+              >
+                <span className="material-symbols-outlined text-lg text-primary-fixed">volunteer_activism</span>
+                Volunteer portal
+              </Link>
+            ) : (
+              <Link
+                role="menuitem"
+                to="/volunteer/status"
+                onClick={() => { setOpen(false); onNavigate?.() }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low text-sm text-on-surface"
+              >
+                <span className="material-symbols-outlined text-lg text-primary-fixed">volunteer_activism</span>
+                Volunteer status
+              </Link>
+            )}
             {isAdminUser && (
               <Link
                 role="menuitem"
@@ -126,13 +141,13 @@ function ProfileMenu({ onNavigate }) {
   )
 }
 
-function DesktopAuthActions({ onNavigate }) {
+function DesktopAuthActions({ onNavigate, hasRegistration, hasVolunteerPortal }) {
   const { isAuthenticated, user, logout, isAdminUser } = useAuth()
 
   if (isAuthenticated) {
     return (
       <div className="flex items-center gap-2 2xl:gap-3 shrink-0">
-        <ProfileMenu onNavigate={onNavigate} />
+        <ProfileMenu onNavigate={onNavigate} hasRegistration={hasRegistration} hasVolunteerPortal={hasVolunteerPortal} />
         {/* Keep a compact logout on smaller desktops if needed */}
         <button
           type="button"
@@ -179,7 +194,23 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isFooterInView, setIsFooterInView] = useState(false)
+  const [hasRegistration, setHasRegistration] = useState(false)
+  const [hasVolunteerPortal, setHasVolunteerPortal] = useState(false)
   const location = useLocation()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setHasRegistration(false)
+      setHasVolunteerPortal(false)
+      return
+    }
+    registrationsApi.me()
+      .then((res) => setHasRegistration(res.meta?.has_registration ?? false))
+      .catch(() => {})
+    volunteerApi.myApplication()
+      .then((res) => setHasVolunteerPortal(res.data?.status === 'accepted'))
+      .catch(() => {})
+  }, [isAuthenticated])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -243,7 +274,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center justify-end gap-2 shrink-0 min-w-0">
-            <DesktopAuthActions onNavigate={closeMenu} />
+            <DesktopAuthActions onNavigate={closeMenu} hasRegistration={hasRegistration} hasVolunteerPortal={hasVolunteerPortal} />
             <button
               type="button"
               onClick={toggleMenu}
@@ -301,12 +332,20 @@ export default function Header() {
                   CMS Admin
                 </Link>
               )}
-              <Link to="/registration/status" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
-                Registration status
-              </Link>
-              <Link to="/volunteer/status" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
-                Volunteer status
-              </Link>
+              {hasRegistration && (
+                <Link to="/registration/status" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
+                  Registration status
+                </Link>
+              )}
+              {hasVolunteerPortal ? (
+                <Link to="/volunteer/portal" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
+                  Volunteer portal
+                </Link>
+              ) : (
+                <Link to="/volunteer/status" onClick={closeMenu} className="w-full py-4 border border-outline-variant/30 rounded-2xl flex items-center justify-center text-sm font-bold text-on-surface">
+                  Volunteer status
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => { logout(); closeMenu() }}

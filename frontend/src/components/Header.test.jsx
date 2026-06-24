@@ -16,6 +16,15 @@ vi.mock('../context/AuthContext', () => {
   }
 })
 
+vi.mock('../api/client', () => ({
+  registrationsApi: {
+    me: vi.fn(() => Promise.resolve({ data: {}, meta: { has_registration: true } })),
+  },
+  volunteerApi: {
+    myApplication: vi.fn(() => Promise.resolve({ data: { status: 'accepted' } })),
+  },
+}))
+
 describe('Header (authenticated menu)', () => {
   it('shows account menu and opens dropdown', async () => {
     const user = userEvent.setup()
@@ -31,7 +40,7 @@ describe('Header (authenticated menu)', () => {
     expect(screen.getByRole('menu', { name: /account/i })).toBeInTheDocument()
     const menu = screen.getByRole('menu', { name: /account/i })
     expect(menu).toHaveTextContent(/registration status/i)
-    expect(menu).toHaveTextContent(/volunteer status/i)
+    expect(menu).toHaveTextContent(/volunteer portal/i)
     expect(menu).toHaveTextContent(/cms/i)
     expect(within(menu).getByRole('menuitem', { name: /log out/i })).toBeInTheDocument()
   })

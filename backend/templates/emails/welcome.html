@@ -2,21 +2,25 @@
 
 {% block title %}Welcome to {{ site_name }}{% endblock %}
 
-{% block preheader %}Your account is ready for Ummah Tech Fest.{% endblock %}
+{% block preheader %}Assalamu Alaikum {{ first_name|default:"" }} — your account is ready. Welcome to Ummah Tech Fest.{% endblock %}
 
 {% block content %}
-<h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #0f172a;">Assalamu Alaikum {{ first_name|default:"there" }},</h1>
-<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Welcome to <strong>{{ site_name }}</strong>! We are thrilled to have you join our community as we build the future of technology for the Ummah.
+<h1 style="margin: 0 0 24px; font-size: 26px; font-weight: 700; color: #0f172a;">Assalamu Alaikum{{ first_name|default:"" }},</h1>
+
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Welcome to <strong>{{ site_name }}</strong> — West Africa's most influential gathering of Muslim technologists, innovators, and entrepreneurs. We are glad you are here.
 </p>
-<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #334155;">
-  Your account is now active. You can sign in to your dashboard to complete your registration, apply as a speaker, or join us as a volunteer.
+
+<p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #334155;">
+  Your account is active. You can register for the event, apply to volunteer, or put your hand up to speak — head to the site and take it from there.
 </p>
+
 <div style="margin: 32px 0; text-align: center;">
-  <a href="{{ site_url }}" class="button">Go to Dashboard</a>
+  <a href="{{ site_url }}" class="button">Explore Ummah Tech Fest</a>
 </div>
-<p style="margin: 24px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
-  JazakAllah khair,<br>
+
+<p style="margin: 32px 0 0; font-size: 16px; line-height: 1.6; color: #334155;">
+  JazakAllah khair for joining us,<br>
   <strong>The {{ site_name }} Team</strong>
 </p>
 {% endblock %}

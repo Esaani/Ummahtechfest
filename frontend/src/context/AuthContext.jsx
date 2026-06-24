@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { authApi } from '../api/client'
+import { ApiError, authApi } from '../api/client'
 import { userCanAccessAdminPortal, userHasAdminPermission } from '../config/adminPermissions'
 
 const AuthContext = createContext(null)
@@ -28,8 +28,10 @@ export function AuthProvider({ children }) {
     try {
       const res = await authApi.me()
       setUser(res.data)
-    } catch {
-      clearTokens()
+    } catch (err) {
+      // ApiError means the server definitively rejected the request — clear the session.
+      // A plain Error means a network failure — keep tokens so the next load can retry.
+      if (err instanceof ApiError) clearTokens()
       setUser(null)
     } finally {
       setLoading(false)
@@ -39,6 +41,15 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     loadUser()
   }, [loadUser])
+
+  useEffect(() => {
+    const onExpired = () => {
+      setUser(null)
+      setLoading(false)
+    }
+    window.addEventListener('auth:session-expired', onExpired)
+    return () => window.removeEventListener('auth:session-expired', onExpired)
+  }, [])
 
   const login = async (email, password, website = '') => {
     const res = await authApi.login({ email, password, website })
